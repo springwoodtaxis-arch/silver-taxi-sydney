@@ -57,8 +57,6 @@
 .mega-panel {
   position: relative;
   background: rgba(15, 22, 42, .97);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
   border: 1px solid rgba(201, 168, 76, .15);
   border-radius: 16px;
   box-shadow:
