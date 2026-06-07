@@ -1,0 +1,23 @@
+# Silver Service Online canonical URL rewrites
+# Ensures extensionless canonical URLs such as /airport-transfers and /taxi-parramatta
+# resolve to their matching .html files on Apache/Hostinger static hosting.
+
+Options -MultiViews
+RewriteEngine On
+
+# Redirect directory index files to clean folder URLs.
+RewriteCond %{THE_REQUEST} \s/+(.+)/index\.html[\s?] [NC]
+RewriteRule ^(.+)/index\.html$ /$1/ [R=301,L]
+
+# Redirect direct .html requests to canonical extensionless URLs.
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+RewriteRule ^(.+)\.html$ /$1 [R=301,L]
+
+# Internally serve matching .html files for extensionless canonical URLs.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+# Preserve normal 404 behavior for everything else.
+ErrorDocument 404 /404.html

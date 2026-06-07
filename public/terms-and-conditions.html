@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M3ZZ9C2W');</script>
+<!-- End Google Tag Manager -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Silver Taxi Sydney Service — Terms &amp; Conditions</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --dark: #1a1f26;
+    --mid-dark: #262c34;
+    --primary: #144a8f;
+    --primary-light: #1e6abf;
+    --primary-bright: #4a9aea;
+    --primary-dim: #0f3a6f;
+    --white: #ffffff;
+    --off-white: #f7f9fc;
+    --text: #333b47;
+    --text-light: #5e6a7a;
+    --text-muted: #8e99a9;
+    --border: #e2e7ee;
+    --red-soft: #c0392b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    line-height: 1.7;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, var(--dark) 0%, var(--mid-dark) 40%, var(--primary-dim) 100%);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 25% 40%, rgba(74,154,234,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 65%, rgba(20,74,143,0.15) 0%, transparent 50%);
+    animation: heroGlow 18s ease-in-out infinite alternate;
+  }
+
+  @keyframes heroGlow {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; transform: scale(1.03); }
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(74,154,234,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74,154,234,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 2rem;
+    max-width: 900px;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--primary-bright);
+    border: 1px solid rgba(74,154,234,0.3);
+    padding: 0.5em 1.8em;
+    margin-bottom: 2.5rem;
+    font-weight: 600;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    color: var(--white);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+  }
+
+  .hero h1 span {
+    display: block;
+    background: linear-gradient(135deg, var(--primary-bright), #7ab8f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.5);
+    max-width: 560px;
+    margin: 0 auto 3rem;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.7s forwards;
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-bright), transparent);
+    margin: 0 auto 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.9s forwards;
+  }
+
+  .hero-date {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    font-weight: 500;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.1s forwards;
+  }
+
+  .hero-url {
+    margin-top: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.3s forwards;
+  }
+
+  .hero-url a {
+    font-size: 0.8rem;
+    color: var(--primary-bright);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(74,154,234,0.3);
+    padding-bottom: 2px;
+    transition: border-color 0.3s;
+  }
+
+  .hero-url a:hover { border-color: var(--primary-bright); }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.2);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.5s forwards;
+  }
+
+  .scroll-cue .arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--primary-bright), transparent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── STICKY NAV ─── */
+  .toc-strip {
+    background: var(--mid-dark);
+    padding: 1.2rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-x: auto;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+  }
+
+  .toc-strip::-webkit-scrollbar { height: 0; }
+
+  .toc-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0.15rem;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  .toc-link {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    padding: 0.5em 0.9em;
+    border-radius: 3px;
+    transition: all 0.3s;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .toc-link:hover {
+    color: var(--primary-bright);
+    background: rgba(74,154,234,0.08);
+  }
+
+  /* ─── INTRO ─── */
+  .intro {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .intro p {
+    font-size: 1.05rem;
+    color: var(--text-light);
+    line-height: 1.9;
+    font-weight: 300;
+  }
+
+  .intro p + p { margin-top: 1.5rem; }
+  .intro strong { color: var(--text); font-weight: 600; }
+
+  .intro a, .clause-text a {
+    color: var(--primary-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(30,106,191,0.3);
+    transition: border-color 0.3s;
+  }
+
+  .intro a:hover, .clause-text a:hover { border-color: var(--primary-light); }
+
+  /* ─── FIXED FARE CALLOUT ─── */
+  .callout {
+    width: 100%;
+    background: var(--off-white);
+    padding: 5rem 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .callout-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .callout-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .callout h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    color: var(--dark);
+    margin-bottom: 2rem;
+    line-height: 1.2;
+  }
+
+  .callout-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .callout-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    border-radius: 6px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .callout-card:hover {
+    border-color: var(--primary-bright);
+    box-shadow: 0 4px 24px rgba(20,74,143,0.08);
+  }
+
+  .callout-card .num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 0.8rem;
+  }
+
+  .callout-card h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .callout-card p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* ─── CANCELLATION BANNER ─── */
+  .cancel-banner {
+    width: 100%;
+    background: var(--white);
+    padding: 4rem 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cancel-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 2.5rem;
+    align-items: flex-start;
+  }
+
+  .cancel-icon {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fdecea, #fbd5d0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+  }
+
+  .cancel-body { flex: 1; }
+
+  .cancel-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red-soft);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  .cancel-body h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.4rem, 3vw, 1.8rem);
+    color: var(--dark);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+
+  .cancel-body p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.85;
+    font-weight: 300;
+  }
+
+  .cancel-body p + p { margin-top: 0.8rem; }
+
+  .cancel-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .cancel-highlight {
+    margin-top: 1.5rem;
+    padding: 1.2rem 1.5rem;
+    background: #fef6f5;
+    border-left: 3px solid var(--red-soft);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.7;
+    font-weight: 400;
+  }
+
+  /* ─── SECTIONS ─── */
+  .sections {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem 6rem;
+  }
+
+  .section {
+    padding: 3.5rem 0;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 4rem;
+    scroll-margin-top: 80px;
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-sidebar {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+  }
+
+  .section-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem;
+    color: rgba(20,74,143,0.08);
+    line-height: 1;
+    margin-bottom: 0.6rem;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    color: var(--dark);
+    line-height: 1.3;
+  }
+
+  .clause {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+
+  .clause:first-child { margin-top: 0; }
+
+  .clause-id {
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--primary);
+    min-width: 2.5rem;
+    padding-top: 0.18rem;
+  }
+
+  .clause-text {
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--text-light);
+    font-weight: 300;
+  }
+
+  .clause-text strong { color: var(--text); font-weight: 600; }
+
+  .clause-text .refund-tag {
+    display: inline-block;
+    background: #fef6f5;
+    color: var(--red-soft);
+    font-weight: 600;
+    font-size: 0.82rem;
+    padding: 0.15em 0.6em;
+    border-radius: 3px;
+    margin-left: 0.3em;
+  }
+
+  .sub-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 0.8rem;
+  }
+
+  .sub-list li {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.6rem;
+    font-size: 0.93rem;
+    line-height: 1.8;
+    color: var(--text-light);
+    font-weight: 300;
+  }
+
+  .sub-list li::before {
+    content: attr(data-marker);
+    flex-shrink: 0;
+    font-weight: 500;
+    color: var(--primary);
+    min-width: 1.5rem;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    background: var(--dark);
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+
+  .footer-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .footer-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--white);
+    margin-bottom: 0.6rem;
+  }
+
+  .footer-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .footer-link a {
+    font-size: 0.8rem;
+    color: var(--primary-bright);
+    text-decoration: none;
+  }
+
+  .footer p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .footer .update-date {
+    display: inline-block;
+    margin-top: 2rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.2);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 2rem;
+    width: 100%;
+  }
+
+  .footer-copy {
+    margin-top: 0.8rem;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.15);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 860px) {
+    .section {
+      grid-template-columns: 1fr;
+      gap: 1.2rem;
+    }
+    .section-sidebar {
+      position: static;
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+    }
+    .section-num { font-size: 2rem; margin-bottom: 0; }
+    .toc-strip { padding: 1rem; }
+    .toc-inner { justify-content: flex-start; }
+    .intro { padding: 3.5rem 1.5rem; }
+    .callout { padding: 3.5rem 1.5rem; }
+    .cancel-banner { padding: 3rem 1.5rem; }
+    .cancel-inner { flex-direction: column; gap: 1.5rem; }
+    .sections { padding: 2rem 1.5rem 4rem; }
+  }
+</style>
+<style id="ss-nav-footer-style">
+/* ── Silver Service Nav/Footer – Hughes-inspired Grey Style ── */
+.ss-nav-wrap{background:#1c2333;position:sticky;top:0;z-index:9999;box-shadow:0 2px 12px rgba(0,0,0,0.35)}
+.ss-topbar{background:#141926;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
+.ss-topbar .ss-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#9ca3af}
+.ss-topbar a{color:#9ca3af;text-decoration:none;margin-left:18px;transition:color 0.2s}
+.ss-topbar a:hover{color:#e5e7eb}
+.ss-mainbar{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.ss-brand{font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:#fff;text-decoration:none;letter-spacing:0.04em;line-height:1.1}
+.ss-brand span{display:block;font-size:11px;font-weight:400;color:#A8B4C0;letter-spacing:0.12em;text-transform:uppercase}
+.ss-nav{display:flex;align-items:center;gap:4px;list-style:none;margin:0;padding:0}
+.ss-nav a{color:#d1d5db;text-decoration:none;font-size:13px;font-weight:600;padding:8px 12px;border-radius:6px;transition:all 0.2s;text-transform:uppercase;letter-spacing:0.04em}
+.ss-nav a:hover{color:#fff;background:rgba(255,255,255,0.08)}
+.ss-nav .ss-book-btn{background:#A8B4C0;color:#1c2333!important;border-radius:6px;padding:9px 18px;font-weight:700}
+.ss-nav .ss-book-btn:hover{background:#e0bc5a;color:#1c2333!important}
+.ss-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none}
+.ss-hamburger span{display:block;width:22px;height:2px;background:#d1d5db;border-radius:2px;transition:all 0.3s}
+@media(max-width:768px){
+  .ss-nav{display:none;position:absolute;top:100%;left:0;right:0;background:#1c2333;flex-direction:column;padding:12px 0;border-top:1px solid rgba(255,255,255,0.1)}
+  .ss-nav.open{display:flex}
+  .ss-nav a{padding:12px 24px;border-radius:0;width:100%}
+  .ss-hamburger{display:flex}
+  .ss-topbar .ss-inner{flex-direction:column;gap:4px;text-align:center}
+}
+/* ── Footer ── */
+.ss-footer{background:#141926;color:#9ca3af;margin-top:60px;border-top:3px solid #A8B4C0}
+.ss-footer-inner{max-width:1200px;margin:0 auto;padding:48px 24px 32px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.ss-footer-brand .ss-brand{font-size:22px;margin-bottom:12px;display:inline-block}
+.ss-footer-brand p{font-size:13px;line-height:1.7;color:#6b7280;max-width:260px;margin-bottom:16px}
+.ss-footer-brand .ss-contact-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#9ca3af;margin-bottom:8px;text-decoration:none}
+.ss-footer-brand .ss-contact-item:hover{color:#e5e7eb}
+.ss-footer-col h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#e5e7eb;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.ss-footer-col ul{list-style:none;margin:0;padding:0}
+.ss-footer-col ul li{margin-bottom:8px}
+.ss-footer-col ul li a{color:#6b7280;text-decoration:none;font-size:13px;transition:color 0.2s}
+.ss-footer-col ul li a:hover{color:#A8B4C0}
+.ss-footer-bottom{background:#0d1117;padding:16px 24px;text-align:center;font-size:12px;color:#4b5563;border-top:1px solid rgba(255,255,255,0.05)}
+.ss-footer-bottom a{color:#4b5563;text-decoration:none;margin:0 10px}
+.ss-footer-bottom a:hover{color:#9ca3af}
+@media(max-width:768px){
+  .ss-footer-inner{grid-template-columns:1fr 1fr;gap:28px}
+  .ss-footer-brand{grid-column:1/-1}
+}
+@media(max-width:480px){
+  .ss-footer-inner{grid-template-columns:1fr}
+}
+</style>
+<!-- ═══ Google Tags: GTM + GA4 + Google Ads ═══ -->
+<!-- Google tag (gtag.js) — AW-18080291908 as primary for Google Ads verification -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-18080291908"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'AW-18080291908');
+    gtag('config', 'G-7E4QMH007T');
+  </script>
+<!-- Google Ads Call Tracking -->
+<script>
+    function trackPhoneCall(source) {
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-18080291908/CuGTCLeh65kcEMS4ra1D',
+          'value': 1.0,
+          'currency': 'AUD'
+        });
+        gtag('event', 'ads_conversion_phone_call_lead', {
+          'send_to': 'AW-18080291908',
+          'value': 1.0,
+          'currency': 'AUD',
+          'event_label': source || 'website_call'
+        });
+        gtag('event', 'phone_call', {
+          'event_category': 'contact',
+          'event_label': source || 'website_call',
+          'value': 1
+        });
+      }
+      return true;
+    }
+  </script>
+<!-- End Google Tags -->
+<link href="/mega-menu.css?v=10" rel="stylesheet"/>
+<link href="/mobile-menu.css?v=11" rel="stylesheet"/>
+</head>
+<body><nav class="navbar sso-premium-nav" data-sso-nav="one-stop-v10" id="navbar">
+<div class="nav-inner">
+<a aria-label="Silver Services Taxi Sydney home" class="nav-logo has-image" href="/"><img alt="Silver Services Taxi Sydney" class="sso-site-logo nav-site-logo" decoding="async" height="577" loading="eager" src="/images/logo.png?v=logo-20260606" width="1742"/></a>
+<ul class="nav-menu" id="nav-menu">
+
+
+
+
+
+
+
+
+<li><a class="nav-link" href="/">Home</a></li><li><a class="nav-link" href="/about">About</a></li><li class="nav-item nav-item-mega"><a aria-haspopup="true" class="nav-link" href="/services">Services <svg aria-hidden="true" class="nav-arrow" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+<div aria-label="Silver service taxi services" class="mega-dropdown mega-full mega-services" role="region"><div class="mega-panel mega-shop-panel">
+<div class="mega-shop-hero"><span class="mega-kicker">One stop service hub</span><h3>Premium taxi, airport and chauffeur bookings</h3><p>Choose the right service, vehicle and booking pathway in one place.</p><div class="mega-trust-row"><span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg> Fixed upfront fares</span><span><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 24/7 dispatch</span><span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><path d="M3 13h18v5a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H4a1 1 0 0 1-1-1z"></path><path d="M7 14h.01M17 14h.01"></path></svg> Premium fleet</span></div></div>
+<div class="mega-shop-grid">
+<a class="mega-shop-card" href="/airport-transfers"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M2 17h2.4L9 10.5 6 6h3l3 4.5L15 6h3l-3 4.5L19.6 17H22"></path><path d="M12 17v4M8 21h8"></path></svg></span><span><strong>Airport Transfers</strong><small>SYD and Western Sydney Airport pickup and drop-off service</small></span></a>
+<a class="mega-shop-card" href="/services"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><path d="M3 13h18v5a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H4a1 1 0 0 1-1-1z"></path><path d="M7 14h.01M17 14h.01"></path></svg></span><span><strong>Silver Service Taxi</strong><small>Premium sedans, SUVs and direct point-to-point rides</small></span></a>
+<a class="mega-shop-card" href="/maxi-taxi"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.8"></path><path d="M16 3.1a4 4 0 0 1 0 7.8"></path></svg></span><span><strong>Maxi Taxi</strong><small>7–11 seat group transfers with luggage space</small></span></a>
+<a class="mega-shop-card" href="/services#corporate"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="13" rx="2" width="18" x="3" y="7"></rect><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path><path d="M3 12h18"></path></svg></span><span><strong>Corporate Travel</strong><small>Business transfers, executive rides and account support</small></span></a>
+<a class="mega-shop-card" href="/services#chauffeur"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg></span><span><strong>Chauffeur Service</strong><small>Professional drivers for premium travel requirements</small></span></a>
+<a class="mega-shop-card" href="/services#events"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"></path></svg></span><span><strong>Events &amp; Special Trips</strong><small>Weddings, events, cruise and hourly hire options</small></span></a>
+</div>
+<div class="mega-action-rail"><a class="mega-primary-cta" href="/book">Book online now</a><a class="mega-secondary-cta" href="tel:1800173171" onclick="return trackPhoneCall('mega-services')">Call 1800 173 171</a><a class="mega-text-link" href="/manage">Manage an existing booking</a></div>
+</div></div></li><li class="nav-item nav-item-mega"><a aria-haspopup="true" class="nav-link" href="/locations/">Area <svg aria-hidden="true" class="nav-arrow" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+<div aria-label="Service areas menu" class="mega-dropdown mega-full mega-areas" role="region"><div class="mega-panel mega-shop-panel mega-areas-panel">
+<div class="mega-shop-hero"><span class="mega-kicker">Sydney wide coverage</span><h3>Find your local Silver Service taxi area</h3><p>Popular regions and direct links to the full Sydney coverage index.</p></div>
+<div class="mega-areas-grid">
+<a class="mega-shop-card" href="/locations/sydney-cbd/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Sydney CBD</strong><small>City, hotels, offices and entertainment precincts</small></span></a>
+<a class="mega-shop-card" href="/locations/parramatta/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Parramatta</strong><small>Western Sydney business and residential transfers</small></span></a>
+<a class="mega-shop-card" href="/locations/blacktown/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Blacktown</strong><small>Greater Western Sydney coverage</small></span></a>
+<a class="mega-shop-card" href="/locations/bankstown/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Bankstown</strong><small>Canterbury-Bankstown airport and local rides</small></span></a>
+<a class="mega-shop-card" href="/locations/bondi/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Eastern Suburbs</strong><small>Bondi, beaches and eastern Sydney routes</small></span></a>
+<a class="mega-shop-card" href="/locations/manly/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Northern Beaches</strong><small>Manly and Northern Beaches premium rides</small></span></a>
+<a class="mega-shop-card" href="/locations/castle-hill/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Hills District</strong><small>Castle Hill and Hills District coverage</small></span></a>
+<a class="mega-shop-card" href="/locations/cronulla/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Sutherland Shire</strong><small>Cronulla and southern Sydney transfers</small></span></a>
+</div>
+<div class="mega-action-rail"><a class="mega-primary-cta" href="/locations/">View all service areas</a><a class="mega-secondary-cta" href="/book">Book from your suburb</a></div>
+</div></div></li><li><a class="nav-link" href="/contact">Contact</a></li><li><a class="nav-book-btn" href="/book">Book Now</a></li></ul>
+<button aria-label="Toggle menu" class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+</div>
+</nav>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-M3ZZ9C2W" style="display:none;visibility:hidden" width="0"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<div class="ss-nav-wrap">
+<div class="ss-topbar">
+<div class="ss-inner">
+<span>Sydney, NSW, Australia  |  Available 24/7 — 365 Days</span>
+<div>
+<a href="tel:1800173171" onclick="return trackPhoneCall('terms-and-conditions')"><span aria-hidden="true" class="premium-svg-icon premium-svg-icon--phone"><svg fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.11 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.63 2.61a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.28 6.28l1.27-1.27a2 2 0 0 1 2.11-.45c.83.3 1.71.51 2.61.63A2 2 0 0 1 22 16.92z"></path></svg></span> 1800 173 171</a>
+<a href="mailto:info@silvertaxisydneyservice.com"><span aria-hidden="true" class="premium-svg-icon premium-svg-icon--mail"><svg fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z M22 6l-10 7L2 6"></path></svg></span> info@silvertaxisydneyservice.com</a>
+</div>
+</div>
+</div>
+<div class="ss-mainbar">
+<a class="ss-brand" href="https://silvertaxisydneyservice.com/">SILVER SERVICE<span>TAXI SYDNEY</span></a>
+<button aria-label="Menu" class="ss-hamburger" onclick="this.nextElementSibling.classList.toggle('open')">
+<span></span><span></span><span></span>
+</button>
+<ul class="ss-nav">
+<li><a href="https://silvertaxisydneyservice.com/">Home</a></li>
+<li><a href="https://silvertaxisydneyservice.com/services">Services</a></li>
+<li><a href="https://silvertaxisydneyservice.com/airport-transfers">Airport Transfers</a></li>
+<li><a href="https://silvertaxisydneyservice.com/about">About</a></li>
+<li><a href="https://silvertaxisydneyservice.com/contact">Contact</a></li>
+<li><a href="https://silvertaxisydneyservice.com/manage">Manage Booking</a></li>
+<li><a class="ss-book-btn" href="https://silvertaxisydneyservice.com/book">Book your Sydney taxi now</a></li>
+</ul>
+</div>
+</div>
+<!-- ═══════ HERO ═══════ -->
+<section class="hero">
+<div class="hero-grid"></div>
+<div class="hero-content">
+<div class="hero-badge">Silver Taxi Sydney Service</div>
+<h1>Terms &amp;<br/><span>Conditions</span></h1>
+<p class="hero-sub">Your guide to our booking, payment, cancellation, and service policies. Please read carefully before using our Services.</p>
+<div class="hero-divider"></div>
+<div class="hero-date">Last updated — March 2026</div>
+<div class="hero-url"><a href="https://silvertaxisydneyservice.com/">silvertaxisydneyservice.com</a></div>
+</div>
+<div class="scroll-cue">
+<span>Scroll</span>
+<div class="arrow"></div>
+</div>
+</section>
+<!-- ═══════ TOC ═══════ -->
+<nav class="toc-strip">
+<div class="toc-inner">
+<a class="toc-link" href="#s1">General</a>
+<a class="toc-link" href="#s2">Payment</a>
+<a class="toc-link" href="#s3">Cancellation</a>
+<a class="toc-link" href="#s4">Parcel Delivery</a>
+<a class="toc-link" href="#s5">Communication</a>
+<a class="toc-link" href="#s6">Third Party</a>
+<a class="toc-link" href="#s7">Prohibited Use</a>
+<a class="toc-link" href="#s8">Termination</a>
+<a class="toc-link" href="#s9">Submissions</a>
+<a class="toc-link" href="#s10">Personal Use</a>
+<a class="toc-link" href="#s11">Privacy</a>
+<a class="toc-link" href="#s12">Liability</a>
+<a class="toc-link" href="#s13">Indemnification</a>
+<a class="toc-link" href="#s14">Applicable Law</a>
+</div>
+</nav>
+<!-- ═══════ INTRO ═══════ -->
+<section class="intro">
+<p>Thank you for using our Services. These are our relevant general terms and conditions (<strong>Terms and Conditions</strong>) that apply to your visit to and your use of our Website, Application, Call Centre and all other related and ancillary services.</p>
+<p>Silver Taxi Sydney Service is a Taxi Booking and Payment Service enabling you to book, and pay for, a taxi cab through the use of an application supplied by us and downloaded and installed by you on your single mobile device (smartphone) (<strong>Application</strong>), via our call centre by calling <strong>1800 173 171</strong> (<strong>Call Centre</strong>) or via our website at <a href="https://silvertaxisydneyservice.com/">silvertaxisydneyservice.com</a> (<strong>Website</strong>).</p>
+<p>Silver Taxi Sydney Service connects you to taxi drivers so that taxi drivers may pick you, or your parcels, up and take you, or your parcels, where you need to go. All services provided to you by means of your use of the Application, Call Centre and/or Website, as well as all other related and ancillary services such as parcel delivery, text message confirmations and "contact your driver" are collectively referred to as the <strong>Service(s)</strong>.</p>
+<p>Silver Taxi Sydney Service does not provide transportation services. Silver Taxi Sydney Service facilitates the formation and administration of travel arrangements between you and taxi drivers. By using our Services, you acknowledge that Silver Taxi Sydney Service is not providing transportation services and agree that Silver Taxi Sydney Service has no responsibility or liability for any transportation or parcel delivery services provided by taxi drivers.</p>
+<p>Further information about us can be found at: <a href="https://silvertaxisydneyservice.com/">silvertaxisydneyservice.com</a></p>
+</section>
+<!-- ═══════ FIXED FARE ═══════ -->
+<section class="callout">
+<div class="callout-inner">
+<div class="callout-label">Pricing</div>
+<h2>Fixed Fare on Booking</h2>
+<div class="callout-cards">
+<div class="callout-card">
+<div class="num">01</div>
+<h3>Book Online</h3>
+<p>When you book online at <a href="https://silvertaxisydneyservice.com/book" style="color:var(--primary-light);text-decoration:none;border-bottom:1px solid rgba(30,106,191,0.3)">silvertaxisydneyservice.com/book-online</a>, we estimate your trip duration, time, and vehicle type. Your fixed fare includes booking fees, tolls, and traffic time — ensuring you arrive on time.</p>
+</div>
+<div class="callout-card">
+<div class="num">02</div>
+<h3>Call Centre</h3>
+<p>When you call our Call Centre at <strong style="color:var(--primary)">1800 173 171</strong>, we take your booking and provide a fixed fare which includes booking fees, tolls, and traffic time to ensure you're charged properly and your cab arrives on time.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- ═══════ CANCELLATION POLICY BANNER ═══════ -->
+<section class="cancel-banner" id="s3">
+<div class="cancel-inner">
+<div class="cancel-icon"><span aria-hidden="true" class="premium-svg-icon premium-svg-icon--x"><svg fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M18 6L6 18 M6 6l12 12"></path></svg></span></div>
+<div class="cancel-body">
+<div class="cancel-label">Important — Cancellation &amp; Refund Policy</div>
+<h2>No Refund on Late Cancellations</h2>
+<p>If you cancel your booking <strong>less than 2 hours before</strong> the scheduled pickup time, you will <strong>not</strong> be eligible for a refund.</p>
+<p>In all such cases, a minimum of <strong>45% of the total fare</strong> must be paid as a cancellation fee. This fee is non-negotiable and will be charged to the payment method on file.</p>
+<div class="cancel-highlight">
+<strong>Summary:</strong> Cancellations made 2+ hours before pickup — no charge. Cancellations made less than 2 hours before pickup — 45% of fare is payable, no refund issued.
+      </div>
+</div>
+</div>
+</section>
+<!-- ═══════ SECTIONS ═══════ -->
+<div class="sections">
+<!-- 1. General -->
+<section class="section" id="s1">
+<div class="section-sidebar">
+<div class="section-num">01</div>
+<div class="section-title">General</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">1.1</span><span class="clause-text">By registering on our Website and/or Application, and on each occasion that you choose to use our Services, you consent to these Terms and Conditions. Neither the registration nor the use of the complete spectrum of Services shall be possible without explicit consent to these Terms and Conditions.</span></div>
+<div class="clause"><span class="clause-id">1.2</span><span class="clause-text">We reserve the right to amend these Terms and Conditions at any time. Following such amendment, the continued use of our Services by you is subject to your consent to such amended terms and conditions. Your continued use of the Services following posting of any changes constitutes acceptance of those changes. It is your responsibility to check this agreement periodically. Silver Taxi Sydney Service may also, in the future, offer new services and/or features subject to these Terms and Conditions.</span></div>
+<div class="clause"><span class="clause-id">1.3</span><span class="clause-text">You will be notified of any changes to these Terms and Conditions via email or the Application.</span></div>
+<div class="clause"><span class="clause-id">1.4</span><span class="clause-text">By using our Services you are entering into an agreement with us to be bound by these Terms and Conditions. In order to first use our Services, you need to sign up with us. When signing up, you are obliged to provide us with your personal information. Upon successful completion, we will provide you with a personal account, accessible with a password of your choice. You may also be required to provide credit card or Cabcharge account details.</span></div>
+</div>
+</section>
+<!-- 2. Payment -->
+<section class="section" id="s2">
+<div class="section-sidebar">
+<div class="section-num">02</div>
+<div class="section-title">Payment</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">2.1</span><span class="clause-text">The use of our Services is free of charge. We reserve the right to introduce a fee for the use of our Services. If we decide to introduce such a fee, we shall inform you accordingly and allow you to either continue or terminate using our Services.</span></div>
+<div class="clause"><span class="clause-id">2.2</span><span class="clause-text">In some cases, we may authorize: (a) a temporary charge on your credit card (or whatever payment method you use) for any amount up to $1 to verify your card is open and in good standing — this charge will appear as 'pending' and will be automatically removed after verification; (b) a temporary charge for any amount up to the estimated fare to verify your card is open and in good standing. If you complete the trip, the temporary charge will be used to pay the fare. If you cancel the trip, any refund is subject to our Cancellation Policy (see Section 3).</span></div>
+<div class="clause"><span class="clause-id">2.3</span><span class="clause-text">If you choose to pay via the Website, Application or Call Centre, we shall charge you for the taxi services provided by taxi drivers on their behalf. You agree to pay for all taxi services, and that we may charge your credit card or Cabcharge account (including any taxes and late fees, as applicable). You are responsible for timely payment and for providing a valid payment method at all times. <span class="refund-tag">Non-refundable</span></span></div>
+<div class="clause"><span class="clause-id">2.4</span><span class="clause-text">Unless agreed otherwise, charges are based on Government regulated metered fares and applicable tolls. You agree to pay an additional service fee of 5% in the Australian Capital Territory, New South Wales, Northern Territory, Queensland, South Australia, Tasmania, Victoria and Western Australia. This charge will be added to your taxi fare at the end of your trip.</span></div>
+<div class="clause"><span class="clause-id">2.5</span><span class="clause-text">If we use a third-party payment processor (the <strong>"Payment Processor"</strong>) to link your credit card to the Service, the processing of payments will be subject to the terms, conditions and privacy policies of the Payment Processor and your credit card issuer. We are not responsible for any errors by the Payment Processor. In connection with your use of the Services, we will obtain certain transaction details, which we will use solely in accordance with our Privacy Policy.</span></div>
+</div>
+</section>
+<!-- 3. Cancellation & Refund -->
+<section class="section" id="s3-detail">
+<div class="section-sidebar">
+<div class="section-num">03</div>
+<div class="section-title">Cancellation &amp; Refund Policy</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">3.1</span><span class="clause-text">You may cancel a booking at any time by contacting us via the Website, Application, or by calling our Call Centre at <strong>1800 173 171</strong>.</span></div>
+<div class="clause"><span class="clause-id">3.2</span><span class="clause-text">If you cancel your booking <strong>2 hours or more before</strong> the scheduled pickup time, no cancellation fee will be charged.</span></div>
+<div class="clause"><span class="clause-id">3.3</span><span class="clause-text">If you cancel your booking <strong>less than 2 hours before</strong> the scheduled pickup time, a cancellation fee of <strong>45% of the total fare</strong> will apply. This fee is non-refundable and will be charged to your payment method on file. <span class="refund-tag">No Refund</span></span></div>
+<div class="clause"><span class="clause-id">3.4</span><span class="clause-text">If you fail to show up at the scheduled pickup time and location ("No-Show"), the full fare amount may be charged to your payment method on file. No refund will be issued for No-Show bookings.</span></div>
+<div class="clause"><span class="clause-id">3.5</span><span class="clause-text">Silver Taxi Sydney Service reserves the right to cancel a booking at any time due to unforeseen circumstances such as driver unavailability, extreme weather, or road conditions. In such cases, a full refund will be issued.</span></div>
+</div>
+</section>
+<!-- 4. Parcel Delivery -->
+<section class="section" id="s4">
+<div class="section-sidebar">
+<div class="section-num">04</div>
+<div class="section-title">Conditions of Carriage for Parcel Delivery</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">4.1</span><span class="clause-text">If you choose to use Silver Taxi Sydney Service Parcel Delivery Service, you:</span></div>
+<ul class="sub-list">
+<li data-marker="(a)">Warrant that the goods are not deemed Dangerous Goods in accordance with the Australian Code for the Transport of Dangerous Goods;</li>
+<li data-marker="(b)">Warrant that the goods do not contain any illicit substances or any substances prohibited by law, including but not limited to drugs;</li>
+<li data-marker="(c)">Agree that the driver is authorised to deliver the goods at the address nominated by you;</li>
+<li data-marker="(d)">Agree that if the recipient is not there to accept the goods, the goods will be returned to a Silver Taxi Sydney Service office;</li>
+<li data-marker="(e)">Agree that the driver may release the goods to any person who presents him/herself to the driver as the receiver and the driver shall be conclusively presumed to have delivered the goods if a GPS pin drop or photograph of the delivery at the nominated address is available.</li>
+</ul>
+</div>
+</section>
+<!-- 5. Communication -->
+<section class="section" id="s5">
+<div class="section-sidebar">
+<div class="section-num">05</div>
+<div class="section-title">Communication Provider Charges</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">5.1</span><span class="clause-text">You understand that the use of our Services may attract data and/or communication carriage charges.</span></div>
+<div class="clause"><span class="clause-id">5.2</span><span class="clause-text">We are not responsible for any data or telephone charges incurred by you as a result of using our Services, including but not limited to mobile phone charges, text messages and internet.</span></div>
+</div>
+</section>
+<!-- 6. Third Party -->
+<section class="section" id="s6">
+<div class="section-sidebar">
+<div class="section-num">06</div>
+<div class="section-title">Links to Third Party Sites</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">6.1</span><span class="clause-text">The Services may contain links to other websites (<strong>"Linked Sites"</strong>). The Linked Sites are not under the control of Silver Taxi Sydney Service and we are not responsible for the contents of any Linked Site, including any link contained in a Linked Site, or any changes or updates. Silver Taxi Sydney Service is providing these links only as a convenience, and the inclusion of any link does not imply endorsement.</span></div>
+<div class="clause"><span class="clause-id">6.2</span><span class="clause-text">Please note that these other websites may send their own cookies to users, collect data, or solicit personal information. You are advised to check the terms of use or privacy policies on those websites prior to using them.</span></div>
+</div>
+</section>
+<!-- 7. Prohibited Use -->
+<section class="section" id="s7">
+<div class="section-sidebar">
+<div class="section-num">07</div>
+<div class="section-title">No Unlawful or Prohibited Use</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">7.1</span><span class="clause-text">You warrant that the information you provide to us is accurate and complete. We are entitled at all times to verify the information you have provided and to refuse the Service without providing reasons.</span></div>
+<div class="clause"><span class="clause-id">7.2</span><span class="clause-text">You may only access the Services using authorised means. It is your responsibility to ensure you download the correct Application for your device and/or use the correct web browser when accessing the Website. We are not liable if you do not have a compatible device or download the wrong version. We reserve the right to terminate any Service should you use an incompatible or unauthorised device.</span></div>
+<div class="clause"><span class="clause-id">7.3</span><span class="clause-text">As a condition of use, you warrant that you will not use the Services for any unlawful or prohibited purpose. You may not use the Services in any manner which could damage, disable, overburden, or impair the Services or interfere with any other party's use. You will only use the Services for your sole, personal use and will not resell to a third party. You will keep secure and confidential your account password and any identification provided.</span></div>
+<div class="clause"><span class="clause-id">7.4</span><span class="clause-text">Silver Taxi Sydney Service reserves the right to immediately terminate any Service should you not comply with any of the above rules.</span></div>
+</div>
+</section>
+<!-- 8. Termination -->
+<section class="section" id="s8">
+<div class="section-sidebar">
+<div class="section-num">08</div>
+<div class="section-title">Term &amp; Termination</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">8.1</span><span class="clause-text">The agreement between us and you lasts (a) for as long as we are providing a Service to you; and/or (b) for as long as you have an account open with us.</span></div>
+<div class="clause"><span class="clause-id">8.2</span><span class="clause-text">You are entitled to terminate the agreement at all times by permanent deletion of the Application, by closing your user account, or by ceasing to use our Services.</span></div>
+<div class="clause"><span class="clause-id">8.3</span><span class="clause-text">Silver Taxi Sydney Service reserves the right, in its sole discretion, to terminate your access to the Services at any time, without notice, if you: (a) violate or breach any term of these Terms and Conditions, or (b) in our opinion, misuse the Service.</span></div>
+</div>
+</section>
+<!-- 9. Submissions -->
+<section class="section" id="s9">
+<div class="section-sidebar">
+<div class="section-num">09</div>
+<div class="section-title">Materials &amp; Submissions</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">9.1</span><span class="clause-text">Silver Taxi Sydney Service does not claim ownership of the materials you provide (<strong>Submissions</strong>). However, by submitting content, you grant Silver Taxi Sydney Service, its affiliated companies and necessary sub-licensees permission to use your Submission in connection with the operation of their Internet businesses including the rights to copy, distribute, transmit, publicly display, publicly perform, reproduce, edit, translate and reformat your Submission, and to publish your name in connection with it.</span></div>
+<div class="clause"><span class="clause-id">9.2</span><span class="clause-text">No compensation will be paid for the use of your Submission. Silver Taxi Sydney Service is under no obligation to post or use any Submission and may remove any Submission at any time at its sole discretion.</span></div>
+<div class="clause"><span class="clause-id">9.3</span><span class="clause-text">By submitting content, you warrant that you own or otherwise control all of the rights to your Submission, including all rights necessary for you to provide it.</span></div>
+</div>
+</section>
+<!-- 10. Personal Use -->
+<section class="section" id="s10">
+<div class="section-sidebar">
+<div class="section-num">10</div>
+<div class="section-title">Personal, Non-Commercial Use Only</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">10.1</span><span class="clause-text">You agree that information provided by Silver Taxi Sydney Service is for personal use only and may not be sold, redistributed, or used for any commercial purpose. You may download material for your personal, non-commercial use only, provided you keep intact all copyright and proprietary notices. You may not modify, copy, reproduce, republish, upload, post, transmit or distribute in any way any material from our Services including code and software. You must not use our Services for any purpose that is unlawful or prohibited by these terms of use.</span></div>
+<div class="clause"><span class="clause-id">10.2</span><span class="clause-text">You may not use data mining, robots, screen scraping, or similar tools on our Services for establishing, maintaining, or reproducing information on your own platform, except with our prior written consent.</span></div>
+</div>
+</section>
+<!-- 11. Privacy -->
+<section class="section" id="s11">
+<div class="section-sidebar">
+<div class="section-num">11</div>
+<div class="section-title">Privacy</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">11.1</span><span class="clause-text">You agree that Silver Taxi Sydney Service may collect and use personal information, technical data and related information — including but not limited to technical information about your device, system and application software and peripherals — to facilitate the provision of software updates, product support, and other services related to the Services. We may also use information to develop new products and services, attend to your enquiries, seek feedback, or tell you about other products or services offered by Silver Taxi Sydney Service and its related companies. We may use this information in a non-identifying form to improve our products. Silver Taxi Sydney Service's complete privacy policy can be found at: <a href="https://silvertaxisydneyservice.com/privacy-policy/">Privacy Policy</a>.</span></div>
+</div>
+</section>
+<!-- 12. Liability -->
+<section class="section" id="s12">
+<div class="section-sidebar">
+<div class="section-num">12</div>
+<div class="section-title">Liability</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">12.1</span><span class="clause-text">The information, software, products, and services included in or available through the Services may include inaccuracies or typographical errors. Changes are periodically added. Silver Taxi Sydney Service and/or its suppliers may make improvements and/or changes at any time. Advice received via the Services should not be relied upon for personal, medical, legal or financial decisions.</span></div>
+<div class="clause"><span class="clause-id">12.2</span><span class="clause-text">Silver Taxi Sydney Service and/or its suppliers make no representations about the suitability, reliability, availability, timeliness, and accuracy of the Services for any purpose. To the maximum extent permitted by law, all services are provided <strong>"as is"</strong> without warranty of any kind. All implied warranties of merchantability, fitness for a particular purpose, title, and non-infringement are hereby disclaimed.</span></div>
+<div class="clause"><span class="clause-id">12.3</span><span class="clause-text">To the maximum extent permitted by law, in no event shall Silver Taxi Sydney Service and/or its suppliers be liable for any direct, indirect, punitive, incidental, special, consequential damages or any damages whatsoever including damages for loss of use, injury, damage, destruction or loss to goods, mis-delivery or non-delivery of goods, data or profits, arising out of or in any way connected with the use or performance of the Services. If you are dissatisfied with any portion of the Service, your sole and exclusive remedy is to discontinue using the Services.</span></div>
+</div>
+</section>
+<!-- 13. Indemnification -->
+<section class="section" id="s13">
+<div class="section-sidebar">
+<div class="section-num">13</div>
+<div class="section-title">Indemnification</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">13.1</span><span class="clause-text">By accepting these terms and using the Services, you agree to indemnify and hold Silver Taxi Sydney Service, its affiliates, licensors, and each of their officers, directors, other users, employees, attorneys and agents harmless from and against any and all claims, costs, damages, losses, liabilities and expenses (including lawyer's fees) arising out of or in connection with your use of the Services, including your violation of these Terms and Conditions.</span></div>
+</div>
+</section>
+<!-- 14. Applicable Law -->
+<section class="section" id="s14">
+<div class="section-sidebar">
+<div class="section-num">14</div>
+<div class="section-title">Applicable Law</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">14.1</span><span class="clause-text">To the maximum extent permitted by law, this agreement is governed by the laws of <strong>New South Wales, Australia</strong> and you hereby consent to the exclusive jurisdiction and venue of courts in New South Wales, Australia in all disputes arising out of or relating to the use of the Services.</span></div>
+</div>
+</section>
+<!-- 15. Non-Affiliation & Trademarks -->
+<section class="section" id="s15">
+<div class="section-sidebar">
+<div class="section-num">15</div>
+<div class="section-title">Non-Affiliation &amp; Trademarks</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">15.1</span><span class="clause-text"><strong>Silver Taxi Sydney Service</strong> is an independently owned and operated premium taxi and chauffeur booking service. We are <strong>NOT</strong> part of, affiliated with, endorsed by, or connected to <strong>13cabs</strong>, <strong>Silver Service</strong> (A2B Australia Ltd), <strong>Silver Top Taxis</strong>, <strong>Cabcharge</strong>, <strong>A2B Australia Ltd</strong>, or any other registered trademark, taxi network, or payment system operator.</span></div>
+<div class="clause"><span class="clause-id">15.2</span><span class="clause-text">We do not use, replicate, or claim ownership of any other company’s logo, brand identity, or registered trademarks. Our name, branding, and service are entirely our own. Any similarity in naming is coincidental and does not imply any commercial relationship.</span></div>
+<div class="clause"><span class="clause-id">15.3</span><span class="clause-text">All third-party trademarks, service marks, trade names, and logos referenced herein are the property of their respective owners and are used solely for identification purposes.</span></div>
+</div>
+</section>
+<!-- 16. Discrimination & Equal Access -->
+<section class="section" id="s16">
+<div class="section-sidebar">
+<div class="section-num">16</div>
+<div class="section-title">Discrimination &amp; Equal Access</div>
+</div>
+<div class="section-body">
+<div class="clause"><span class="clause-id">16.1</span><span class="clause-text">Silver Taxi Sydney Service is committed to providing safe, respectful, and inclusive transport for <strong>all passengers</strong> regardless of race, gender, disability, age, sexual orientation, religion, or any other characteristic protected under the <em>Anti-Discrimination Act 1977 (NSW)</em> and the <em>Disability Discrimination Act 1992 (Cth)</em>.</span></div>
+<div class="clause"><span class="clause-id">16.2</span><span class="clause-text">If you experience discrimination or are refused service by a taxi or rideshare vehicle, you may lodge a formal complaint with the relevant operator. Note that <strong>13cabs</strong> and <strong>Silver Service</strong> are both owned by <strong>A2B Australia Ltd</strong> (which also operates the Cabcharge payment system). Complaints about their services should be directed to:</span></div>
+<div class="clause" style="padding-left:2rem;"><span class="clause-text">• <strong>13cabs / Silver Service (A2B):</strong> <a href="https://www.13cabs.com.au/contact" style="color:var(--primary);">www.13cabs.com.au/contact</a></span></div>
+<div class="clause" style="padding-left:2rem;"><span class="clause-text">• <strong>NSW Point to Point Transport Commission:</strong> <a href="https://www.pointtopoint.nsw.gov.au/" style="color:var(--primary);">www.pointtopoint.nsw.gov.au</a></span></div>
+<div class="clause" style="padding-left:2rem;"><span class="clause-text">• <strong>Anti-Discrimination NSW:</strong> <a href="https://www.antidiscrimination.justice.nsw.gov.au/" style="color:var(--primary);">www.antidiscrimination.justice.nsw.gov.au</a></span></div>
+<div class="clause"><span class="clause-id">16.3</span><span class="clause-text">If you experience any issue with <strong>our</strong> service specifically, please contact us directly at <a href="tel:1800173171" style="color:var(--primary);">1800 173 171</a> or <a href="mailto:info@silvertaxisydneyservice.com" style="color:var(--primary);">info@silvertaxisydneyservice.com</a>. We take all complaints seriously and will investigate promptly.</span></div>
+</div>
+</section>
+</div>
+<!-- ═══════ FOOTER ═══════ -->
+<footer class="footer-premium">
+<div class="container">
+<div class="footer-bottom-premium">
+<div class="footer-bottom-left">© 2026 Silver Service Taxi Sydney — All Rights Reserved. Terms updated March 2026.</div>
+<div class="footer-bottom-right"><a href="/">Home</a><a href="/privacy-policy">Privacy</a><a href="/contact">Contact</a></div>
+</div>
+</div>
+</footer>
+<script src="shared.js?v=12"></script>
+<div aria-label="Silver Service navigation menu" aria-modal="true" class="sso-mobile-shop" id="mob-panel" role="dialog">
+<div class="mob-header"><a aria-label="Silver Services Taxi Sydney home" class="mob-logo has-image" href="/"><img alt="Silver Services Taxi Sydney" class="sso-site-logo mob-site-logo" decoding="async" height="577" loading="eager" src="/images/logo.png?v=logo-20260606" width="1742"/></a><button aria-label="Close menu" id="mob-close-btn"><span></span><span></span></button></div>
+<div class="mob-shop-intro"><span>One stop booking hub</span><strong>Where would you like to go?</strong><p>Book, call, manage or explore premium Sydney taxi services.</p></div>
+<div class="mob-quick-actions"><a class="mob-primary-action" href="/book"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"></path></svg><span>Book Now</span></a><a class="mob-secondary-action" href="tel:1800173171" onclick="return trackPhoneCall('mobile-menu')"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.64 2.62a2 2 0 0 1-.45 2.11L8.1 9.64a16 16 0 0 0 6 6l1.19-1.19a2 2 0 0 1 2.11-.45c.84.31 1.72.52 2.62.64A2 2 0 0 1 22 16.92z"></path></svg><span>Call 1800 173 171</span></a></div>
+<nav aria-label="Mobile navigation" class="mob-links" id="mob-links">
+<a class="mob-nav-item" href="/"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg><span>Home</span></a>
+<button class="mob-nav-item mob-accordion-btn" id="mob-services-btn"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><path d="M3 13h18v5a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H4a1 1 0 0 1-1-1z"></path><path d="M7 14h.01M17 14h.01"></path></svg><span>Services</span><svg class="mob-chevron" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+<div class="mob-submenu" id="mob-services-panel"><a href="/services">All Services</a><a href="/airport-transfers">Airport Transfers</a><a href="/maxi-taxi">Maxi Taxi</a><a href="/services#corporate">Corporate Travel</a><a href="/services#chauffeur">Chauffeur Service</a><a href="/services#events">Events &amp; Special Trips</a></div>
+<button class="mob-nav-item mob-accordion-btn" id="mob-airport-btn"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M2 17h2.4L9 10.5 6 6h3l3 4.5L15 6h3l-3 4.5L19.6 17H22"></path><path d="M12 17v4M8 21h8"></path></svg><span>Airport</span><svg class="mob-chevron" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+<div class="mob-submenu" id="mob-airport-panel"><a href="/airport-transfers">Airport Transfers</a><a href="/airport-transfers#domestic">Domestic Terminal T2/T3</a><a href="/airport-transfers#international">International Terminal T1</a><a href="/locations/western-sydney-airport/">Western Sydney Airport</a><a href="/book?service=airport">Book Airport Transfer</a></div>
+<button class="mob-nav-item mob-accordion-btn" id="mob-areas-btn"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg><span>Service Areas</span><svg class="mob-chevron" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+<div class="mob-submenu" id="mob-areas-panel"><a href="/locations/">All Service Areas</a><a href="/locations/sydney-cbd/">Sydney CBD</a><a href="/locations/parramatta/">Parramatta</a><a href="/locations/blacktown/">Blacktown</a><a href="/locations/bondi/">Eastern Suburbs</a><a href="/locations/manly/">Northern Beaches</a></div>
+<a class="mob-nav-item" href="/about"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.8"></path><path d="M16 3.1a4 4 0 0 1 0 7.8"></path></svg><span>About Us</span></a>
+<a class="mob-nav-item" href="/contact"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.64 2.62a2 2 0 0 1-.45 2.11L8.1 9.64a16 16 0 0 0 6 6l1.19-1.19a2 2 0 0 1 2.11-.45c.84.31 1.72.52 2.62.64A2 2 0 0 1 22 16.92z"></path></svg><span>Contact</span></a>
+<a class="mob-nav-item" href="/manage"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="7" rx="1" width="7" x="3" y="3"></rect><rect height="7" rx="1" width="7" x="14" y="3"></rect><rect height="7" rx="1" width="7" x="3" y="14"></rect><rect height="7" rx="1" width="7" x="14" y="14"></rect></svg><span>Manage Booking</span></a>
+</nav>
+<div class="mob-trust-strip"><span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg> Fixed fares</span><span><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 24/7</span><span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><path d="M3 13h18v5a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H4a1 1 0 0 1-1-1z"></path><path d="M7 14h.01M17 14h.01"></path></svg> Premium fleet</span></div>
+<div class="mob-footer"><a class="mob-call-btn" href="tel:1800173171" onclick="return trackPhoneCall('mobile-menu-footer')"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.64 2.62a2 2 0 0 1-.45 2.11L8.1 9.64a16 16 0 0 0 6 6l1.19-1.19a2 2 0 0 1 2.11-.45c.84.31 1.72.52 2.62.64A2 2 0 0 1 22 16.92z"></path></svg><span>1800 173 171</span></a></div>
+</div>
+<div id="mob-overlay"></div><script src="/mobile-menu.js?v=10"></script>
+<script>
+window.addEventListener('scroll', function() {
+  var nb = document.getElementById('navbar');
+  if (nb) nb.classList.toggle('scrolled', window.scrollY > 50);
+});
+</script>
+<!-- Click Fraud
+</body>
+</html>
+--></body></html>

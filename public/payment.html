@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M3ZZ9C2W');</script>
+<!-- End Google Tag Manager -->
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<meta content="noindex, nofollow, noarchive" name="robots"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<title>SS Taxi Pay</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1f3d; min-height: 100vh; color: #fff; display: flex; flex-direction: column; }
+
+    /* Header */
+    .header { background: linear-gradient(135deg, #0f1f3d 0%, #1a3a7a 100%); padding: 16px 20px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); position: relative; }
+    .header .brand { font-size: 11px; letter-spacing: 3px; color: #A8B4C0; text-transform: uppercase; font-weight: 600; }
+    .header h1 { font-size: 18px; font-weight: 700; color: #fff; margin-top: 2px; }
+    .logout-btn { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); background: none; border: none; color: rgba(255,255,255,0.4); font-size: 12px; cursor: pointer; padding: 4px 8px; }
+
+    /* Shared field styles */
+    .field-label { font-size: 12px; font-weight: 600; letter-spacing: 0.5px; color: rgba(255,255,255,0.6); text-transform: uppercase; margin-bottom: 6px; }
+    .field-group { margin-bottom: 14px; }
+    input[type="tel"], input[type="text"], input[type="number"], input[type="password"], input[type="datetime-local"] {
+      width: 100%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px; padding: 14px 16px; font-size: 16px; color: #fff; outline: none; transition: border-color 0.2s;
+    }
+    input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+    input:focus { border-color: #A8B4C0; }
+    input::placeholder { color: rgba(255,255,255,0.3); }
+    .btn-primary { width: 100%; background: linear-gradient(135deg, #A8B4C0 0%, #e8c96d 100%); color: #0f1f3d; border: none; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: transform 0.15s, opacity 0.15s; margin-top: 8px; }
+    .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .error-msg { color: #ff6b6b; font-size: 13px; margin-top: 10px; text-align: center; display: none; }
+    .success-msg { color: #4ade80; font-size: 13px; margin-top: 10px; text-align: center; display: none; }
+
+    /* Login / OTP screens */
+    #login-screen, #otp-screen { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; }
+    .login-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 32px 24px; width: 100%; max-width: 380px; }
+    .login-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .login-card p { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 24px; }
+    .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 20px 0; }
+    .otp-digit { width: 48px; height: 56px; text-align: center; font-size: 24px; font-weight: 700; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; color: #fff; outline: none; }
+    .otp-digit:focus { border-color: #A8B4C0; background: rgba(168,180,192,0.1); }
+    .resend-link { text-align: center; margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.5); }
+    .resend-link a { color: #A8B4C0; cursor: pointer; text-decoration: none; }
+    .phone-display { text-align: center; font-size: 15px; color: rgba(255,255,255,0.7); margin-bottom: 8px; }
+    .phone-display strong { color: #fff; }
+
+    /* App screen */
+    #app-screen { flex: 1; display: none; flex-direction: column; overflow-y: auto; }
+
+    /* Fare section */
+    .fare-section { background: linear-gradient(135deg, #0f1f3d 0%, #1a3a7a 100%); padding: 24px 20px 20px; text-align: center; cursor: pointer; }
+    .fare-label { font-size: 12px; letter-spacing: 2px; color: rgba(255,255,255,0.5); text-transform: uppercase; margin-bottom: 8px; }
+    .fare-display { display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 4px; }
+    .fare-currency { font-size: 28px; font-weight: 300; color: #A8B4C0; margin-top: 8px; }
+    .fare-amount { font-size: 64px; font-weight: 700; color: #fff; letter-spacing: -2px; min-width: 120px; text-align: left; }
+    .fare-tap-hint { font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 4px; }
+
+    /* Breakdown */
+    .breakdown-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; margin: 16px 16px 0; overflow: hidden; }
+    .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 14px; }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-row .label { color: rgba(255,255,255,0.65); }
+    .breakdown-row .amount { font-weight: 600; color: #fff; }
+    .breakdown-row.extras-row { cursor: pointer; }
+    .breakdown-row.extras-row:active { background: rgba(255,255,255,0.04); }
+    .extras-edit-hint { font-size: 11px; color: rgba(168,180,192,0.7); margin-left: 6px; }
+    .breakdown-row.total-row { background: rgba(168,180,192,0.12); border-top: 1px solid rgba(168,180,192,0.3); }
+    .breakdown-row.total-row .label { color: #A8B4C0; font-weight: 700; font-size: 15px; }
+    .breakdown-row.total-row .amount { color: #A8B4C0; font-size: 18px; font-weight: 800; }
+
+    /* Trip details */
+    .trip-details { margin: 12px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+    .detail-row { display: flex; gap: 10px; }
+    .detail-row .field-group { flex: 1; margin-bottom: 0; }
+    .detail-row .field-group input { font-size: 14px; padding: 12px 14px; }
+
+    /* Google autocomplete dropdown fix */
+    .pac-container { background: #1a2a4a; border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; margin-top: 4px; z-index: 9999; }
+    .pac-item { color: #fff; padding: 10px 14px; cursor: pointer; font-size: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .pac-item:hover, .pac-item-selected { background: rgba(168,180,192,0.15); }
+    .pac-item-query { color: #A8B4C0; }
+    .pac-matched { font-weight: 700; }
+    .pac-icon { display: none; }
+
+    /* Action buttons */
+    .action-section { padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-top: 12px; padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+    .btn-generate { background: linear-gradient(135deg, #A8B4C0 0%, #e8c96d 100%); color: #0f1f3d; border: none; border-radius: 14px; padding: 18px; font-size: 17px; font-weight: 800; cursor: pointer; transition: transform 0.15s, opacity 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-generate:active { transform: scale(0.97); }
+    .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary { background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn-secondary:active { background: rgba(255,255,255,0.14); }
+
+    /* Result card with QR */
+    .result-card { display: none; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; margin: 0 16px; padding: 20px; }
+    .result-card.show { display: block; }
+    .result-card h3 { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; }
+    .qr-container { display: flex; justify-content: center; margin-bottom: 16px; }
+    .qr-container canvas, .qr-container img { border-radius: 12px; background: #fff; padding: 10px; }
+    .qr-hint { text-align: center; font-size: 12px; color: rgba(255,255,255,0.45); margin-bottom: 12px; }
+    .link-box { background: rgba(0,0,0,0.3); border-radius: 10px; padding: 12px 14px; font-size: 12px; color: #A8B4C0; word-break: break-all; margin-bottom: 12px; cursor: pointer; }
+    .link-actions { display: flex; gap: 8px; }
+    .link-actions button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+    .link-actions button:active { opacity: 0.8; }
+    .btn-copy { background: #1a3a7a; color: #fff; }
+    .btn-share { background: #A8B4C0; color: #0f1f3d; }
+    .btn-open { background: #22c55e; color: #fff; }
+
+    /* Spinner */
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(15,31,61,0.3); border-top-color: #0f1f3d; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Keypad overlay */
+    .keypad-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; flex-direction: column; justify-content: flex-end; }
+    .keypad-overlay.show { display: flex; }
+    .keypad-sheet { background: #1a2a4a; border-radius: 24px 24px 0 0; padding: 20px 16px max(20px, env(safe-area-inset-bottom)); }
+    .keypad-display { text-align: center; padding: 16px 0 20px; }
+    .keypad-display .kd-label { font-size: 12px; color: rgba(255,255,255,0.5); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+    .keypad-display .kd-value { font-size: 52px; font-weight: 700; color: #fff; letter-spacing: -1px; }
+    .keypad-display .kd-currency { color: #A8B4C0; }
+    .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    .key-btn { background: rgba(255,255,255,0.08); border: none; border-radius: 14px; padding: 18px 10px; font-size: 22px; font-weight: 600; color: #fff; cursor: pointer; transition: background 0.1s, transform 0.1s; }
+    .key-btn:active { background: rgba(255,255,255,0.18); transform: scale(0.95); }
+    .key-btn.key-del { font-size: 18px; color: rgba(255,255,255,0.7); }
+    .key-btn.key-done { background: linear-gradient(135deg, #A8B4C0, #e8c96d); color: #0f1f3d; font-weight: 800; font-size: 16px; }
+    .key-btn.key-dot { font-size: 26px; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px); background: rgba(30,50,90,0.95); border: 1px solid rgba(168,180,192,0.4); color: #fff; padding: 12px 24px; border-radius: 100px; font-size: 14px; font-weight: 600; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 999; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+<link href="/mega-menu.css?v=10" rel="stylesheet"/>
+<link href="/mobile-menu.css?v=11" rel="stylesheet"/>
+</head>
+<body><nav class="navbar sso-premium-nav" data-sso-nav="one-stop-v10" id="navbar">
+<div class="nav-inner">
+<a aria-label="Silver Services Taxi Sydney home" class="nav-logo has-image" href="/"><img alt="Silver Services Taxi Sydney" class="sso-site-logo nav-site-logo" decoding="async" height="577" loading="eager" src="/images/logo.png?v=logo-20260606" width="1742"/></a>
+<ul class="nav-menu" id="nav-menu">
+
+
+
+
+
+
+
+
+<li><a class="nav-link" href="/">Home</a></li><li><a class="nav-link" href="/about">About</a></li><li class="nav-item nav-item-mega"><a aria-haspopup="true" class="nav-link" href="/services">Services <svg aria-hidden="true" class="nav-arrow" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+<div aria-label="Silver service taxi services" class="mega-dropdown mega-full mega-services" role="region"><div class="mega-panel mega-shop-panel">
+<div class="mega-shop-hero"><span class="mega-kicker">One stop service hub</span><h3>Premium taxi, airport and chauffeur bookings</h3><p>Choose the right service, vehicle and booking pathway in one place.</p><div class="mega-trust-row"><span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg> Fixed upfront fares</span><span><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 24/7 dispatch</span><span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><path d="M3 13h18v5a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H4a1 1 0 0 1-1-1z"></path><path d="M7 14h.01M17 14h.01"></path></svg> Premium fleet</span></div></div>
+<div class="mega-shop-grid">
+<a class="mega-shop-card" href="/airport-transfers"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M2 17h2.4L9 10.5 6 6h3l3 4.5L15 6h3l-3 4.5L19.6 17H22"></path><path d="M12 17v4M8 21h8"></path></svg></span><span><strong>Airport Transfers</strong><small>SYD and Western Sydney Airport pickup and drop-off service</small></span></a>
+<a class="mega-shop-card" href="/services"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><path d="M3 13h18v5a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H4a1 1 0 0 1-1-1z"></path><path d="M7 14h.01M17 14h.01"></path></svg></span><span><strong>Silver Service Taxi</strong><small>Premium sedans, SUVs and direct point-to-point rides</small></span></a>
+<a class="mega-shop-card" href="/maxi-taxi"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.8"></path><path d="M16 3.1a4 4 0 0 1 0 7.8"></path></svg></span><span><strong>Maxi Taxi</strong><small>7–11 seat group transfers with luggage space</small></span></a>
+<a class="mega-shop-card" href="/services#corporate"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="13" rx="2" width="18" x="3" y="7"></rect><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path><path d="M3 12h18"></path></svg></span><span><strong>Corporate Travel</strong><small>Business transfers, executive rides and account support</small></span></a>
+<a class="mega-shop-card" href="/services#chauffeur"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg></span><span><strong>Chauffeur Service</strong><small>Professional drivers for premium travel requirements</small></span></a>
+<a class="mega-shop-card" href="/services#events"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"></path></svg></span><span><strong>Events &amp; Special Trips</strong><small>Weddings, events, cruise and hourly hire options</small></span></a>
+</div>
+<div class="mega-action-rail"><a class="mega-primary-cta" href="/book">Book online now</a><a class="mega-secondary-cta" href="tel:1800173171" onclick="return trackPhoneCall('mega-services')">Call 1800 173 171</a><a class="mega-text-link" href="/manage">Manage an existing booking</a></div>
+</div></div></li><li class="nav-item nav-item-mega"><a aria-haspopup="true" class="nav-link" href="/locations/">Area <svg aria-hidden="true" class="nav-arrow" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+<div aria-label="Service areas menu" class="mega-dropdown mega-full mega-areas" role="region"><div class="mega-panel mega-shop-panel mega-areas-panel">
+<div class="mega-shop-hero"><span class="mega-kicker">Sydney wide coverage</span><h3>Find your local Silver Service taxi area</h3><p>Popular regions and direct links to the full Sydney coverage index.</p></div>
+<div class="mega-areas-grid">
+<a class="mega-shop-card" href="/locations/sydney-cbd/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Sydney CBD</strong><small>City, hotels, offices and entertainment precincts</small></span></a>
+<a class="mega-shop-card" href="/locations/parramatta/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Parramatta</strong><small>Western Sydney business and residential transfers</small></span></a>
+<a class="mega-shop-card" href="/locations/blacktown/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Blacktown</strong><small>Greater Western Sydney coverage</small></span></a>
+<a class="mega-shop-card" href="/locations/bankstown/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Bankstown</strong><small>Canterbury-Bankstown airport and local rides</small></span></a>
+<a class="mega-shop-card" href="/locations/bondi/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Eastern Suburbs</strong><small>Bondi, beaches and eastern Sydney routes</small></span></a>
+<a class="mega-shop-card" href="/locations/manly/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Northern Beaches</strong><small>Manly and Northern Beaches premium rides</small></span></a>
+<a class="mega-shop-card" href="/locations/castle-hill/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Hills District</strong><small>Castle Hill and Hills District coverage</small></span></a>
+<a class="mega-shop-card" href="/locations/cronulla/"><span class="mega-shop-icon"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg></span><span><strong>Sutherland Shire</strong><small>Cronulla and southern Sydney transfers</small></span></a>
+</div>
+<div class="mega-action-rail"><a class="mega-primary-cta" href="/locations/">View all service areas</a><a class="mega-secondary-cta" href="/book">Book from your suburb</a></div>
+</div></div></li><li><a class="nav-link" href="/contact">Contact</a></li><li><a class="nav-book-btn" href="/book">Book Now</a></li></ul>
+<button aria-label="Toggle menu" class="nav-toggle" id="nav-toggle"><span></span><span></span><span></span></button>
+</div>
+</nav>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-M3ZZ9C2W" style="display:none;visibility:hidden" width="0"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<!-- Header -->
+<div class="header">
+<div class="brand">Silver Service</div>
+<h1>Driver Pay</h1>
+<button class="logout-btn" id="logout-btn" onclick="logout()" style="display:none;">Sign out</button>
+</div>
+<!-- Step 1: Enter phone number -->
+<div id="login-screen">
+<div class="login-card">
+<h2>Driver Login</h2>
+<p>Enter your registered mobile number to receive a verification code.</p>
+<div class="field-group">
+<div class="field-label">Mobile Number</div>
+<input autocomplete="tel" id="login-phone" inputmode="tel" placeholder="04XX XXX XXX" type="tel"/>
+</div>
+<button class="btn-primary" id="send-otp-btn" onclick="sendOtp()">Send Code via SMS</button>
+<div class="error-msg" id="login-error"></div>
+</div>
+</div>
+<!-- Step 2: Enter OTP -->
+<div id="otp-screen" style="display:none;">
+<div class="login-card">
+<h2>Enter Code</h2>
+<div class="phone-display">Code sent to <strong id="otp-phone-display"></strong></div>
+<p>Enter the 6-digit code sent to your phone.</p>
+<div class="otp-inputs">
+<input class="otp-digit" id="otp0" inputmode="numeric" maxlength="1" type="tel"/>
+<input class="otp-digit" id="otp1" inputmode="numeric" maxlength="1" type="tel"/>
+<input class="otp-digit" id="otp2" inputmode="numeric" maxlength="1" type="tel"/>
+<input class="otp-digit" id="otp3" inputmode="numeric" maxlength="1" type="tel"/>
+<input class="otp-digit" id="otp4" inputmode="numeric" maxlength="1" type="tel"/>
+<input class="otp-digit" id="otp5" inputmode="numeric" maxlength="1" type="tel"/>
+</div>
+<button class="btn-primary" id="verify-otp-btn" onclick="verifyOtp()">Verify</button>
+<div class="error-msg" id="otp-error"></div>
+<div class="resend-link">Didn't receive it? <a onclick="resendOtp()">Resend code</a></div>
+</div>
+</div>
+<!-- App Screen -->
+<div id="app-screen">
+<!-- Fare display -->
+<div class="fare-section" onclick="openKeypad('fare')">
+<div class="fare-label">Fare Amount (incl. GST)</div>
+<div class="fare-display">
+<span class="fare-currency">A$</span>
+<span class="fare-amount" id="fare-display">0</span>
+</div>
+<div class="fare-tap-hint">Tap to enter fare</div>
+</div>
+<!-- Live breakdown -->
+<div class="breakdown-card">
+<div class="breakdown-row">
+<span class="label">Fare (inclusive of GST)</span>
+<span class="amount" id="bd-fare">A$0.00</span>
+</div>
+<div class="breakdown-row extras-row" onclick="openKeypad('extras')">
+<span class="label">Extras <span class="extras-edit-hint">tap to edit</span></span>
+<span class="amount" id="bd-extras">A$0.00</span>
+</div>
+<div class="breakdown-row">
+<span class="label">Service Fee</span>
+<span class="amount" id="bd-svc">A$0.00</span>
+</div>
+<div class="breakdown-row">
+<span class="label">Service Fee GST</span>
+<span class="amount" id="bd-svc-gst">A$0.00</span>
+</div>
+<div class="breakdown-row total-row">
+<span class="label">Total Charged</span>
+<span class="amount" id="bd-total">A$0.00</span>
+</div>
+</div>
+<!-- Trip details -->
+<div class="trip-details">
+<div class="detail-row">
+<div class="field-group">
+<div class="field-label">Pick Up Suburb</div>
+<input autocomplete="off" id="trip-pickup" placeholder="e.g. Parramatta" type="text"/>
+</div>
+<div class="field-group">
+<div class="field-label">Drop Off Suburb</div>
+<input autocomplete="off" id="trip-dropoff" placeholder="e.g. Sydney Airport" type="text"/>
+</div>
+</div>
+<div class="detail-row">
+<div class="field-group">
+<div class="field-label">Passenger Name</div>
+<input id="trip-passenger" placeholder="Optional" type="text"/>
+</div>
+<div class="field-group">
+<div class="field-label">Vehicle</div>
+<input id="trip-vehicle" placeholder="e.g. SS001" type="text"/>
+</div>
+</div>
+<div class="field-group">
+<div class="field-label">Pickup Date &amp; Time</div>
+<input id="trip-datetime" type="datetime-local"/>
+</div>
+</div>
+<!-- Result card with QR code -->
+<div class="result-card" id="result-card">
+<h3>Payment Link Ready — Customer Scans QR</h3>
+<div class="qr-container">
+<div id="qr-canvas" style="display:flex;align-items:center;justify-content:center;"></div>
+</div>
+<div class="qr-hint">Customer scans to pay on their phone</div>
+<div class="link-box" id="result-link-text" onclick="copyLink()">Tap to copy link</div>
+<div class="link-actions">
+<button class="btn-copy" onclick="copyLink()"><span aria-hidden="true" class="premium-svg-icon premium-svg-icon--clipboard"><svg fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M9 2h6a2 2 0 0 1 2 2v1h1a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h1V4a2 2 0 0 1 2-2z M9 5h6"></path></svg></span> Copy</button>
+<button class="btn-share" onclick="shareLink()">↗ Share</button>
+<button class="btn-open" onclick="openLink()">Open →</button>
+</div>
+</div>
+<!-- Action buttons -->
+<div class="action-section">
+<button class="btn-generate" id="generate-btn" onclick="generateLink()">
+<span id="generate-btn-text"><span aria-hidden="true" class="premium-svg-icon premium-svg-icon--bolt"><svg fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"></path></svg></span> Generate Payment Link</span>
+</button>
+<button class="btn-secondary" onclick="resetForm()">↺ New Payment</button>
+</div>
+</div>
+<!-- Keypad overlay (shared for fare and extras) -->
+<div class="keypad-overlay" id="keypad-overlay" onclick="handleOverlayClick(event)">
+<div class="keypad-sheet">
+<div class="keypad-display">
+<div class="kd-label" id="kd-label">Fare Amount</div>
+<div class="kd-value"><span class="kd-currency">A$</span><span id="kd-value">0</span></div>
+</div>
+<div class="keypad-grid">
+<button class="key-btn" onclick="keyPress('1')">1</button>
+<button class="key-btn" onclick="keyPress('2')">2</button>
+<button class="key-btn" onclick="keyPress('3')">3</button>
+<button class="key-btn" onclick="keyPress('4')">4</button>
+<button class="key-btn" onclick="keyPress('5')">5</button>
+<button class="key-btn" onclick="keyPress('6')">6</button>
+<button class="key-btn" onclick="keyPress('7')">7</button>
+<button class="key-btn" onclick="keyPress('8')">8</button>
+<button class="key-btn" onclick="keyPress('9')">9</button>
+<button class="key-btn key-dot" onclick="keyPress('.')">.</button>
+<button class="key-btn" onclick="keyPress('0')">0</button>
+<button class="key-btn key-del" onclick="keyPress('del')"><span aria-hidden="true" class="premium-svg-icon premium-svg-icon--trash"><svg fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M3 6h18 M8 6V4h8v2 M6 6l1 15h10l1-15"></path></svg></span></button>
+</div>
+<button class="key-btn key-done" onclick="closeKeypad()" style="width:100%;padding:18px;">Done</button>
+</div>
+</div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<!-- QR code library (works on all browsers including Safari iOS) -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script>
+  // ── State ──
+  let authToken   = localStorage.getItem('ss_driver_token') || null;
+  let fareStr     = '0';
+  let extrasStr   = '0';
+  let activeKeypad = 'fare'; // 'fare' or 'extras'
+  let generatedUrl = '';
+  let enteredPhone = '';
+
+  // ── Init ──
+  window.addEventListener('DOMContentLoaded', () => {
+    if (authToken) {
+      showApp();
+      initMaps();
+    } else {
+      document.getElementById('login-screen').style.display = 'flex';
+    }
+    setupOtpInputs();
+  });
+
+  // ── Screen helpers ──
+  function setCurrentDateTime() {
+    // Auto-fill pickup date/time with current local time (format: YYYY-MM-DDTHH:mm)
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    const localISO = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) +
+                     'T' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+    const dtInput = document.getElementById('trip-datetime');
+    if (dtInput) dtInput.value = localISO;
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('otp-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display = 'flex';
+    document.getElementById('logout-btn').style.display = 'block';
+    setCurrentDateTime();
+    loadMaps();
+  }
+
+  function logout() {
+    fetch('/api/payment/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + authToken } }).catch(()=>{});
+    authToken = null;
+    localStorage.removeItem('ss_driver_token');
+    document.getElementById('app-screen').style.display = 'none';
+    document.getElementById('otp-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('logout-btn').style.display = 'none';
+    document.getElementById('login-phone').value = '';
+    fareStr = '0'; extrasStr = '0'; generatedUrl = '';
+    updateBreakdown();
+  }
+
+  // ── OTP Login ──
+  async function sendOtp() {
+    const phone = document.getElementById('login-phone').value.trim();
+    if (!phone) { showLoginError('Please enter your mobile number.'); return; }
+    const btn = document.getElementById('send-otp-btn');
+    const err = document.getElementById('login-error');
+    err.style.display = 'none';
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      const r = await fetch('/api/payment/send-otp', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await r.json();
+      if (data.success) {
+        enteredPhone = phone;
+        document.getElementById('otp-phone-display').textContent = phone;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('otp-screen').style.display = 'flex';
+        document.getElementById('otp0').focus();
+      } else {
+        showLoginError(data.error || 'Failed to send code. Try again.');
+      }
+    } catch(e) {
+      showLoginError('Connection error. Please try again.');
+    }
+    btn.disabled = false; btn.textContent = 'Send Code via SMS';
+  }
+
+  function showLoginError(msg) {
+    const err = document.getElementById('login-error');
+    err.textContent = msg; err.style.display = 'block';
+  }
+
+  async function verifyOtp() {
+    const code = [0,1,2,3,4,5].map(i => document.getElementById('otp'+i).value).join('');
+    if (code.length < 6) { showOtpError('Enter all 6 digits.'); return; }
+    const btn = document.getElementById('verify-otp-btn');
+    const err = document.getElementById('otp-error');
+    err.style.display = 'none';
+    btn.disabled = true; btn.textContent = 'Verifying…';
+    try {
+      const r = await fetch('/api/payment/verify-otp', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: enteredPhone, code }),
+      });
+      const data = await r.json();
+      if (data.success) {
+        authToken = data.token;
+        localStorage.setItem('ss_driver_token', authToken);
+        showApp();
+      } else {
+        showOtpError(data.error || 'Incorrect code. Try again.');
+        [0,1,2,3,4,5].forEach(i => { document.getElementById('otp'+i).value = ''; });
+        document.getElementById('otp0').focus();
+      }
+    } catch(e) {
+      showOtpError('Connection error. Please try again.');
+    }
+    btn.disabled = false; btn.textContent = 'Verify';
+  }
+
+  function showOtpError(msg) {
+    const err = document.getElementById('otp-error');
+    err.textContent = msg; err.style.display = 'block';
+  }
+
+  function resendOtp() {
+    document.getElementById('otp-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    [0,1,2,3,4,5].forEach(i => { document.getElementById('otp'+i).value = ''; });
+  }
+
+  // Auto-advance OTP digits
+  function setupOtpInputs() {
+    for (let i = 0; i < 6; i++) {
+      const el = document.getElementById('otp'+i);
+      el.addEventListener('input', () => {
+        el.value = el.value.replace(/\D/g,'').slice(-1);
+        if (el.value && i < 5) document.getElementById('otp'+(i+1)).focus();
+        if (i === 5 && el.value) verifyOtp();
+      });
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !el.value && i > 0) document.getElementById('otp'+(i-1)).focus();
+      });
+    }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (document.getElementById('login-screen').style.display !== 'none') sendOtp();
+        if (document.getElementById('otp-screen').style.display !== 'none') verifyOtp();
+      }
+    });
+  }
+
+  // ── Google Maps Autocomplete ──
+  function initMaps() {
+    if (typeof google === 'undefined' || !google.maps || !google.maps.places) return;
+    const opts = { componentRestrictions: { country: 'au' } };
+    const pickup  = new google.maps.places.Autocomplete(document.getElementById('trip-pickup'),  opts);
+    const dropoff = new google.maps.places.Autocomplete(document.getElementById('trip-dropoff'), opts);
+    pickup.addListener('place_changed', () => {
+      const p = pickup.getPlace();
+      if (p && p.name) document.getElementById('trip-pickup').value = p.name;
+    });
+    dropoff.addListener('place_changed', () => {
+      const p = dropoff.getPlace();
+      if (p && p.name) document.getElementById('trip-dropoff').value = p.name;
+    });
+  }
+
+  // ── Keypad ──
+  function openKeypad(type) {
+    activeKeypad = type || 'fare';
+    const currentVal = activeKeypad === 'extras' ? extrasStr : fareStr;
+    document.getElementById('kd-label').textContent = activeKeypad === 'extras' ? 'Extras Amount' : 'Fare Amount';
+    document.getElementById('kd-value').textContent = currentVal;
+    document.getElementById('keypad-overlay').classList.add('show');
+  }
+
+  function closeKeypad() {
+    document.getElementById('keypad-overlay').classList.remove('show');
+    updateBreakdown();
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('keypad-overlay')) closeKeypad();
+  }
+
+  function keyPress(key) {
+    let str = activeKeypad === 'extras' ? extrasStr : fareStr;
+    if (key === 'del') {
+      str = str.length > 1 ? str.slice(0, -1) : '0';
+    } else if (key === '.') {
+      if (!str.includes('.')) str += '.';
+    } else {
+      if (str === '0' && key !== '.') str = key;
+      else {
+        const parts = str.split('.');
+        if (parts.length === 2 && parts[1].length >= 2) return;
+        str += key;
+      }
+    }
+    if (activeKeypad === 'extras') extrasStr = str;
+    else fareStr = str;
+    document.getElementById('kd-value').textContent = str;
+  }
+
+  // ── Calculations ──
+  function calcFees(fare, extras) {
+    const f = parseFloat(fare)   || 0;
+    const e = parseFloat(extras) || 0;
+    const totalFare     = parseFloat((f + e).toFixed(2));
+    const svc           = parseFloat((totalFare * 0.05).toFixed(2));
+    const svcGst        = parseFloat((svc / 10).toFixed(2));
+    const total         = parseFloat((totalFare + svc + svcGst).toFixed(2));
+    return { fare: f, extras: e, totalFare, svc, svcGst, total };
+  }
+
+  function fmt(n) { return 'A$' + n.toFixed(2); }
+
+  function updateBreakdown() {
+    const fees = calcFees(fareStr, extrasStr);
+    document.getElementById('fare-display').textContent = fees.fare > 0 ? fees.fare.toFixed(2) : '0';
+    document.getElementById('bd-fare').textContent    = fmt(fees.fare);
+    document.getElementById('bd-extras').textContent  = fmt(fees.extras);
+    document.getElementById('bd-svc').textContent     = fmt(fees.svc);
+    document.getElementById('bd-svc-gst').textContent = fmt(fees.svcGst);
+    document.getElementById('bd-total').textContent   = fmt(fees.total);
+  }
+
+  // ── Generate link ──
+  async function generateLink() {
+    const fare = parseFloat(fareStr) || 0;
+    if (fare <= 0) { showToast('Enter a fare amount first'); openKeypad('fare'); return; }
+
+    const btn     = document.getElementById('generate-btn');
+    const btnText = document.getElementById('generate-btn-text');
+    btn.disabled  = true;
+    btnText.innerHTML = '<span class="spinner"></span> Generating…';
+
+    const pickup    = document.getElementById('trip-pickup').value.trim();
+    const dropoff   = document.getElementById('trip-dropoff').value.trim();
+    const passenger = document.getElementById('trip-passenger').value.trim();
+    const vehicle   = document.getElementById('trip-vehicle').value.trim();
+    const extras    = parseFloat(extrasStr) || 0;
+    // Read the datetime-local input; fall back to current time if not set
+    const dtInput   = document.getElementById('trip-datetime');
+    const pickupTime = (dtInput && dtInput.value) ? new Date(dtInput.value).toISOString() : new Date().toISOString();
+
+    try {
+      const r = await fetch('/api/payment/generate-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+        body: JSON.stringify({ fareIncGst: fare, extrasAmount: extras, pickupLocation: pickup, dropLocation: dropoff, passengerName: passenger, vehicleNumber: vehicle, pickupTime }),
+      });
+      if (r.status === 401) { logout(); return; }
+      const data = await r.json();
+
+      if (data.success && data.url) {
+        generatedUrl = data.url;
+        document.getElementById('result-link-text').textContent = data.url;
+        document.getElementById('result-card').classList.add('show');
+        btnText.innerHTML = '<span class="premium-svg-icon premium-svg-icon--check" aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span> Link Generated!';
+        showToast('Payment link ready!');
+        // Use server-side QR PNG endpoint (most reliable on Safari iOS — no data URI issues)
+        const qrDiv = document.getElementById('qr-canvas');
+        qrDiv.innerHTML = '';
+        const qrImg = document.createElement('img');
+        qrImg.style.cssText = 'width:220px;height:220px;border-radius:8px;display:block;background:#fff;';
+        qrImg.alt = 'QR Code';
+        // Server endpoint returns PNG directly — works on all browsers including Safari iOS
+        qrImg.src = '/api/payment/qr?data=' + encodeURIComponent(data.url) +
+                    '&auth=' + encodeURIComponent(authToken);
+        qrImg.onerror = function() {
+          // Ultimate fallback: external QR service
+          qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=' + encodeURIComponent(data.url);
+          qrImg.onerror = null;
+        };
+        qrDiv.appendChild(qrImg);
+        // Scroll to result
+        document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        showToast('Error: ' + (data.error || 'Could not generate link'));
+        btnText.innerHTML = '<span class="premium-svg-icon premium-svg-icon--bolt" aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></span> Generate Payment Link';
+        btn.disabled = false;
+      }
+    } catch(e) {
+      showToast('Connection error — try again');
+      btnText.innerHTML = '<span class="premium-svg-icon premium-svg-icon--bolt" aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></span> Generate Payment Link';
+      btn.disabled = false;
+    }
+  }
+
+  function copyLink() {
+    if (!generatedUrl) return;
+    navigator.clipboard.writeText(generatedUrl).then(() => showToast('Link copied!')).catch(() => {
+      const el = document.createElement('textarea');
+      el.value = generatedUrl;
+      document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el);
+      showToast('Link copied!');
+    });
+  }
+
+  function shareLink() {
+    if (!generatedUrl) return;
+    const fees   = calcFees(fareStr, extrasStr);
+    const pickup = document.getElementById('trip-pickup').value.trim() || 'Pickup';
+    const dropoff= document.getElementById('trip-dropoff').value.trim() || 'Drop-off';
+    if (navigator.share) {
+      navigator.share({ title: 'SS Taxi Payment', text: `${pickup} → ${dropoff} | Total: A$${fees.total.toFixed(2)}`, url: generatedUrl });
+    } else { copyLink(); }
+  }
+
+  function openLink() { if (generatedUrl) window.open(generatedUrl, '_blank'); }
+
+  function resetForm() {
+    fareStr = '0'; extrasStr = '0';
+    updateBreakdown();
+    document.getElementById('trip-pickup').value = '';
+    document.getElementById('trip-dropoff').value = '';
+    document.getElementById('trip-passenger').value = '';
+    document.getElementById('trip-vehicle').value = '';
+    setCurrentDateTime(); // Reset date/time to current time for next trip
+    document.getElementById('result-card').classList.remove('show');
+    generatedUrl = '';
+    const btn = document.getElementById('generate-btn');
+    const btnText = document.getElementById('generate-btn-text');
+    btn.disabled = false;
+    btnText.innerHTML = '<span class="premium-svg-icon premium-svg-icon--bolt" aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></span> Generate Payment Link';
+  }
+
+  // ── Toast ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+<!-- Google Maps (loaded after auth to save quota) -->
+<script>
+  let mapsLoaded = false;
+  function loadMaps() {
+    if (mapsLoaded) return;
+    mapsLoaded = true;
+    fetch('/api/config').then(r => r.json()).then(cfg => {
+      if (!cfg.mapsKey) return;
+      const s = document.createElement('script');
+      s.src = `https://maps.googleapis.com/maps/api/js?key=${cfg.mapsKey}&libraries=places&callback=initMaps`;
+      s.async = true; s.defer = true;
+      document.head.appendChild(s);
+    }).catch(() => {});
+  }
+  window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('ss_driver_token')) loadMaps();
+  });
+</script>
+<div aria-label="Silver Service navigation menu" aria-modal="true" class="sso-mobile-shop" id="mob-panel" role="dialog">
+<div class="mob-header"><a aria-label="Silver Services Taxi Sydney home" class="mob-logo has-image" href="/"><img alt="Silver Services Taxi Sydney" class="sso-site-logo mob-site-logo" decoding="async" height="577" loading="eager" src="/images/logo.png?v=logo-20260606" width="1742"/></a><button aria-label="Close menu" id="mob-close-btn"><span></span><span></span></button></div>
+<div class="mob-shop-intro"><span>One stop booking hub</span><strong>Where would you like to go?</strong><p>Book, call, manage or explore premium Sydney taxi services.</p></div>
+<div class="mob-quick-actions"><a class="mob-primary-action" href="/book"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="18" rx="2" width="18" x="3" y="4"></rect><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"></path></svg><span>Book Now</span></a><a class="mob-secondary-action" href="tel:1800173171" onclick="return trackPhoneCall('mobile-menu')"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.64 2.62a2 2 0 0 1-.45 2.11L8.1 9.64a16 16 0 0 0 6 6l1.19-1.19a2 2 0 0 1 2.11-.45c.84.31 1.72.52 2.62.64A2 2 0 0 1 22 16.92z"></path></svg><span>Call 1800 173 171</span></a></div>
+<nav aria-label="Mobile navigation" class="mob-links" id="mob-links">
+<a class="mob-nav-item" href="/"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg><span>Home</span></a>
+<button class="mob-nav-item mob-accordion-btn" id="mob-services-btn"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><path d="M3 13h18v5a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H4a1 1 0 0 1-1-1z"></path><path d="M7 14h.01M17 14h.01"></path></svg><span>Services</span><svg class="mob-chevron" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+<div class="mob-submenu" id="mob-services-panel"><a href="/services">All Services</a><a href="/airport-transfers">Airport Transfers</a><a href="/maxi-taxi">Maxi Taxi</a><a href="/services#corporate">Corporate Travel</a><a href="/services#chauffeur">Chauffeur Service</a><a href="/services#events">Events &amp; Special Trips</a></div>
+<button class="mob-nav-item mob-accordion-btn" id="mob-airport-btn"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M2 17h2.4L9 10.5 6 6h3l3 4.5L15 6h3l-3 4.5L19.6 17H22"></path><path d="M12 17v4M8 21h8"></path></svg><span>Airport</span><svg class="mob-chevron" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+<div class="mob-submenu" id="mob-airport-panel"><a href="/airport-transfers">Airport Transfers</a><a href="/airport-transfers#domestic">Domestic Terminal T2/T3</a><a href="/airport-transfers#international">International Terminal T1</a><a href="/locations/western-sydney-airport/">Western Sydney Airport</a><a href="/book?service=airport">Book Airport Transfer</a></div>
+<button class="mob-nav-item mob-accordion-btn" id="mob-areas-btn"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path><circle cx="12" cy="9" r="2.5"></circle></svg><span>Service Areas</span><svg class="mob-chevron" viewbox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+<div class="mob-submenu" id="mob-areas-panel"><a href="/locations/">All Service Areas</a><a href="/locations/sydney-cbd/">Sydney CBD</a><a href="/locations/parramatta/">Parramatta</a><a href="/locations/blacktown/">Blacktown</a><a href="/locations/bondi/">Eastern Suburbs</a><a href="/locations/manly/">Northern Beaches</a></div>
+<a class="mob-nav-item" href="/about"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.8"></path><path d="M16 3.1a4 4 0 0 1 0 7.8"></path></svg><span>About Us</span></a>
+<a class="mob-nav-item" href="/contact"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.64 2.62a2 2 0 0 1-.45 2.11L8.1 9.64a16 16 0 0 0 6 6l1.19-1.19a2 2 0 0 1 2.11-.45c.84.31 1.72.52 2.62.64A2 2 0 0 1 22 16.92z"></path></svg><span>Contact</span></a>
+<a class="mob-nav-item" href="/manage"><svg aria-hidden="true" viewbox="0 0 24 24"><rect height="7" rx="1" width="7" x="3" y="3"></rect><rect height="7" rx="1" width="7" x="14" y="3"></rect><rect height="7" rx="1" width="7" x="3" y="14"></rect><rect height="7" rx="1" width="7" x="14" y="14"></rect></svg><span>Manage Booking</span></a>
+</nav>
+<div class="mob-trust-strip"><span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg> Fixed fares</span><span><svg aria-hidden="true" viewbox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 24/7</span><span><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"></path><path d="M3 13h18v5a1 1 0 0 1-1 1h-1a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H4a1 1 0 0 1-1-1z"></path><path d="M7 14h.01M17 14h.01"></path></svg> Premium fleet</span></div>
+<div class="mob-footer"><a class="mob-call-btn" href="tel:1800173171" onclick="return trackPhoneCall('mobile-menu-footer')"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.64 2.62a2 2 0 0 1-.45 2.11L8.1 9.64a16 16 0 0 0 6 6l1.19-1.19a2 2 0 0 1 2.11-.45c.84.31 1.72.52 2.62.64A2 2 0 0 1 22 16.92z"></path></svg><span>1800 173 171</span></a></div>
+</div>
+<div id="mob-overlay"></div><script src="/mobile-menu.js?v=10"></script>
+</body>
+</html>

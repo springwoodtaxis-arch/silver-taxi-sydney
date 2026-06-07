@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://silvertaxisydneyservice.com/sitemap.xml
+
+# Silver Taxi Sydney Service — Premium Taxi Sydney
+# 300+ suburb pages indexed

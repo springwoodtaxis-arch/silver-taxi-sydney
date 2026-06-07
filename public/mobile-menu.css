@@ -1,0 +1,1346 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   Silver Taxi Sydney Service — Premium Mobile Menu
+   Single source of truth for mobile panel, overlay, accordions and menu links.
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --sso-mobile-navy: #071225;
+  --sso-mobile-navy-2: #0c1b34;
+  --sso-mobile-navy-3: #132947;
+  --sso-mobile-blue-accent: #246fe0;
+  --sso-mobile-ice-accent: #eaf3ff;
+  --sso-mobile-cream: #fff8e7;
+  --sso-mobile-text: #f7fafc;
+  --sso-mobile-muted: rgba(247,250,252,.68);
+  --sso-mobile-line: rgba(36,111,224,.18);
+  --sso-mobile-shadow: 0 18px 42px rgba(0,0,0,.34);
+}
+
+#mob-overlay {
+  position: fixed;
+  inset: 0;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(36,111,224,.18), transparent 28%),
+    rgba(3, 8, 18, .74);
+  /* Keep overlay lightweight on mobile Safari/Chrome: backdrop blur causes slow taps on real phones. */
+  z-index: 1998;
+  transition: opacity .16s ease, visibility .16s ease;
+}
+
+#mob-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#mob-panel {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(92vw, 430px);
+  max-width: 430px;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--sso-mobile-text);
+  background:
+    linear-gradient(160deg, rgba(36,111,224,.12) 0%, rgba(36,111,224,0) 28%),
+    linear-gradient(180deg, var(--sso-mobile-navy-2) 0%, var(--sso-mobile-navy) 100%);
+  border-right: 1px solid rgba(36,111,224,.32);
+  box-shadow: var(--sso-mobile-shadow);
+  transform: translate3d(-105%, 0, 0);
+  visibility: hidden;
+  z-index: 1999;
+  transition: transform .22s ease-out, visibility .22s ease;
+  will-change: transform;
+}
+
+#mob-panel.open {
+  transform: translate3d(0, 0, 0);
+  visibility: visible;
+}
+
+#mob-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.035) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 80% 0%, rgba(36,111,224,.16), transparent 30%);
+  background-size: 26px 26px, auto;
+  opacity: .55;
+}
+
+.mob-header,
+.mob-links,
+.mob-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.mob-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: calc(16px + env(safe-area-inset-top)) 20px 16px;
+  flex: 0 0 auto;
+  background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.015));
+  border-bottom: 1px solid var(--sso-mobile-line);
+  box-shadow: 0 14px 34px rgba(0,0,0,.18);
+}
+
+.mob-logo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.mob-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.mob-logo-top {
+  font-family: var(--ff-head, 'Playfair Display', serif);
+  font-size: 1.22rem;
+  font-weight: 800;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 18px rgba(36,111,224,.16);
+}
+
+.mob-logo-sub {
+  margin-top: 5px;
+  font-family: var(--ff-ui, Inter, sans-serif);
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--sso-mobile-ice-accent);
+}
+
+.mob-close {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(36,111,224,.3);
+  border-radius: 999px;
+  color: var(--sso-mobile-ice-accent);
+  background: rgba(255,255,255,.07);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.mob-close:hover,
+.mob-close:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(36,111,224,.14);
+  border-color: rgba(36,111,224,.58);
+  outline: none;
+}
+
+.mob-close svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.mob-links {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 14px 10px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(36,111,224,.55) rgba(255,255,255,.06);
+}
+
+.mob-links::-webkit-scrollbar { width: 8px; }
+.mob-links::-webkit-scrollbar-track { background: rgba(255,255,255,.05); }
+.mob-links::-webkit-scrollbar-thumb { background: rgba(36,111,224,.5); border-radius: 999px; }
+
+.mob-nav-item {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 13px;
+  box-sizing: border-box;
+  border: 1px solid rgba(36,111,224,.13);
+  border-radius: 16px;
+  font-family: var(--ff-ui, Inter, sans-serif);
+  font-size: .83rem;
+  font-weight: 800;
+  letter-spacing: .105em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-align: left;
+  text-decoration: none;
+  color: rgba(255,255,255,.9);
+  background: linear-gradient(135deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(0,0,0,.16);
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform .22s ease, border-color .22s ease, background .22s ease, color .22s ease;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+button.mob-nav-item,
+a.mob-nav-item {
+  display: flex;
+  width: 100%;
+}
+
+.mob-nav-item:hover,
+.mob-nav-item:focus-visible,
+.mob-nav-item.active,
+.mob-nav-item.open {
+  color: #fff;
+  border-color: rgba(36,111,224,.5);
+  background: linear-gradient(135deg, rgba(36,111,224,.18), rgba(255,255,255,.055));
+  outline: none;
+}
+
+.mob-nav-item:hover,
+.mob-nav-item:focus-visible {
+  transform: translateY(-1px);
+}
+
+.mob-nav-icon {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(36,111,224,.2);
+  border-radius: 13px;
+  color: var(--sso-mobile-ice-accent);
+  background: radial-gradient(circle at 35% 25%, rgba(255,255,255,.16), rgba(36,111,224,.08));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.mob-nav-item > span,
+.mob-nav-item > svg,
+.mob-nav-icon,
+.mob-nav-icon svg,
+.mob-toggle-arrow,
+.mob-areas-arrow,
+.mob-call-btn > svg,
+.mob-call-btn > span {
+  pointer-events: none;
+}
+
+.mob-nav-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.mob-nav-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mob-toggle-arrow,
+.mob-areas-arrow {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--sso-mobile-ice-accent);
+  transition: transform .28s cubic-bezier(.2,.8,.2,1);
+}
+
+.mob-nav-item.open .mob-toggle-arrow,
+.mob-areas-toggle.open .mob-areas-arrow {
+  transform: rotate(180deg);
+}
+
+.mob-book-link {
+  color: var(--sso-mobile-navy) !important;
+  border-color: rgba(159,200,255,.72) !important;
+  background: linear-gradient(135deg, var(--sso-mobile-ice-accent), var(--sso-mobile-blue-accent)) !important;
+  box-shadow: 0 14px 30px rgba(36,111,224,.22), inset 0 1px 0 rgba(255,255,255,.36) !important;
+}
+
+.mob-book-link .mob-nav-icon {
+  color: var(--sso-mobile-navy);
+  border-color: rgba(6,20,45,.18);
+  background: rgba(6,20,45,.08);
+}
+
+.mob-services-panel,
+.mob-airport-panel,
+.mob-areas-panel {
+  display: none;
+  overflow: hidden;
+  opacity: 1;
+  visibility: visible;
+  margin: -4px 2px 0;
+  padding: 9px;
+  border: 1px solid rgba(36,111,224,.16);
+  border-radius: 0 0 18px 18px;
+  background: rgba(2, 8, 20, .24);
+}
+
+.mob-services-panel.open,
+.mob-airport-panel.open,
+.mob-areas-panel.open {
+  display: block;
+}
+
+
+.mob-service-link {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  padding: 12px;
+  border-radius: 13px;
+  color: rgba(255,255,255,.86);
+  text-decoration: none;
+  transition: background .2s ease, color .2s ease;
+}
+
+.mob-service-link:hover,
+.mob-service-link:focus-visible {
+  color: #fff;
+  background: rgba(255,255,255,.07);
+  outline: none;
+}
+
+.mob-service-link-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  color: var(--sso-mobile-ice-accent);
+  background: rgba(36,111,224,.11);
+}
+
+.mob-service-link-icon svg {
+  width: 19px;
+  height: 19px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.mob-service-link-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.mob-service-link-title,
+.mob-airport-label,
+.mob-areas-group-label {
+  font-family: var(--ff-ui, Inter, sans-serif);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--sso-mobile-ice-accent);
+}
+
+.mob-service-link-desc {
+  font-family: var(--ff-ui, Inter, sans-serif);
+  font-size: .76rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--sso-mobile-muted);
+}
+
+.mob-airport-section,
+.mob-areas-group {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(36,111,224,.12);
+}
+
+.mob-airport-section:last-child,
+.mob-areas-group:last-child {
+  border-bottom: 0;
+}
+
+.mob-airport-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+.mob-airport-label svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.mob-airport-link,
+.mob-areas-group a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 6px 10px 12px;
+  border-radius: 11px;
+  font-family: var(--ff-ui, Inter, sans-serif);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .065em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(255,255,255,.78);
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+
+.mob-airport-link:hover,
+.mob-airport-link:focus-visible,
+.mob-areas-group a:hover,
+.mob-areas-group a:focus-visible {
+  color: #fff;
+  background: rgba(255,255,255,.07);
+  transform: translateX(2px);
+  outline: none;
+}
+
+.mob-airport-link-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--sso-mobile-ice-accent);
+  box-shadow: 0 0 12px rgba(36,111,224,.44);
+}
+
+.mob-areas-group-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.mob-areas-group-label::before {
+  content: "";
+  width: 16px;
+  height: 2px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sso-mobile-ice-accent), transparent);
+}
+
+.mob-footer {
+  flex: 0 0 auto;
+  padding: 14px 16px calc(18px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--sso-mobile-line);
+  background: linear-gradient(0deg, rgba(2,8,20,.74), rgba(255,255,255,.035));
+}
+
+.mob-footer a.mob-call-btn {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 18px;
+  border-radius: 16px;
+  font-family: var(--ff-ui, Inter, sans-serif);
+  font-size: .95rem;
+  font-weight: 900;
+  letter-spacing: .085em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--sso-mobile-navy);
+  background: linear-gradient(135deg, var(--sso-mobile-ice-accent), var(--sso-mobile-blue-accent));
+  box-shadow: 0 18px 36px rgba(36,111,224,.22), inset 0 1px 0 rgba(255,255,255,.38);
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mob-footer a.mob-call-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+}
+
+html.mob-menu-open,
+body.mob-menu-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+@media (min-width: 1025px) {
+  #mob-overlay,
+  #mob-panel {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #mob-panel {
+    width: 100vw;
+    max-width: none;
+    border-right: 0;
+  }
+
+  .mob-header { padding-left: 17px; padding-right: 17px; }
+  .mob-links { padding-left: 10px; padding-right: 10px; }
+  .mob-nav-item { border-radius: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mob-overlay,
+  #mob-panel,
+  .mob-nav-item,
+  .mob-toggle-arrow,
+  .mob-services-panel,
+  .mob-airport-panel,
+  .mob-areas-panel {
+    transition: none !important;
+  }
+}
+
+
+/* SSO mobile accordion full-list fix v6 */
+.mob-services-panel.open,
+.mob-airport-panel.open,
+.mob-areas-panel.open {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow-y: auto;
+  max-height: min(62dvh, 560px);
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(36,111,224,.58) rgba(255,255,255,.06);
+}
+.mob-services-panel.open > *,
+.mob-airport-panel.open > *,
+.mob-areas-panel.open > * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+.mob-services-panel.open {
+  display: grid !important;
+  gap: 4px;
+}
+.mob-service-link,
+.mob-airport-link,
+.mob-areas-group a {
+  min-height: 44px;
+}
+@media (max-width: 480px) {
+  .mob-services-panel.open,
+  .mob-airport-panel.open,
+  .mob-areas-panel.open { max-height: 48dvh; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   2026 Premium Blue/Silver Mobile Menu Refresh — no gold
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --sso-mobile-navy: #111827;
+  --sso-mobile-navy-2: #1F2937;
+  --sso-mobile-navy-3: #071B3A;
+  --sso-mobile-blue-accent: #0F2A5C;
+  --sso-mobile-ice-accent: #C8D0D8;
+  --sso-mobile-cream: #eef4fc;
+  --sso-mobile-text: #FFFFFF;
+  --sso-mobile-muted: rgba(255,255,255,.72);
+  --sso-mobile-line: rgba(168,180,192,.16);
+  --sso-mobile-shadow: 0 18px 42px rgba(17,24,39,.36);
+}
+#mob-overlay { background: radial-gradient(circle at 18% 12%, rgba(7,27,58,.20), transparent 28%), rgba(17,24,39,.74); }
+#mob-panel { background: linear-gradient(160deg, rgba(7,27,58,.18) 0%, rgba(7,27,58,0) 30%), linear-gradient(180deg, #1F2937 0%, #111827 100%); border-right-color: rgba(168,180,192,.22); }
+#mob-panel::before { background: linear-gradient(90deg, rgba(255,255,255,.032) 0 1px, transparent 1px 100%), radial-gradient(circle at 82% 0%, rgba(7,27,58,.18), transparent 31%); }
+.mob-logo-top, .mob-logo-sub, .mob-close, .mob-link-main:hover, .mob-link-main:focus-visible, .mob-accordion-trigger:hover, .mob-accordion-trigger.open, .mob-accordion-trigger:hover .mob-accordion-title, .mob-accordion-trigger.open .mob-accordion-title, .mob-service-link:hover .mob-service-link-title, .mob-airport-link:hover .mob-airport-link-text, .mob-footer-phone-number, .mob-footer-link:hover { color: #C8D0D8; }
+.mob-logo-top { font-family: var(--ff-head, 'Fira Sans', sans-serif); text-shadow: 0 2px 18px rgba(7,27,58,.22); }
+.mob-logo-sub, .mob-link-main, .mob-accordion-title, .mob-service-link-title, .mob-footer-cta { font-family: var(--ff-ui, 'Fira Sans', sans-serif); }
+.mob-close { border-color: rgba(168,180,192,.24); background: rgba(255,255,255,.07); }
+.mob-close:hover, .mob-close:focus-visible { background: rgba(7,27,58,.18); border-color: rgba(168,180,192,.45); }
+.mob-links { scrollbar-color: rgba(168,180,192,.48) rgba(255,255,255,.06); }
+.mob-links::-webkit-scrollbar-thumb { background: rgba(168,180,192,.48); }
+.mob-link-main, .mob-accordion-trigger { border-color: rgba(168,180,192,.12); }
+.mob-link-main:hover, .mob-link-main:focus-visible, .mob-accordion-trigger:hover, .mob-accordion-trigger.open { background: rgba(7,27,58,.14); border-color: rgba(168,180,192,.26); }
+.mob-link-icon, .mob-service-link-icon, .mob-airport-label svg, .mob-area-chip, .mob-footer-phone-icon { background: rgba(7,27,58,.18); border-color: rgba(168,180,192,.20); }
+.mob-link-icon svg, .mob-service-link-icon svg, .mob-airport-label svg, .mob-footer-phone-icon svg { stroke: #C8D0D8; }
+.mob-service-link { border-color: rgba(168,180,192,.10); }
+.mob-service-link:hover { background: rgba(7,27,58,.12); border-color: rgba(168,180,192,.22); }
+.mob-airport-label { color: #C8D0D8; border-bottom-color: rgba(168,180,192,.14); }
+.mob-airport-link-dot { background: #C8D0D8; box-shadow: 0 0 0 4px rgba(168,180,192,.10); }
+.mob-area-chip:hover { background: rgba(7,27,58,.20); border-color: rgba(168,180,192,.30); color: #fff; }
+.mob-footer { border-top-color: rgba(168,180,192,.14); background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(7,27,58,.09)); }
+.mob-footer-cta { background: #0F2A5C; color: #fff; box-shadow: 0 12px 28px rgba(7,27,58,.28); }
+.mob-footer-cta:hover { background: #071B3A; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   Follow-up: luxury blue/silver mobile menu refinement
+   ═══════════════════════════════════════════════════════════ */
+#mob-overlay {
+  background: radial-gradient(circle at 20% 8%, rgba(46,127,224,.22), transparent 30%), rgba(3,14,31,.76) !important;
+}
+#mob-panel {
+  background:
+    linear-gradient(155deg, rgba(46,127,224,.18) 0%, rgba(7,27,58,.05) 36%, rgba(3,14,31,0) 72%),
+    linear-gradient(180deg, #071B3A 0%, #0B1220 100%) !important;
+  border-right: 1px solid rgba(221,230,241,.26) !important;
+  box-shadow: 18px 0 54px rgba(3,14,31,.42) !important;
+}
+.mob-header {
+  border-bottom-color: rgba(221,230,241,.18) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0)) !important;
+}
+.mob-logo-top,
+.mob-logo-sub,
+.mob-link-main,
+.mob-accordion-title,
+.mob-service-link-title,
+.mob-airport-link-text,
+.mob-footer-phone-number,
+.mob-footer-cta {
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+.mob-logo-top { color: #fff !important; letter-spacing: .13em !important; }
+.mob-logo-sub { color: #DDE6F1 !important; }
+.mob-link-main,
+.mob-accordion-trigger {
+  background: rgba(255,255,255,.045) !important;
+  border: 1px solid rgba(221,230,241,.13) !important;
+  color: #fff !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+.mob-link-main:hover,
+.mob-link-main:focus-visible,
+.mob-accordion-trigger:hover,
+.mob-accordion-trigger.open {
+  background: linear-gradient(135deg, rgba(7,27,58,.32), rgba(46,127,224,.16)) !important;
+  border-color: rgba(221,230,241,.34) !important;
+  color: #fff !important;
+}
+.mob-link-icon,
+.mob-service-link-icon,
+.mob-airport-label svg,
+.mob-area-chip,
+.mob-footer-phone-icon {
+  background: linear-gradient(135deg, rgba(7,27,58,.34), rgba(221,230,241,.10)) !important;
+  border-color: rgba(221,230,241,.28) !important;
+}
+.mob-link-icon svg,
+.mob-service-link-icon svg,
+.mob-airport-label svg,
+.mob-footer-phone-icon svg { stroke: #fff !important; }
+.mob-services-panel.open,
+.mob-airport-panel.open,
+.mob-areas-panel.open {
+  background: rgba(255,255,255,.045) !important;
+  border: 1px solid rgba(221,230,241,.12) !important;
+  border-radius: 14px !important;
+  padding: 6px !important;
+}
+.mob-service-link,
+.mob-airport-link {
+  background: rgba(255,255,255,.025) !important;
+  border-color: rgba(221,230,241,.10) !important;
+  border-radius: 11px !important;
+}
+.mob-service-link:hover,
+.mob-airport-link:hover {
+  background: rgba(7,27,58,.22) !important;
+  border-color: rgba(221,230,241,.24) !important;
+}
+.mob-service-link-title,
+.mob-airport-link-text { color: #fff !important; }
+.mob-service-link-desc { color: rgba(221,230,241,.78) !important; }
+.mob-airport-label {
+  color: #DDE6F1 !important;
+  border-bottom-color: rgba(221,230,241,.16) !important;
+}
+.mob-airport-link-dot {
+  background: #A8B4C0 !important;
+  box-shadow: 0 0 0 4px rgba(127,173,230,.13) !important;
+}
+.mob-footer {
+  border-top-color: rgba(221,230,241,.18) !important;
+  background: linear-gradient(180deg, rgba(7,27,58,.10), rgba(255,255,255,.04)) !important;
+}
+.mob-footer-phone { color: #fff !important; }
+.mob-footer-cta {
+  background: linear-gradient(135deg, #071B3A 0%, #0F2A5C 56%, #1A3A6E 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  box-shadow: 0 14px 32px rgba(7,27,58,.34), inset 0 1px 0 rgba(255,255,255,.22) !important;
+}
+.mob-close {
+  color: #fff !important;
+  border-color: rgba(221,230,241,.28) !important;
+  background: rgba(255,255,255,.08) !important;
+}
+
+/* Compact logo containment fix — loaded after global styles on mobile menu pages. */
+.mob-header {
+  gap: 14px !important;
+  padding-top: calc(10px + env(safe-area-inset-top)) !important;
+  padding-bottom: 10px !important;
+  min-height: 92px !important;
+  max-height: 112px !important;
+  overflow: hidden !important;
+}
+.mob-logo-link.has-image,
+.mob-logo-link {
+  flex: 0 1 auto !important;
+  max-width: 166px !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+.mob-logo-link.has-image .sso-mobile-site-logo,
+.mob-logo-link .sso-mobile-site-logo,
+.sso-mobile-site-logo {
+  display: block !important;
+  width: clamp(128px, 39vw, 166px) !important;
+  max-width: 166px !important;
+  height: auto !important;
+  max-height: 54px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+}
+.mob-close {
+  flex: 0 0 auto !important;
+}
+@media (max-width: 420px) {
+  .mob-header {
+    gap: 12px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    min-height: 86px !important;
+    max-height: 104px !important;
+  }
+  .mob-logo-link.has-image,
+  .mob-logo-link {
+    max-width: 154px !important;
+  }
+  .mob-logo-link.has-image .sso-mobile-site-logo,
+  .mob-logo-link .sso-mobile-site-logo,
+  .sso-mobile-site-logo {
+    width: clamp(124px, 38vw, 154px) !important;
+    max-width: 154px !important;
+    max-height: 50px !important;
+  }
+}
+
+/* Final ultra-compact mobile menu logo correction — user feedback Jun 2026.
+   Keep brand mark small, clear, and away from the menu items. */
+.mob-header {
+  align-items: center !important;
+  gap: 12px !important;
+  padding-top: calc(12px + env(safe-area-inset-top)) !important;
+  padding-bottom: 12px !important;
+  min-height: 74px !important;
+  max-height: 88px !important;
+  overflow: hidden !important;
+}
+.mob-logo-link.has-image,
+.mob-logo-link {
+  flex: 0 0 120px !important;
+  width: 120px !important;
+  min-width: 0 !important;
+  max-width: 120px !important;
+  height: 48px !important;
+  padding: 4px 6px !important;
+  border-radius: 12px !important;
+  background: rgba(255,255,255,.94) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18) !important;
+  overflow: hidden !important;
+}
+.mob-logo-link.has-image .sso-mobile-site-logo,
+.mob-logo-link .sso-mobile-site-logo,
+.sso-mobile-site-logo {
+  display: block !important;
+  width: 108px !important;
+  min-width: 0 !important;
+  max-width: 108px !important;
+  height: auto !important;
+  max-height: 36px !important;
+  object-fit: contain !important;
+  object-position: left center !important;
+  filter: none !important;
+}
+.mob-close {
+  width: 52px !important;
+  height: 52px !important;
+  flex: 0 0 52px !important;
+}
+@media (max-width: 420px) {
+  .mob-header {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    min-height: 72px !important;
+    max-height: 84px !important;
+  }
+  .mob-logo-link.has-image,
+  .mob-logo-link {
+    flex-basis: 112px !important;
+    width: 112px !important;
+    max-width: 112px !important;
+    height: 46px !important;
+  }
+  .mob-logo-link.has-image .sso-mobile-site-logo,
+  .mob-logo-link .sso-mobile-site-logo,
+  .sso-mobile-site-logo {
+    width: 100px !important;
+    max-width: 100px !important;
+    max-height: 34px !important;
+  }
+}
+
+/* SSO Premium Mobile One-Stop-Shop Menu v10 — navy/blue/white, no gold */
+#mob-overlay { background: rgba(3, 14, 33, .62) !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+#mob-panel.sso-mobile-shop { --mob-navy: #061f49; --mob-blue: #0f4ea8; --mob-bright: #1768d6; --mob-line: rgba(185, 216, 255, .18); --mob-card: rgba(255, 255, 255, .075); --mob-text: #f6f9ff; --mob-muted: rgba(229, 239, 255, .72); width: min(92vw, 430px) !important; max-width: 430px !important; background: radial-gradient(circle at 20% 0%, rgba(47, 119, 220, .30), transparent 36%), linear-gradient(180deg, #08285a 0%, #071b3d 46%, #041126 100%) !important; color: var(--mob-text) !important; border-right: 1px solid rgba(185,216,255,.16) !important; box-shadow: 28px 0 70px rgba(0,0,0,.38) !important; font-family: var(--ff-ui, 'Fira Sans', Helvetica, Arial, sans-serif) !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
+#mob-panel.sso-mobile-shop::before { background: radial-gradient(circle at 78% 0%, rgba(23,104,214,.20), transparent 32%) !important; }
+#mob-panel.sso-mobile-shop .mob-header { min-height: 88px !important; padding: 18px 22px 14px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; border-bottom: 1px solid var(--mob-line) !important; background: rgba(255,255,255,.035) !important; }
+#mob-panel.sso-mobile-shop .mob-logo { display: inline-flex !important; width: 132px !important; height: 54px !important; max-width: 132px !important; align-items: center !important; justify-content: flex-start !important; padding: 0 !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
+#mob-panel.sso-mobile-shop .mob-logo img,.sso-mobile-shop .mob-site-logo { width: auto !important; max-width: 124px !important; height: auto !important; max-height: 48px !important; object-fit: contain !important; filter: drop-shadow(0 10px 18px rgba(0,0,0,.24)); }
+#mob-panel.sso-mobile-shop #mob-close-btn { width: 52px !important; height: 52px !important; border-radius: 50% !important; background: rgba(255,255,255,.10) !important; border: 1px solid rgba(185,216,255,.22) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.10) !important; }
+#mob-panel.sso-mobile-shop #mob-close-btn span { background: #ffffff !important; }
+#mob-panel.sso-mobile-shop .mob-shop-intro { margin: 18px 18px 12px !important; padding: 18px !important; border-radius: 24px !important; background: linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.045)) !important; border: 1px solid var(--mob-line) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,.12) !important; }
+#mob-panel.sso-mobile-shop .mob-shop-intro span { display: inline-flex; margin-bottom: 7px; color: #9ec8ff; font-size: 11px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
+#mob-panel.sso-mobile-shop .mob-shop-intro strong { display: block; color: #fff; font-size: 22px; line-height: 1.1; font-weight: 900; letter-spacing: .01em; }
+#mob-panel.sso-mobile-shop .mob-shop-intro p { margin: 8px 0 0; color: var(--mob-muted); font-size: 14px; line-height: 1.48; }
+#mob-panel.sso-mobile-shop svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+#mob-panel.sso-mobile-shop .mob-quick-actions { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 0 18px 16px; }
+#mob-panel.sso-mobile-shop .mob-primary-action,#mob-panel.sso-mobile-shop .mob-secondary-action { min-height: 56px; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 18px; text-decoration: none; font-size: 14px; font-weight: 900; letter-spacing: .10em; text-transform: uppercase; }
+#mob-panel.sso-mobile-shop .mob-primary-action { color: #ffffff !important; background: linear-gradient(135deg, #0f4ea8 0%, #1768d6 100%) !important; box-shadow: 0 18px 36px rgba(12, 91, 197, .28); }
+#mob-panel.sso-mobile-shop .mob-secondary-action { color: #eaf3ff !important; background: rgba(255,255,255,.07) !important; border: 1px solid var(--mob-line) !important; }
+#mob-panel.sso-mobile-shop .mob-links { display: grid; gap: 9px; padding: 0 18px 18px !important; overflow: visible !important; }
+#mob-panel.sso-mobile-shop .mob-nav-item { min-height: 58px !important; display: grid !important; grid-template-columns: 44px 1fr auto !important; align-items: center !important; gap: 12px !important; width: 100% !important; padding: 7px 14px 7px 7px !important; border-radius: 18px !important; color: #f6f9ff !important; background: rgba(255,255,255,.062) !important; border: 1px solid rgba(185,216,255,.135) !important; text-decoration: none !important; box-shadow: none !important; font-family: var(--ff-ui, 'Fira Sans', Helvetica, Arial, sans-serif) !important; font-size: 14px !important; font-weight: 900 !important; letter-spacing: .10em !important; text-transform: uppercase !important; }
+#mob-panel.sso-mobile-shop .mob-nav-item > svg:first-child { width: 44px !important; height: 44px !important; padding: 11px !important; border-radius: 15px !important; color: #cfe4ff !important; background: rgba(255,255,255,.10) !important; border: 1px solid rgba(185,216,255,.16) !important; box-sizing: border-box !important; }
+#mob-panel.sso-mobile-shop .mob-nav-item:hover,#mob-panel.sso-mobile-shop .mob-nav-item:focus-visible,#mob-panel.sso-mobile-shop .mob-nav-item.open { background: rgba(23,104,214,.20) !important; border-color: rgba(185,216,255,.28) !important; outline: none !important; }
+#mob-panel.sso-mobile-shop .mob-chevron { width: 18px !important; height: 18px !important; color: #cfe4ff !important; transition: transform .18s ease; }
+#mob-panel.sso-mobile-shop .mob-nav-item.open .mob-chevron { transform: rotate(180deg); }
+#mob-panel.sso-mobile-shop .mob-submenu { display: none; margin: -2px 0 5px 58px !important; padding: 8px !important; border-radius: 16px !important; background: rgba(1, 12, 31, .24) !important; border: 1px solid rgba(185,216,255,.10) !important; }
+#mob-panel.sso-mobile-shop .mob-submenu.open { display: grid !important; gap: 5px !important; }
+#mob-panel.sso-mobile-shop .mob-submenu a { min-height: 42px !important; display: flex !important; align-items: center !important; padding: 0 13px !important; border-radius: 12px !important; color: #d9eaff !important; text-decoration: none !important; font-size: 13px !important; font-weight: 800 !important; letter-spacing: .035em !important; background: transparent !important; }
+#mob-panel.sso-mobile-shop .mob-submenu a:hover,#mob-panel.sso-mobile-shop .mob-submenu a:focus-visible { color: #ffffff !important; background: rgba(255,255,255,.08) !important; outline: none !important; }
+#mob-panel.sso-mobile-shop .mob-trust-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 2px 18px 18px; }
+#mob-panel.sso-mobile-shop .mob-trust-strip span { min-height: 54px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 8px 5px; border-radius: 16px; color: #ddecff; background: rgba(255,255,255,.055); border: 1px solid rgba(185,216,255,.12); text-align: center; font-size: 10px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+#mob-panel.sso-mobile-shop .mob-trust-strip svg { width: 16px; height: 16px; color: #9ec8ff; }
+#mob-panel.sso-mobile-shop .mob-footer { position: sticky; bottom: 0; padding: 14px 18px 18px !important; background: linear-gradient(180deg, rgba(4,17,38,0) 0%, #041126 30%, #041126 100%) !important; border-top: 1px solid rgba(185,216,255,.10); }
+#mob-panel.sso-mobile-shop .mob-call-btn { min-height: 56px !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; border-radius: 19px !important; color: #071b3a !important; background: linear-gradient(135deg, #ffffff 0%, #cfe4ff 42%, #1768d6 100%) !important; text-decoration: none !important; font-size: 16px !important; font-weight: 950 !important; letter-spacing: .08em !important; box-shadow: 0 18px 42px rgba(0,0,0,.25) !important; }
+@media (max-width: 380px) { #mob-panel.sso-mobile-shop { width: 94vw !important; } #mob-panel.sso-mobile-shop .mob-header { padding-left: 16px !important; padding-right: 16px !important; } #mob-panel.sso-mobile-shop .mob-logo { width: 116px !important; max-width: 116px !important; } #mob-panel.sso-mobile-shop .mob-logo img,.sso-mobile-shop .mob-site-logo { max-width: 108px !important; max-height: 44px !important; } #mob-panel.sso-mobile-shop .mob-nav-item { font-size: 13px !important; letter-spacing: .08em !important; } }
+
+/* ========================================================================== */
+/* FROM-SCRATCH PREMIUM MOBILE DRAWER RESET — NO GOLD, NO OVERLAPS             */
+/* This authoritative block overrides earlier experimental mobile-menu styles. */
+/* ========================================================================== */
+@media (max-width: 900px) {
+  #mob-panel.sso-mobile-shop,
+  #mob-panel {
+    --mob-bg-1: #06142d;
+    --mob-bg-2: #0b2450;
+    --mob-bg-3: #0f4ea8;
+    --mob-ice: #eaf3ff;
+    --mob-text: #f8fbff;
+    --mob-muted: #b8cbe5;
+    --mob-line: rgba(195, 220, 255, .18);
+    position: fixed !important;
+    inset: 0 auto 0 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    display: block !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: max(12px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom)) !important;
+    box-sizing: border-box !important;
+    color: var(--mob-text) !important;
+    background:
+      radial-gradient(circle at 14% 2%, rgba(39, 116, 226, .34), transparent 28%),
+      linear-gradient(145deg, var(--mob-bg-2) 0%, var(--mob-bg-1) 46%, #031024 100%) !important;
+    border: 0 !important;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .44) !important;
+    font-family: var(--ff-ui, 'Fira Sans', Helvetica, Arial, sans-serif) !important;
+    transform: translateX(-105%) !important;
+    transition: transform .28s cubic-bezier(.22,.61,.36,1), visibility .28s ease !important;
+  }
+
+  #mob-panel.sso-mobile-shop.open,
+  #mob-panel.open {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+  }
+
+  #mob-panel.sso-mobile-shop::before,
+  #mob-panel::before { display: none !important; }
+
+  #mob-panel.sso-mobile-shop *,
+  #mob-panel * {
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-header,
+  #mob-panel .mob-header {
+    position: static !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    width: 100% !important;
+    min-height: 58px !important;
+    padding: 0 0 13px !important;
+    margin: 0 0 14px !important;
+    border-bottom: 1px solid rgba(195, 220, 255, .15) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-logo,
+  #mob-panel .mob-logo,
+  #mob-panel.sso-mobile-shop .mob-logo-link,
+  #mob-panel .mob-logo-link {
+    width: 126px !important;
+    max-width: 38vw !important;
+    height: 46px !important;
+    max-height: 46px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-logo img,
+  #mob-panel .mob-logo img,
+  #mob-panel.sso-mobile-shop .mob-site-logo,
+  #mob-panel .mob-site-logo {
+    width: auto !important;
+    max-width: 126px !important;
+    height: auto !important;
+    max-height: 44px !important;
+    object-fit: contain !important;
+    object-position: left center !important;
+    display: block !important;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .18)) !important;
+  }
+
+  #mob-panel.sso-mobile-shop #mob-close-btn,
+  #mob-panel #mob-close-btn,
+  #mob-panel.sso-mobile-shop .mob-close,
+  #mob-panel .mob-close {
+    position: static !important;
+    flex: 0 0 50px !important;
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(195, 220, 255, .24) !important;
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, .08) !important;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, .22) !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-shop-intro,
+  #mob-panel .mob-shop-intro {
+    display: block !important;
+    margin: 0 0 12px !important;
+    padding: 18px !important;
+    border-radius: 24px !important;
+    color: var(--mob-text) !important;
+    background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.045)) !important;
+    border: 1px solid rgba(195, 220, 255, .19) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 18px 40px rgba(0,0,0,.18) !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-shop-intro span,
+  #mob-panel .mob-shop-intro span {
+    display: block !important;
+    margin: 0 0 8px !important;
+    color: #9fc8ff !important;
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+    font-weight: 950 !important;
+    letter-spacing: .18em !important;
+    text-transform: uppercase !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-shop-intro strong,
+  #mob-panel .mob-shop-intro strong {
+    display: block !important;
+    color: #ffffff !important;
+    font-size: clamp(24px, 7vw, 32px) !important;
+    line-height: 1.08 !important;
+    font-weight: 950 !important;
+    letter-spacing: -.035em !important;
+    text-transform: none !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-shop-intro p,
+  #mob-panel .mob-shop-intro p {
+    margin: 10px 0 0 !important;
+    color: var(--mob-muted) !important;
+    font-size: 15px !important;
+    line-height: 1.55 !important;
+    letter-spacing: .01em !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-quick-actions,
+  #mob-panel .mob-quick-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 0 14px !important;
+    position: static !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-primary-action,
+  #mob-panel.sso-mobile-shop .mob-secondary-action,
+  #mob-panel .mob-primary-action,
+  #mob-panel .mob-secondary-action {
+    min-height: 56px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    padding: 0 16px !important;
+    border-radius: 19px !important;
+    text-decoration: none !important;
+    font-size: 15px !important;
+    font-weight: 950 !important;
+    letter-spacing: .095em !important;
+    text-transform: uppercase !important;
+    position: static !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-primary-action,
+  #mob-panel .mob-primary-action {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #0f4ea8 0%, #246fe0 100%) !important;
+    box-shadow: 0 16px 34px rgba(7, 27, 58, .34) !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-secondary-action,
+  #mob-panel .mob-secondary-action {
+    color: #f4f9ff !important;
+    background: rgba(255, 255, 255, .07) !important;
+    border: 1px solid rgba(195, 220, 255, .18) !important;
+    box-shadow: none !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-links,
+  #mob-panel .mob-links {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-nav-item,
+  #mob-panel .mob-nav-item {
+    width: 100% !important;
+    min-height: 58px !important;
+    display: grid !important;
+    grid-template-columns: 42px minmax(0, 1fr) 18px !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 8px 14px 8px 8px !important;
+    margin: 0 !important;
+    border-radius: 18px !important;
+    color: #f7fbff !important;
+    background: rgba(255, 255, 255, .065) !important;
+    border: 1px solid rgba(195, 220, 255, .15) !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    font-weight: 900 !important;
+    letter-spacing: .08em !important;
+    text-transform: uppercase !important;
+    text-align: left !important;
+    white-space: normal !important;
+    position: static !important;
+  }
+
+  #mob-panel.sso-mobile-shop a.mob-nav-item,
+  #mob-panel a.mob-nav-item { grid-template-columns: 42px minmax(0, 1fr) !important; }
+
+  #mob-panel.sso-mobile-shop .mob-nav-icon,
+  #mob-panel .mob-nav-icon {
+    width: 42px !important;
+    height: 42px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 14px !important;
+    color: #cfe4ff !important;
+    background: rgba(255, 255, 255, .09) !important;
+    border: 1px solid rgba(195, 220, 255, .14) !important;
+    box-shadow: none !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-nav-item > span,
+  #mob-panel .mob-nav-item > span,
+  #mob-panel.sso-mobile-shop .mob-nav-label,
+  #mob-panel .mob-nav-label {
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-toggle-arrow,
+  #mob-panel.sso-mobile-shop .mob-areas-arrow,
+  #mob-panel .mob-toggle-arrow,
+  #mob-panel .mob-areas-arrow {
+    width: 18px !important;
+    height: 18px !important;
+    color: #cfe4ff !important;
+    transition: transform .18s ease !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-nav-item.open,
+  #mob-panel .mob-nav-item.open,
+  #mob-panel.sso-mobile-shop .mob-nav-item:focus-visible,
+  #mob-panel .mob-nav-item:focus-visible {
+    background: rgba(7, 27, 58, .28) !important;
+    border-color: rgba(159, 200, 255, .36) !important;
+    outline: 2px solid rgba(159, 200, 255, .32) !important;
+    outline-offset: 2px !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-services-panel,
+  #mob-panel.sso-mobile-shop .mob-airport-panel,
+  #mob-panel.sso-mobile-shop .mob-areas-panel,
+  #mob-panel .mob-services-panel,
+  #mob-panel .mob-airport-panel,
+  #mob-panel .mob-areas-panel,
+  #mob-panel.sso-mobile-shop .mob-submenu,
+  #mob-panel .mob-submenu {
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    display: none !important;
+    width: 100% !important;
+    margin: 0 0 8px !important;
+    padding: 9px !important;
+    border-radius: 18px !important;
+    background: rgba(2, 13, 31, .42) !important;
+    border: 1px solid rgba(195, 220, 255, .12) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.05) !important;
+    overflow: visible !important;
+    z-index: auto !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-services-panel.open,
+  #mob-panel.sso-mobile-shop .mob-airport-panel.open,
+  #mob-panel.sso-mobile-shop .mob-areas-panel.open,
+  #mob-panel .mob-services-panel.open,
+  #mob-panel .mob-airport-panel.open,
+  #mob-panel .mob-areas-panel.open,
+  #mob-panel.sso-mobile-shop .mob-submenu.open,
+  #mob-panel .mob-submenu.open {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-service-link,
+  #mob-panel.sso-mobile-shop .mob-airport-link,
+  #mob-panel.sso-mobile-shop .mob-areas-group a,
+  #mob-panel.sso-mobile-shop .mob-submenu a,
+  #mob-panel .mob-service-link,
+  #mob-panel .mob-airport-link,
+  #mob-panel .mob-areas-group a,
+  #mob-panel .mob-submenu a {
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    padding: 10px 14px !important;
+    border-radius: 13px !important;
+    color: #e7f2ff !important;
+    background: rgba(255, 255, 255, .045) !important;
+    text-decoration: none !important;
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+    font-weight: 800 !important;
+    letter-spacing: .015em !important;
+    text-transform: none !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    transform: none !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-service-link-title,
+  #mob-panel.sso-mobile-shop .mob-airport-label,
+  #mob-panel.sso-mobile-shop .mob-areas-group-label,
+  #mob-panel .mob-service-link-title,
+  #mob-panel .mob-airport-label,
+  #mob-panel .mob-areas-group-label {
+    color: #9fc8ff !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-trust-strip,
+  #mob-panel .mob-trust-strip {
+    position: static !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin: 14px 0 12px !important;
+    padding: 0 !important;
+    transform: none !important;
+    z-index: auto !important;
+    pointer-events: auto !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-trust-strip span,
+  #mob-panel .mob-trust-strip span {
+    min-width: 0 !important;
+    min-height: 48px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    padding: 7px 4px !important;
+    border-radius: 15px !important;
+    color: #dcecff !important;
+    background: rgba(255,255,255,.055) !important;
+    border: 1px solid rgba(195, 220, 255, .12) !important;
+    text-align: center !important;
+    font-size: 9.5px !important;
+    line-height: 1.12 !important;
+    font-weight: 900 !important;
+    letter-spacing: .045em !important;
+    text-transform: uppercase !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-footer,
+  #mob-panel .mob-footer {
+    position: static !important;
+    width: 100% !important;
+    padding: 0 0 4px !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border-top: 0 !important;
+    transform: none !important;
+    z-index: auto !important;
+  }
+
+  #mob-panel.sso-mobile-shop .mob-call-btn,
+  #mob-panel .mob-call-btn {
+    min-height: 56px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    border-radius: 19px !important;
+    color: #06142d !important;
+    background: linear-gradient(135deg, #ffffff 0%, #d9ecff 45%, #72aaff 100%) !important;
+    text-decoration: none !important;
+    font-size: 16px !important;
+    line-height: 1.1 !important;
+    font-weight: 950 !important;
+    letter-spacing: .07em !important;
+    box-shadow: 0 18px 36px rgba(0, 0, 0, .24) !important;
+    position: static !important;
+  }
+}
+
+@media (max-width: 380px) {
+  #mob-panel.sso-mobile-shop,
+  #mob-panel { padding-left: 12px !important; padding-right: 12px !important; }
+  #mob-panel.sso-mobile-shop .mob-shop-intro,
+  #mob-panel .mob-shop-intro { padding: 16px !important; border-radius: 21px !important; }
+  #mob-panel.sso-mobile-shop .mob-logo img,
+  #mob-panel .mob-logo img,
+  #mob-panel.sso-mobile-shop .mob-site-logo,
+  #mob-panel .mob-site-logo { max-width: 112px !important; max-height: 40px !important; }
+  #mob-panel.sso-mobile-shop .mob-nav-item,
+  #mob-panel .mob-nav-item { font-size: 13px !important; letter-spacing: .065em !important; }
+  #mob-panel.sso-mobile-shop .mob-trust-strip,
+  #mob-panel .mob-trust-strip { grid-template-columns: 1fr !important; }
+  #mob-panel.sso-mobile-shop .mob-trust-strip span,
+  #mob-panel .mob-trust-strip span { min-height: 38px !important; flex-direction: row !important; }
+}
+
+/* Fixed-header compatibility — keep open mobile drawer above pinned nav. */
+@media (max-width: 900px) {
+  #mob-panel.sso-mobile-shop,
+  #mob-panel {
+    z-index: 2147483400 !important;
+  }
+
+  #mob-panel.sso-mobile-shop.open,
+  #mob-panel.open {
+    z-index: 2147483400 !important;
+  }
+
+  .mob-overlay,
+  #mob-overlay,
+  .mobile-menu-overlay {
+    z-index: 2147483300 !important;
+  }
+}

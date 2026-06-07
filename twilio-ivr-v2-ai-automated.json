@@ -1,0 +1,813 @@
+{
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "Silver Taxi Sydney IVR - V2 Fully Automated AI Call Flow with Google Maps Verification",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "check_hours",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "check_hours",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "is_after_hours",
+          "event": "success"
+        },
+        {
+          "next": "welcome_ai_message",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 18,
+          "y": 80
+        },
+        "method": "GET",
+        "content_type": "application/x-www-form-urlencoded",
+        "add_twilio_auth": false,
+        "url": "https://silvertaxisydneyservice.com/api/check-hours"
+      }
+    },
+    {
+      "name": "is_after_hours",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "after_hours_say",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Is after hours",
+              "arguments": [
+                "{{widgets.check_hours.parsed.open}}"
+              ],
+              "type": "equal_to",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "next": "welcome_ai_message",
+          "event": "noMatch"
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_hours.parsed.open}}",
+        "offset": {
+          "x": 18,
+          "y": 220
+        }
+      }
+    },
+    {
+      "name": "after_hours_say",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "after_hours_sms",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": -591,
+          "y": 332
+        },
+        "loop": 1,
+        "say": "Thank you for calling Silver Taxi Sydney. We are currently closed. Please note we do not handle lost property, compliance, or driver-related inquiries on this line. For lost property, please call 1 3 1 0 0 8. For an advanced booking, we have sent you an SMS link to book online. Thank you.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "after_hours_sms",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "after_hours_goodbye",
+          "event": "sent"
+        },
+        {
+          "next": "sms_failed_message",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -300,
+          "y": 550
+        },
+        "service": "default",
+        "channel": "sms",
+        "from": "+19592144266",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "Silver Taxi Sydney: We are currently closed. For advanced bookings, please visit our website at https://silvertaxisydneyservice.com/book. For lost property call 131 008. Reply STOP to opt-out."
+      }
+    },
+    {
+      "name": "after_hours_goodbye",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": -300,
+          "y": 720
+        },
+        "loop": 1,
+        "say": "Goodbye.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "sms_failed_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "after_hours_goodbye",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": -100,
+          "y": 650
+        },
+        "loop": 1,
+        "say": "We encountered an issue sending the SMS. Please visit our website at https://silvertaxisydneyservice.com/book for online booking. Thank you.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "welcome_ai_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "ai_ask_pickup",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 18,
+          "y": 385
+        },
+        "loop": 1,
+        "say": "Thank you for calling Silver Taxi Sydney. I am an AI assistant ready to help you book a taxi. This line is for bookings only. For lost property or general inquiries, please call 1 3 1 0 0 8. Let me help you with your booking.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "ai_ask_pickup",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ai_verify_pickup",
+          "event": "speech"
+        },
+        {
+          "next": "ai_ask_pickup",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 500
+        },
+        "loop": 1,
+        "hints": "Sydney Airport, CBD, street, road, suburb, address",
+        "say": "Please say your pickup address or location.",
+        "language": "en-AU",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "ai_verify_pickup",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "ai_ask_dropoff",
+          "event": "success"
+        },
+        {
+          "next": "ai_pickup_not_found",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 300,
+          "y": 650
+        },
+        "method": "POST",
+        "content_type": "application/json",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{widgets.ai_ask_pickup.SpeechResult}}",
+            "key": "address"
+          }
+        ],
+        "url": "https://silvertaxisydneyservice.com/api/verify-location"
+      }
+    },
+    {
+      "name": "ai_pickup_not_found",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "ai_ask_pickup",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 500,
+          "y": 650
+        },
+        "loop": 1,
+        "say": "I could not find that location. Please try again with a suburb or landmark name.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "ai_ask_dropoff",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ai_verify_dropoff",
+          "event": "speech"
+        },
+        {
+          "next": "ai_ask_dropoff",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 800
+        },
+        "loop": 1,
+        "say": "Thank you. I heard pickup as {{widgets.ai_ask_pickup.SpeechResult}}. Now, where would you like to be dropped off?",
+        "language": "en-AU",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "ai_verify_dropoff",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "ai_calculate_fare",
+          "event": "success"
+        },
+        {
+          "next": "ai_dropoff_not_found",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 300,
+          "y": 950
+        },
+        "method": "POST",
+        "content_type": "application/json",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{widgets.ai_ask_dropoff.SpeechResult}}",
+            "key": "address"
+          }
+        ],
+        "url": "https://silvertaxisydneyservice.com/api/verify-location"
+      }
+    },
+    {
+      "name": "ai_dropoff_not_found",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "ai_ask_dropoff",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 500,
+          "y": 950
+        },
+        "loop": 1,
+        "say": "I could not find that location. Please try again with a suburb or landmark name.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "ai_calculate_fare",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "ai_confirm_fare",
+          "event": "success"
+        },
+        {
+          "next": "ai_fare_error",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 300,
+          "y": 1100
+        },
+        "method": "POST",
+        "content_type": "application/json",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{widgets.ai_ask_pickup.SpeechResult}}",
+            "key": "pickup"
+          },
+          {
+            "value": "{{widgets.ai_ask_dropoff.SpeechResult}}",
+            "key": "dropoff"
+          },
+          {
+            "value": "sedan",
+            "key": "vehicle"
+          }
+        ],
+        "url": "https://silvertaxisydneyservice.com/api/fare"
+      }
+    },
+    {
+      "name": "ai_fare_error",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "ai_ask_pickup",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 500,
+          "y": 1100
+        },
+        "loop": 1,
+        "say": "I could not calculate the fare for this route. This location may be outside our service area. Please call 1800 173 171 for assistance.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "ai_confirm_fare",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ai_confirm_decision",
+          "event": "keypress"
+        },
+        {
+          "next": "ai_confirm_decision",
+          "event": "speech"
+        },
+        {
+          "next": "ai_confirm_fare",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 1250
+        },
+        "loop": 1,
+        "say": "Your estimated fare from {{widgets.ai_ask_pickup.SpeechResult}} to {{widgets.ai_ask_dropoff.SpeechResult}} is {{widgets.ai_calculate_fare.parsed.total}} dollars. Press 1 to confirm and continue booking, or press 2 to cancel.",
+        "language": "en-AU",
+        "stop_gather": true,
+        "timeout": 10
+      }
+    },
+    {
+      "name": "ai_confirm_decision",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "ai_ask_date",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Confirm fare",
+              "arguments": [
+                "{{widgets.ai_confirm_fare.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "ai_cancelled",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Cancel booking",
+              "arguments": [
+                "{{widgets.ai_confirm_fare.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "ai_confirm_fare",
+          "event": "noMatch"
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.ai_confirm_fare.Digits}}",
+        "offset": {
+          "x": 300,
+          "y": 1400
+        }
+      }
+    },
+    {
+      "name": "ai_cancelled",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 600,
+          "y": 1400
+        },
+        "loop": 1,
+        "say": "Thank you for calling Silver Taxi Sydney. Goodbye.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "ai_ask_date",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ai_ask_time",
+          "event": "speech"
+        },
+        {
+          "next": "ai_ask_date",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 1550
+        },
+        "loop": 1,
+        "say": "What date would you like your pickup? Please say today, tomorrow, or a specific date.",
+        "language": "en-AU",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "ai_ask_time",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ai_ask_name",
+          "event": "speech"
+        },
+        {
+          "next": "ai_ask_time",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 1700
+        },
+        "loop": 1,
+        "say": "What time would you like your pickup? Please say the time, for example, 2 pm or 14 hundred hours.",
+        "language": "en-AU",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "ai_ask_name",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ai_ask_phone",
+          "event": "speech"
+        },
+        {
+          "next": "ai_ask_name",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 1850
+        },
+        "loop": 1,
+        "say": "What name should this booking be under?",
+        "language": "en-AU",
+        "timeout": 10
+      }
+    },
+    {
+      "name": "ai_ask_phone",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ai_final_confirmation",
+          "event": "keypress"
+        },
+        {
+          "next": "ai_ask_phone",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "number_of_digits": 10,
+        "offset": {
+          "x": 300,
+          "y": 2000
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "Please enter your 10 digit mobile number, then press hash.",
+        "language": "en-AU",
+        "stop_gather": false,
+        "timeout": 20
+      }
+    },
+    {
+      "name": "ai_final_confirmation",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ai_create_booking",
+          "event": "keypress"
+        },
+        {
+          "next": "ai_create_booking",
+          "event": "speech"
+        },
+        {
+          "next": "ai_final_confirmation",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 2150
+        },
+        "loop": 1,
+        "say": "Let me confirm your booking. Pickup from {{widgets.ai_ask_pickup.SpeechResult}} to {{widgets.ai_ask_dropoff.SpeechResult}} on {{widgets.ai_ask_date.SpeechResult}} at {{widgets.ai_ask_time.SpeechResult}} under the name {{widgets.ai_ask_name.SpeechResult}}. Press 1 to confirm, or press 2 to cancel.",
+        "language": "en-AU",
+        "stop_gather": true,
+        "timeout": 10
+      }
+    },
+    {
+      "name": "ai_create_booking",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "ai_submit_booking",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Final confirm",
+              "arguments": [
+                "{{widgets.ai_final_confirmation.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "ai_cancelled",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Final cancel",
+              "arguments": [
+                "{{widgets.ai_final_confirmation.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "ai_final_confirmation",
+          "event": "noMatch"
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.ai_final_confirmation.Digits}}",
+        "offset": {
+          "x": 300,
+          "y": 2300
+        }
+      }
+    },
+    {
+      "name": "ai_submit_booking",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "ai_send_sms",
+          "event": "success"
+        },
+        {
+          "next": "ai_booking_failed",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 300,
+          "y": 2450
+        },
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{widgets.ai_ask_name.SpeechResult}}",
+            "key": "name"
+          },
+          {
+            "value": "{{widgets.ai_ask_phone.Digits}}",
+            "key": "phone"
+          },
+          {
+            "value": "{{widgets.ai_ask_pickup.SpeechResult}}",
+            "key": "pickup"
+          },
+          {
+            "value": "{{widgets.ai_ask_dropoff.SpeechResult}}",
+            "key": "destination"
+          },
+          {
+            "value": "{{widgets.ai_ask_date.SpeechResult}}",
+            "key": "date"
+          },
+          {
+            "value": "{{widgets.ai_ask_time.SpeechResult}}",
+            "key": "time"
+          },
+          {
+            "value": "sedan",
+            "key": "vehicle"
+          },
+          {
+            "value": "VOICE-AI-{{flow.execution.sid}}",
+            "key": "bookingRef"
+          },
+          {
+            "value": "silver-ai",
+            "key": "site"
+          }
+        ],
+        "url": "https://silvertaxisydneyservice.com/api/booking"
+      }
+    },
+    {
+      "name": "ai_send_sms",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "ai_booking_success",
+          "event": "sent"
+        },
+        {
+          "next": "ai_booking_success",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 300,
+          "y": 2600
+        },
+        "service": "default",
+        "channel": "sms",
+        "from": "+19592144266",
+        "message_type": "custom",
+        "to": "{{widgets.ai_ask_phone.Digits}}",
+        "body": "Booking confirmed for Silver Taxi Sydney\nReference: VOICE-AI-{{flow.execution.sid}}\nPickup: {{widgets.ai_ask_pickup.SpeechResult}}\nDate: {{widgets.ai_ask_date.SpeechResult}}\nTime: {{widgets.ai_ask_time.SpeechResult}}\nFor lost property call 131 008."
+      }
+    },
+    {
+      "name": "ai_booking_success",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 300,
+          "y": 2750
+        },
+        "loop": 1,
+        "say": "Your booking has been confirmed. We have sent you an SMS with your booking reference. For lost property, call 1 3 1 0 0 8. Thank you for choosing Silver Taxi Sydney. Goodbye.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "ai_booking_failed",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 600,
+          "y": 2750
+        },
+        "loop": 1,
+        "say": "I could not complete your booking. Please call 1800 173 171 to speak with our team. Thank you.",
+        "language": "en-AU"
+      }
+    }
+  ]
+}

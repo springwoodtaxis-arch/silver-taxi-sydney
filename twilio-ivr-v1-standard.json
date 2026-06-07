@@ -1,0 +1,797 @@
+{
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  },
+  "description": "Silver Taxi Sydney IVR - V1 Standard - Greeting Updated to Silver Taxi Sydney",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "check_hours",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "check_hours",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "is_after_hours",
+          "event": "success"
+        },
+        {
+          "next": "welcome_message",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 18,
+          "y": 80
+        },
+        "method": "GET",
+        "content_type": "application/x-www-form-urlencoded",
+        "add_twilio_auth": false,
+        "url": "https://silver-ivr-5202.twil.io/check-hours"
+      }
+    },
+    {
+      "name": "is_after_hours",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "after_hours_say",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Is after hours",
+              "arguments": [
+                "{{widgets.check_hours.parsed.open}}"
+              ],
+              "type": "equal_to",
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "next": "welcome_message",
+          "event": "noMatch"
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_hours.parsed.open}}",
+        "offset": {
+          "x": 18,
+          "y": 220
+        }
+      }
+    },
+    {
+      "name": "after_hours_say",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "after_hours_sms",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": -591,
+          "y": 332
+        },
+        "loop": 1,
+        "say": "Thank you for calling Silver Taxi Sydney. We are currently closed. Please note we do not handle lost property, compliance, or driver-related inquiries on this line. For lost property, please call 1 3 1 0 0 8. For an advanced booking, we have sent you an SMS link to book online. Thank you.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "after_hours_sms",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "after_hours_goodbye",
+          "event": "sent"
+        },
+        {
+          "next": "sms_failed_message",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -300,
+          "y": 550
+        },
+        "service": "default",
+        "channel": "sms",
+        "from": "+19592144266",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "Silver Taxi Sydney: We are currently closed. For advanced bookings, please visit our website at https://silvertaxisydneyservice.com/book. For lost property call 131 008. Reply STOP to opt-out."
+      }
+    },
+    {
+      "name": "after_hours_goodbye",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": -300,
+          "y": 720
+        },
+        "loop": 1,
+        "say": "Goodbye.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "sms_failed_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "after_hours_goodbye",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": -100,
+          "y": 650
+        },
+        "loop": 1,
+        "say": "We encountered an issue sending the SMS. Please visit our website at https://silvertaxisydneyservice.com/book for online booking. Thank you.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "welcome_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "call_agents",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 18,
+          "y": 385
+        },
+        "loop": 1,
+        "say": "Thank you for calling Silver Taxi Sydney. For bookings, please hold while I connect you with our team. Please note, this line is for bookings only. We do not handle lost property, compliance, or driver-related inquiries. For lost property or general inquiries, please call 1 3 1 0 0 8.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "call_agents",
+      "type": "connect-call-to",
+      "transitions": [
+        {
+          "next": "ivr_offer",
+          "event": "callCompleted"
+        },
+        {
+          "event": "hangup"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 25,
+          "y": 570
+        },
+        "caller_id": "{{contact.channel.address}}",
+        "record": true,
+        "noun": "number-multi",
+        "to": "+61435336341",
+        "timeout": 15
+      }
+    },
+    {
+      "name": "ivr_offer",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ivr_route_choice",
+          "event": "keypress"
+        },
+        {
+          "next": "ivr_route_choice",
+          "event": "speech"
+        },
+        {
+          "next": "ivr_timeout_message",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 0,
+          "y": 730
+        },
+        "hints": "book, booking, phone booking, one, online booking, website, link, two",
+        "finish_on_key": "#",
+        "say": "Our team is unavailable right now. Press 1 to continue your booking by phone. Press 2 to receive an SMS link to our online booking form. Remember, for lost property call 1 3 1 0 0 8.",
+        "language": "en-AU",
+        "stop_gather": true,
+        "speech_model": "default",
+        "timeout": 8,
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "loop": 1,
+        "gather_language": "en"
+      }
+    },
+    {
+      "name": "ivr_timeout_message",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "send_booking_link_sms",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": -88,
+          "y": 173
+        },
+        "loop": 1,
+        "say": "I did not receive a selection. I will send you an SMS link to complete your booking online. Goodbye.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "ivr_route_choice",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "ask_pickup",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Press 1",
+              "arguments": [
+                "{{widgets.ivr_offer.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "send_booking_link_sms",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Press 2",
+              "arguments": [
+                "{{widgets.ivr_offer.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "send_booking_link_sms",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Say online",
+              "arguments": [
+                "{{widgets.ivr_offer.SpeechResult}}"
+              ],
+              "type": "contains",
+              "value": "online"
+            }
+          ]
+        },
+        {
+          "next": "ivr_invalid_choice",
+          "event": "noMatch"
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.ivr_offer.Digits}}",
+        "offset": {
+          "x": 0,
+          "y": 900
+        }
+      }
+    },
+    {
+      "name": "ivr_invalid_choice",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "ivr_offer",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 150,
+          "y": 815
+        },
+        "loop": 1,
+        "say": "Sorry, I did not catch that. Please choose 1 for phone booking, or 2 for an SMS booking link.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "ask_pickup",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ask_dropoff",
+          "event": "speech"
+        },
+        {
+          "next": "ask_pickup",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 900
+        },
+        "loop": 1,
+        "hints": "Sydney Airport, CBD, street, road, suburb",
+        "say": "Please say the full pickup address or landmark.",
+        "language": "en-AU",
+        "timeout": 8
+      }
+    },
+    {
+      "name": "ask_dropoff",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ask_date",
+          "event": "speech"
+        },
+        {
+          "next": "ask_dropoff",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 1075
+        },
+        "loop": 1,
+        "say": "Thanks. I heard pickup as {{widgets.ask_pickup.SpeechResult}}. Now please say the drop-off address.",
+        "language": "en-AU",
+        "timeout": 8
+      }
+    },
+    {
+      "name": "ask_date",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ask_time",
+          "event": "speech"
+        },
+        {
+          "next": "ask_date",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 52,
+          "y": 1138
+        },
+        "loop": 1,
+        "say": "Got it. Please say the pickup date.",
+        "language": "en-AU",
+        "timeout": 8
+      }
+    },
+    {
+      "name": "ask_time",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ask_vehicle",
+          "event": "speech"
+        },
+        {
+          "next": "ask_time",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 52,
+          "y": 1308
+        },
+        "loop": 1,
+        "say": "And the pickup time?",
+        "language": "en-AU",
+        "timeout": 8
+      }
+    },
+    {
+      "name": "ask_vehicle",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ask_name",
+          "event": "keypress"
+        },
+        {
+          "next": "ask_name",
+          "event": "speech"
+        },
+        {
+          "next": "ask_vehicle",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 52,
+          "y": 1478
+        },
+        "loop": 1,
+        "hints": "standard, maxi, silver service",
+        "say": "For a standard taxi, press 1. For a maxi taxi, press 2. For a silver service taxi, press 3.",
+        "language": "en-AU",
+        "stop_gather": true,
+        "timeout": 8
+      }
+    },
+    {
+      "name": "ask_name",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "ask_mobile",
+          "event": "speech"
+        },
+        {
+          "next": "ask_name",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 1750
+        },
+        "loop": 1,
+        "say": "Great. What name should this booking be under?",
+        "language": "en-AU",
+        "timeout": 8
+      }
+    },
+    {
+      "name": "ask_mobile",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "confirm_booking",
+          "event": "keypress"
+        },
+        {
+          "next": "ask_mobile",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "number_of_digits": 10,
+        "offset": {
+          "x": 600,
+          "y": 1920
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "say": "Enter your 10 digit mobile number on the keypad, then press hash.",
+        "language": "en-AU",
+        "stop_gather": false,
+        "timeout": 20
+      }
+    },
+    {
+      "name": "confirm_booking",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "booking_decision",
+          "event": "keypress"
+        },
+        {
+          "next": "booking_decision",
+          "event": "speech"
+        },
+        {
+          "next": "confirm_booking",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 300,
+          "y": 2090
+        },
+        "loop": 1,
+        "say": "To confirm your booking, press 1 or say confirm. To start again, press 2.",
+        "language": "en-AU",
+        "stop_gather": true,
+        "timeout": 10
+      }
+    },
+    {
+      "name": "booking_decision",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "create_booking",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Confirm 1",
+              "arguments": [
+                "{{widgets.confirm_booking.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "next": "welcome_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "Restart 2",
+              "arguments": [
+                "{{widgets.confirm_booking.Digits}}"
+              ],
+              "type": "equal_to",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "next": "confirm_booking",
+          "event": "noMatch"
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.confirm_booking.Digits}}",
+        "offset": {
+          "x": 300,
+          "y": 2260
+        }
+      }
+    },
+    {
+      "name": "create_booking",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "send_sms_customer",
+          "event": "success"
+        },
+        {
+          "next": "booking_failed",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 300,
+          "y": 2430
+        },
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{widgets.ask_name.SpeechResult}}",
+            "key": "name"
+          },
+          {
+            "value": "{{widgets.ask_mobile.Digits}}",
+            "key": "phone"
+          },
+          {
+            "value": "{{widgets.ask_pickup.SpeechResult}}",
+            "key": "pickup"
+          },
+          {
+            "value": "{{widgets.ask_dropoff.SpeechResult}}",
+            "key": "destination"
+          },
+          {
+            "value": "{{widgets.ask_date.SpeechResult}}",
+            "key": "date"
+          },
+          {
+            "value": "{{widgets.ask_time.SpeechResult}}",
+            "key": "time"
+          },
+          {
+            "value": "{{widgets.ask_vehicle.Digits}}",
+            "key": "vehicle"
+          },
+          {
+            "value": "VOICE-{{flow.execution.sid}}",
+            "key": "bookingRef"
+          },
+          {
+            "value": "silver",
+            "key": "site"
+          }
+        ],
+        "url": "https://silvertaxisydneyservice.com/api/booking"
+      }
+    },
+    {
+      "name": "send_sms_customer",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "booking_success",
+          "event": "sent"
+        },
+        {
+          "next": "booking_success",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 300,
+          "y": 2600
+        },
+        "service": "default",
+        "channel": "sms",
+        "from": "+19592144266",
+        "message_type": "custom",
+        "to": "{{widgets.ask_mobile.Digits}}",
+        "body": "Booking confirmed for Silver Taxi Sydney\nReference: VOICE-{{flow.execution.sid}}\nPickup: {{widgets.ask_pickup.SpeechResult}}\nDate: {{widgets.ask_date.SpeechResult}}\nTime: {{widgets.ask_time.SpeechResult}}\nFor lost property call 131 008."
+      }
+    },
+    {
+      "name": "booking_success",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 300,
+          "y": 2940
+        },
+        "loop": 1,
+        "say": "Thank you. Your booking has been confirmed. For lost property, call 1 3 1 0 0 8. Goodbye.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "booking_failed",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "send_booking_link_sms",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": 600,
+          "y": 2940
+        },
+        "loop": 1,
+        "say": "I could not complete your booking automatically. I will send you an SMS link to finish online.",
+        "language": "en-AU"
+      }
+    },
+    {
+      "name": "send_booking_link_sms",
+      "type": "send-message",
+      "transitions": [
+        {
+          "next": "booking_link_sent",
+          "event": "sent"
+        },
+        {
+          "next": "sms_failed_message",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -250,
+          "y": 2430
+        },
+        "service": "default",
+        "channel": "sms",
+        "from": "+19592144266",
+        "message_type": "custom",
+        "to": "{{contact.channel.address}}",
+        "body": "Silver Taxi Sydney: Book online at https://silvertaxisydneyservice.com/book. For lost property call 131 008. Reply STOP to opt-out."
+      }
+    },
+    {
+      "name": "booking_link_sent",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "voice": "Polly.Olivia-Neural",
+        "offset": {
+          "x": -250,
+          "y": 2600
+        },
+        "loop": 1,
+        "say": "I have sent you an SMS with the online booking link. Goodbye.",
+        "language": "en-AU"
+      }
+    }
+  ]
+}

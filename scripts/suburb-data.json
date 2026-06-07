@@ -1,0 +1,216 @@
+{
+  "councils": [
+    {
+      "slug": "city-of-sydney",
+      "name": "City of Sydney",
+      "priority": 1,
+      "suburbs": ["sydney-cbd", "surry-hills", "darlinghurst", "potts-point", "woolloomooloo", "elizabeth-bay", "rushcutters-bay", "kings-cross", "haymarket", "ultimo", "pyrmont", "glebe", "chippendale", "redfern", "waterloo", "zetland", "rosebery", "beaconsfield", "alexandria", "erskineville", "newtown", "camperdown", "forest-lodge", "annandale", "dawes-point", "the-rocks", "millers-point", "barangaroo", "darling-harbour", "moore-park", "centennial-park"]
+    },
+    {
+      "slug": "parramatta",
+      "name": "City of Parramatta",
+      "priority": 1,
+      "suburbs": ["parramatta", "harris-park", "rosehill", "granville", "merrylands", "westmead", "northmead", "north-parramatta", "old-toongabbie", "toongabbie", "constitution-hill", "wentworthville", "pendle-hill", "oatlands", "dundas", "dundas-valley", "telopea", "carlingford", "epping", "ermington", "rydalmere", "camellia", "silverwater", "newington", "wentworth-point", "olympic-park", "sydney-olympic-park"]
+    },
+    {
+      "slug": "blacktown",
+      "name": "City of Blacktown",
+      "priority": 1,
+      "suburbs": ["blacktown", "seven-hills", "toongabbie", "prospect", "lalor-park", "kings-langley", "doonside", "woodcroft", "plumpton", "rooty-hill", "mount-druitt", "emerton", "lethbridge-park", "tregear", "dharruk", "hebersham", "bidwill", "shalvey", "willmot", "oakhurst", "glendenning", "quakers-hill", "acacia-gardens", "stanhope-gardens", "parklea", "kellyville-ridge", "the-ponds", "rouse-hill", "riverstone", "schofields", "marsden-park", "elara"]
+    },
+    {
+      "slug": "canterbury-bankstown",
+      "name": "City of Canterbury-Bankstown",
+      "priority": 1,
+      "suburbs": ["bankstown", "bass-hill", "chester-hill", "sefton", "birrong", "regents-park", "potts-hill", "yagoona", "condell-park", "revesby", "padstow", "panania", "milperra", "east-hills", "picnic-point", "lansdowne", "canterbury", "campsie", "belmore", "lakemba", "wiley-park", "punchbowl", "roselands", "beverly-hills", "narwee", "kingsgrove", "earlwood", "clemton-park", "hurlstone-park"]
+    },
+    {
+      "slug": "liverpool",
+      "name": "City of Liverpool",
+      "priority": 1,
+      "suburbs": ["liverpool", "casula", "lurnea", "moorebank", "chipping-norton", "hammondville", "holsworthy", "wattle-grove", "voyager-point", "pleasure-point", "sandy-point", "warwick-farm", "hinchinbrook", "hoxton-park", "green-valley", "miller", "cartwright", "sadleir", "ashcroft", "busby", "prestons", "edmondson-park", "leppington", "austral", "cecil-hills", "horningsea-park", "west-hoxton"]
+    },
+    {
+      "slug": "cumberland",
+      "name": "Cumberland City Council",
+      "priority": 1,
+      "suburbs": ["auburn", "lidcombe", "berala", "regents-park", "rookwood", "south-granville", "guildford", "guildford-west", "yennora", "fairfield-east", "merrylands", "merrylands-west", "holroyd", "greystanes", "pemulwuy", "girraween", "westmead", "wentworthville", "pendle-hill"]
+    },
+    {
+      "slug": "bayside",
+      "name": "Bayside Council",
+      "priority": 1,
+      "suburbs": ["mascot", "eastgardens", "botany", "banksmeadow", "pagewood", "hillsdale", "daceyville", "eastlakes", "rosebery", "rockdale", "arncliffe", "wolli-creek", "turrella", "bardwell-park", "bardwell-valley", "bexley", "bexley-north", "kingsgrove", "kogarah", "carlton", "allawah", "hurstville", "beverley-park", "sans-souci", "ramsgate", "monterey", "brighton-le-sands", "kyeemagh"]
+    },
+    {
+      "slug": "penrith",
+      "name": "City of Penrith",
+      "priority": 1,
+      "suburbs": ["penrith", "kingswood", "werrington", "cambridge-park", "jamisontown", "south-penrith", "glenmore-park", "emu-plains", "leonay", "emu-heights", "lapstone", "blaxland", "warragamba", "st-marys", "north-st-marys", "oxley-park", "colyton", "st-clair", "erskine-park", "jordan-springs", "cranebrook", "castlereagh", "agnes-banks", "londonderry", "llandilo", "mulgoa", "orchard-hills", "badgerys-creek"]
+    },
+    {
+      "slug": "fairfield",
+      "name": "City of Fairfield",
+      "priority": 2,
+      "suburbs": ["fairfield", "fairfield-west", "fairfield-heights", "fairfield-east", "cabramatta", "cabramatta-west", "canley-vale", "canley-heights", "villawood", "carramar", "lansdowne", "lansvale", "smithfield", "wetherill-park", "prairiewood", "bossley-park", "bonnyrigg", "bonnyrigg-heights", "edensor-park", "abbotsbury", "cecil-hills", "greenfield-park", "wakeley", "old-guildford", "yennora"]
+    },
+    {
+      "slug": "ryde",
+      "name": "City of Ryde",
+      "priority": 2,
+      "suburbs": ["ryde", "top-ryde", "west-ryde", "meadowbank", "gladesville", "putney", "tennyson-point", "denistone", "denistone-east", "denistone-west", "eastwood", "marsfield", "macquarie-park", "north-ryde", "macquarie-university", "chatswood-west"]
+    },
+    {
+      "slug": "burwood",
+      "name": "Burwood Council",
+      "priority": 2,
+      "suburbs": ["burwood", "burwood-heights", "enfield", "croydon", "croydon-park", "strathfield-south"]
+    },
+    {
+      "slug": "strathfield",
+      "name": "Strathfield Council",
+      "priority": 2,
+      "suburbs": ["strathfield", "strathfield-south", "homebush", "homebush-west", "greenacre"]
+    },
+    {
+      "slug": "sutherland-shire",
+      "name": "Sutherland Shire Council",
+      "priority": 2,
+      "suburbs": ["sutherland", "cronulla", "miranda", "caringbah", "caringbah-south", "gymea", "gymea-bay", "kirrawee", "jannali", "como", "oyster-bay", "bonnet-bay", "kareela", "sylvania", "sylvania-waters", "taren-point", "woolooware", "burraneer", "lilli-pilli", "port-hacking", "grays-point", "loftus", "engadine", "heathcote", "waterfall", "bundeena", "maianbar", "menai", "barden-ridge", "lucas-heights", "alfords-point", "bangor", "illawong"]
+    },
+    {
+      "slug": "northern-beaches",
+      "name": "Northern Beaches Council",
+      "priority": 2,
+      "suburbs": ["manly", "manly-vale", "fairlight", "balgowlah", "balgowlah-heights", "seaforth", "clontarf", "north-head", "dee-why", "brookvale", "curl-curl", "freshwater", "north-manly", "narrabeen", "collaroy", "collaroy-plateau", "cromer", "wheeler-heights", "mona-vale", "warriewood", "bayview", "newport", "avalon", "bilgola-plateau", "palm-beach", "whale-beach", "church-point", "ingleside", "terrey-hills", "belrose", "davidson", "frenchs-forest", "forestville", "killarney-heights", "allambie-heights"]
+    },
+    {
+      "slug": "hornsby",
+      "name": "Hornsby Shire Council",
+      "priority": 2,
+      "suburbs": ["hornsby", "hornsby-heights", "waitara", "wahroonga", "warrawee", "turramurra", "south-turramurra", "pymble", "west-pymble", "st-ives", "st-ives-chase", "gordon", "killara", "lindfield", "roseville", "roseville-chase", "east-killara", "east-lindfield", "north-epping", "pennant-hills", "thornleigh", "normanhurst", "beecroft", "cheltenham", "cherrybrook", "castle-hill", "west-pennant-hills", "asquith", "mount-colah", "mount-kuring-gai", "berowra", "berowra-heights", "galston", "arcadia", "dural"]
+    },
+    {
+      "slug": "randwick",
+      "name": "Randwick City Council",
+      "priority": 2,
+      "suburbs": ["randwick", "coogee", "south-coogee", "clovelly", "bronte", "waverley", "bondi-junction", "bondi", "bondi-beach", "tamarama", "maroubra", "malabar", "la-perouse", "little-bay", "chifley", "matraville", "kingsford", "kensington", "unsw"]
+    },
+    {
+      "slug": "campbelltown",
+      "name": "City of Campbelltown",
+      "priority": 2,
+      "suburbs": ["campbelltown", "ingleburn", "macquarie-fields", "glenfield", "minto", "leumeah", "airds", "bradbury", "ambarvale", "rosemeadow", "glen-alpine", "blair-athol", "ruse", "kentlyn", "woodbine", "eagle-vale", "eschol-park", "claymore", "blairmount", "st-helens-park", "gilead", "menangle-park"]
+    },
+    {
+      "slug": "camden",
+      "name": "Camden Council",
+      "priority": 2,
+      "suburbs": ["camden", "narellan", "narellan-vale", "currans-hill", "harrington-park", "mount-annan", "spring-farm", "elderslie", "oran-park", "leppington", "gregory-hills", "gledswood-hills", "catherine-field"]
+    },
+    {
+      "slug": "wollondilly",
+      "name": "Wollondilly Shire Council",
+      "priority": 2,
+      "suburbs": ["picton", "tahmoor", "thirlmere", "bargo", "the-oaks", "oakdale", "appin", "wilton", "douglas-park"]
+    },
+    {
+      "slug": "inner-west",
+      "name": "Inner West Council",
+      "priority": 2,
+      "suburbs": ["ashfield", "leichhardt", "balmain", "rozelle", "birchgrove", "lilyfield", "annandale", "stanmore", "petersham", "lewisham", "summer-hill", "dulwich-hill", "marrickville", "enmore", "tempe", "st-peters", "sydenham", "haberfield", "five-dock", "abbotsford", "drummoyne", "rodd-point", "russell-lea", "wareemba", "canada-bay", "concord", "concord-west", "rhodes", "mortlake", "cabarita"]
+    },
+    {
+      "slug": "north-sydney",
+      "name": "North Sydney Council",
+      "priority": 2,
+      "suburbs": ["north-sydney", "milsons-point", "kirribilli", "lavender-bay", "mcmahons-point", "wollstonecraft", "waverton", "crows-nest", "st-leonards", "cammeray", "neutral-bay", "cremorne", "cremorne-point"]
+    },
+    {
+      "slug": "willoughby",
+      "name": "City of Willoughby",
+      "priority": 2,
+      "suburbs": ["chatswood", "willoughby", "artarmon", "naremburn", "northbridge", "castlecrag", "middle-cove", "castle-cove"]
+    },
+    {
+      "slug": "ku-ring-gai",
+      "name": "Ku-ring-gai Council",
+      "priority": 2,
+      "suburbs": ["gordon", "pymble", "turramurra", "wahroonga", "warrawee", "killara", "lindfield", "roseville", "st-ives", "north-turramurra", "south-turramurra", "fox-valley"]
+    },
+    {
+      "slug": "lane-cove",
+      "name": "Lane Cove Council",
+      "priority": 2,
+      "suburbs": ["lane-cove", "lane-cove-north", "lane-cove-west", "longueville", "riverview", "greenwich", "hunters-hill", "woolwich"]
+    },
+    {
+      "slug": "hills-shire",
+      "name": "The Hills Shire Council",
+      "priority": 2,
+      "suburbs": ["castle-hill", "baulkham-hills", "bella-vista", "norwest", "kellyville", "the-ponds", "beaumont-hills", "rouse-hill", "box-hill", "nelson", "annangrove", "kenthurst", "glenhaven", "glenorie", "round-corner", "west-pennant-hills"]
+    },
+    {
+      "slug": "georges-river",
+      "name": "Georges River Council",
+      "priority": 2,
+      "suburbs": ["kogarah", "hurstville", "mortdale", "oatley", "penshurst", "peakhurst", "lugarno", "riverwood", "narwee", "beverly-hills", "kingsgrove", "carlton", "allawah", "blakehurst", "kyle-bay", "south-hurstville", "connells-point"]
+    },
+    {
+      "slug": "waverley",
+      "name": "Waverley Council",
+      "priority": 2,
+      "suburbs": ["bondi", "bondi-beach", "bondi-junction", "bronte", "tamarama", "queens-park", "waverley", "dover-heights", "vaucluse", "rose-bay", "north-bondi"]
+    },
+    {
+      "slug": "woollahra",
+      "name": "Woollahra Council",
+      "priority": 2,
+      "suburbs": ["double-bay", "rose-bay", "vaucluse", "watsons-bay", "bellevue-hill", "point-piper", "darling-point", "edgecliff", "woollahra", "paddington"]
+    },
+    {
+      "slug": "mosman",
+      "name": "Mosman Council",
+      "priority": 2,
+      "suburbs": ["mosman", "cremorne", "neutral-bay", "balmoral", "clifton-gardens", "beauty-point", "georges-heights"]
+    },
+    {
+      "slug": "wollongong",
+      "name": "City of Wollongong",
+      "priority": 2,
+      "suburbs": ["wollongong", "north-wollongong", "fairy-meadow", "towradgi", "corrimal", "balgownie", "mount-ousley", "keiraville", "gwynneville", "mangerton", "coniston", "figtree", "unanderra", "dapto", "berkeley", "port-kembla", "warrawong", "windang", "lake-illawarra", "barrack-heights", "shellharbour", "oak-flats", "albion-park", "albion-park-rail", "kiama", "gerringong", "berry", "bombo", "thirroul", "bulli", "austinmer", "coledale", "stanwell-park", "helensburgh", "otford", "scarborough", "wombarra"]
+    },
+    {
+      "slug": "central-coast",
+      "name": "Central Coast Council",
+      "priority": 2,
+      "suburbs": ["gosford", "east-gosford", "point-clare", "tascott", "koolewong", "woy-woy", "ettalong-beach", "umina-beach", "booker-bay", "blackwall", "kariong", "somersby", "wyoming", "narara", "niagara-park", "lisarow", "ourimbah", "tuggerah", "wyong", "the-entrance", "long-jetty", "toowoon-bay", "killarney-vale", "bateau-bay", "shelly-beach", "terrigal", "erina", "erina-heights", "green-point", "avoca-beach", "copacabana", "macmasters-beach", "saratoga", "davistown", "kincumber", "bensville", "empire-bay", "wamberal", "forresters-beach", "berkeley-vale", "lake-haven", "san-remo", "budgewoi", "noraville", "toukley"]
+    },
+    {
+      "slug": "blue-mountains",
+      "name": "Blue Mountains City Council",
+      "priority": 2,
+      "suburbs": ["katoomba", "leura", "wentworth-falls", "lawson", "hazelbrook", "woodford", "linden", "faulconbridge", "springwood", "valley-heights", "warrimoo", "blaxland", "glenbrook", "lapstone", "mount-victoria", "blackheath", "medlow-bath", "megalong-valley", "mount-riverview", "yellow-rock", "winmalee", "sun-valley"]
+    },
+    {
+      "slug": "hawkesbury",
+      "name": "Hawkesbury City Council",
+      "priority": 2,
+      "suburbs": ["windsor", "richmond", "north-richmond", "clarendon", "south-windsor", "mcgraths-hill", "pitt-town", "wilberforce", "freemans-reach", "glossodia", "kurrajong", "kurrajong-heights", "bilpin"]
+    }
+  ],
+  "airports": [
+    {
+      "slug": "sydney-airport",
+      "name": "Sydney Airport (Kingsford Smith)",
+      "code": "SYD",
+      "address": "Airport Drive, Mascot NSW 2020"
+    },
+    {
+      "slug": "western-sydney-airport",
+      "name": "Western Sydney International Airport",
+      "code": "WSI",
+      "address": "100 Eaton Rd, Luddenham NSW 2745"
+    }
+  ]
+}
