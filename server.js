@@ -4593,6 +4593,30 @@ try {
 } catch(e) {
   console.warn('   WARNING:  SEO intelligence scheduler not available:', e.message);
 }
+// -------------------- GitHub Webhook Auto-Deploy --------------------
+app.post('/api/deploy', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['x-hub-signature-256'] || '';
+  const secret = process.env.WEBHOOK_SECRET || 'springwood-deploy-2026';
+  const hmac = crypto.createHmac('sha256', secret);
+  hmac.update(req.body);
+  const digest = 'sha256=' + hmac.digest('hex');
+  let valid = false;
+  try { valid = crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(sig)); } catch {}
+  if (!valid) { return res.status(401).send('Unauthorized'); }
+  let payload;
+  try { payload = JSON.parse(req.body.toString()); } catch { return res.status(400).send('Bad JSON'); }
+  const branch = (payload.ref || '').replace('refs/heads/', '');
+  if (branch !== 'master') { return res.status(200).send('Skipped'); }
+  const { exec } = require('child_process');
+  const deployCmd = `export PATH=/opt/alt/alt-nodejs20/root/bin:$PATH && cd /home/u848559930/domains/silvertaxisydneyservice.com/nodejs && git pull origin master 2>&1 && npm install --production 2>&1 | tail -3 && touch tmp/restart.txt && echo done`;
+  exec(deployCmd, { timeout: 120000 }, (err, stdout) => {
+    if (err) { console.error('[Deploy]', err.message); return res.status(500).send('Failed'); }
+    console.log('[Deploy] silvertaxisydneyservice.com:', stdout.trim());
+    res.status(200).send('Deployed');
+  });
+  res.status(200).send('Deploying...');
+});
+
 // -------------------- Start --------------------
 app.listen(+CFG.PORT, () => {
   console.log(`\n Silver Taxi Sydney Service v2.0 running on port ${CFG.PORT}`);
