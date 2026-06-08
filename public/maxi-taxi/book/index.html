@@ -2,13 +2,6 @@
 
 <html lang="en">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-M3ZZ9C2W');</script>
-<!-- End Google Tag Manager -->
 <meta charset="utf-8"/>
 <title>Maxi Taxi Online Booking Sydney | Silver Service 7-11 Seater Booking</title>
 <meta content="Book a Maxi Taxi online with Silver Service Sydney for 7 to 11 seater airport transfers, family travel, cruise terminals, accessible requests and group transport." name="description"/>
@@ -251,50 +244,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .veh-img { width:80px; height:56px; }
 }
 </style>
-<!-- ═══ Google Tags: GTM + GA4 + Google Ads ═══ -->
-<!-- Google tag (gtag.js) — AW-18080291908 as primary for Google Ads verification -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-18080291908"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-18080291908');
-    gtag('config', 'G-7E4QMH007T');
-  </script>
-<!-- Google Ads Call Tracking -->
-<script>
-    function trackPhoneCall(source) {
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'conversion', {
-          'send_to': 'AW-18080291908/CuGTCLeh65kcEMS4ra1D',
-          'value': 1.0,
-          'currency': 'AUD'
-        });
-        gtag('event', 'ads_conversion_phone_call_lead', {
-          'send_to': 'AW-18080291908',
-          'value': 1.0,
-          'currency': 'AUD',
-          'event_label': source || 'website_call'
-        });
-        gtag('event', 'phone_call', {
-          'event_category': 'contact',
-          'event_label': source || 'website_call',
-          'value': 1
-        });
-      }
-      return true;
-    }
-  </script>
-<!-- End Google Tags -->
 <!-- reCAPTCHA v3 -->
 <script async="" defer="" src="https://www.google.com/recaptcha/enterprise.js?render=6Le_ac8sAAAAAD1xxGQjFphEWTkpp_xbtWa2kFop"></script>
 <link href="/mega-menu.css?v=10" rel="stylesheet"/>
 <link href="/mobile-menu.css?v=11" rel="stylesheet"/>
-</link></meta></meta></meta></head>
+</link></meta></meta></meta><script>
+function trackPhoneCall(source) {
+  return true;
+}
+</script>
+</head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-M3ZZ9C2W" style="display:none;visibility:hidden" width="0"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 <!-- TOP BAR -->
 <div class="top-bar">
 <div class="top-bar-inner">
@@ -1325,45 +1285,6 @@ function goStep(n) {
   document.getElementById('panel-' + n).classList.add('active');
   if (n === 4) populateSummary();
   window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  // GTM dataLayer push for each booking step
-  window.dataLayer = window.dataLayer || [];
-  if (n === 2) {
-    window.dataLayer.push({
-      'event': 'booking_step_2_location',
-      'booking_vehicle': state.vehicle,
-      'booking_vehicle_key': state.vehicleKey
-    });
-  } else if (n === 3) {
-    window.dataLayer.push({
-      'event': 'booking_step_3_passenger',
-      'booking_vehicle': state.vehicle,
-      'booking_pickup': state.pickup,
-      'booking_dropoff': state.dropoff,
-      'booking_date': state.date,
-      'booking_time': state.time,
-      'booking_passengers': state.passengers,
-      'booking_return_trip': state.returnTrip,
-      'booking_flight': state.flight,
-      'booking_km': state.km,
-      'booking_fare': state.fare ? state.fare.total : null
-    });
-  } else if (n === 4) {
-    window.dataLayer.push({
-      'event': 'booking_step_4_payment',
-      'booking_vehicle': state.vehicle,
-      'booking_pickup': state.pickup,
-      'booking_dropoff': state.dropoff,
-      'booking_date': state.date,
-      'booking_time': state.time,
-      'booking_passengers': state.passengers,
-      'booking_name': state.name,
-      'booking_phone': state.phone,
-      'booking_email': state.email,
-      'booking_fare': state.fare ? state.fare.total : null,
-      'booking_km': state.km
-    });
-  }
 }
 
 function validateStep(step) {
@@ -1597,49 +1518,6 @@ async function confirmBooking() {
     document.getElementById('conf-total').innerHTML = '<strong>$' + f.total.toFixed(2) + ' AUD</strong>';
     goStep(5);
     SSO.toast('Booking confirmed! Reference: #' + result.ref);
-    // Push full booking details to dataLayer for GTM
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      'event': 'booking_confirmed',
-      'booking_ref': result.ref,
-      'booking_vehicle': state.vehicle,
-      'booking_pickup': state.pickup,
-      'booking_dropoff': state.dropoff,
-      'booking_date': state.date,
-      'booking_time': state.time,
-      'booking_passengers': state.passengers,
-      'booking_name': state.name,
-      'booking_phone': state.phone,
-      'booking_email': state.email,
-      'booking_payment': state.payment,
-      'booking_fare': f.total,
-      'booking_fare_sub': f.sub,
-      'booking_tolls': f.tolls,
-      'booking_km': f.km,
-      'booking_currency': 'AUD',
-      'booking_flight': state.flight || '',
-      'booking_return_trip': state.returnTrip
-    });
-    // Fire Google Ads booking conversion immediately on successful booking
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'conversion', {
-        'send_to': 'AW-18080291908/CuGTCLeh65kcEMS4ra1D',
-        'value': f.total || 1.0,
-        'currency': 'AUD',
-        'transaction_id': result.ref
-      });
-      gtag('event', 'ads_conversion_booking_submission_lead', {
-        'send_to': 'AW-18080291908',
-        'value': f.total || 1.0,
-        'currency': 'AUD',
-        'transaction_id': result.ref
-      });
-      gtag('event', 'generate_lead', {
-        'currency': 'AUD',
-        'value': f.total || 1.0,
-        'transaction_id': result.ref
-      });
-    }
     // Fire threat-protection conversion signal (marks this device as a real customer)
     try { fetch('/api/threat/conversion', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ref: result.ref }) }); } catch(e){}
     // Redirect to thank-you page after 4 seconds so user sees confirmation then page-load conversion fires

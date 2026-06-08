@@ -30,20 +30,9 @@ SSO.toast = function(msg, type = 'success') {
   setTimeout(function() { el.classList.remove('show'); setTimeout(function() { el.remove(); }, 400); }, 3500);
 };
 
-// Safe fallback for pages that use the shared homepage header but do not define their own Google Ads call tracking helper.
+// Safe fallback for pages that use the shared homepage header but do not define their own call helper.
 if (typeof window.trackPhoneCall !== 'function') {
   window.trackPhoneCall = function(source) {
-    try {
-      if (typeof window.gtag === 'function') {
-        window.gtag('event', 'phone_call', {
-          event_category: 'contact',
-          event_label: source || 'website_call',
-          value: 1
-        });
-      }
-    } catch (e) {
-      console.warn('Phone call tracking fallback failed:', e);
-    }
     return true;
   };
 }

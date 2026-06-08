@@ -2,13 +2,6 @@
 
 <html lang="en">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-M3ZZ9C2W');</script>
-<!-- End Google Tag Manager -->
 <meta charset="utf-8"/>
 <title>Contact Silver Service Taxi Sydney 24/7 | Silver Taxi Sydney Service</title>
 <meta content="Contact Silver Taxi Sydney in Sydney anytime via 1800 173 171 for fast, reliable support. Book online or call now for expert assistance with bookings and fares." name="description"/>
@@ -492,26 +485,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .contact-info-strip { grid-template-columns: 1fr; }
 }
 </style>
-<!-- ═══ Google Tags: GTM + GA4 + Google Ads ═══ -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-18080291908"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-18080291908');
-  gtag('config', 'G-7E4QMH007T');
-</script>
-<script>
-  function trackPhoneCall(source) {
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'conversion', {'send_to': 'AW-18080291908/CuGTCLeh65kcEMS4ra1D', 'value': 1.0, 'currency': 'AUD'});
-      gtag('event', 'ads_conversion_phone_call_lead', {'send_to': 'AW-18080291908', 'value': 1.0, 'currency': 'AUD', 'event_label': source || 'website_call'});
-      gtag('event', 'phone_call', {'event_category': 'contact', 'event_label': source || 'website_call', 'value': 1});
-    }
-    return true;
-  }
-</script>
-<!-- End Google Tags -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -534,12 +507,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </script>
 <link href="/mega-menu.css?v=10" rel="stylesheet"/>
 <link href="/mobile-menu.css?v=11" rel="stylesheet"/>
+<script>
+function trackPhoneCall(source) {
+  return true;
+}
+</script>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-M3ZZ9C2W" style="display:none;visibility:hidden" width="0"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-<!-- Google Tag Manager (noscript) -->
 <!-- TOP BAR -->
 <div class="top-bar">
 <div class="top-bar-inner">
@@ -945,176 +919,6 @@ Book Your Taxi Now
 <div class="mob-footer"><a class="mob-call-btn" href="tel:1800173171" onclick="return trackPhoneCall('mobile-menu-footer')"><svg aria-hidden="true" viewbox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.64 2.62a2 2 0 0 1-.45 2.11L8.1 9.64a16 16 0 0 0 6 6l1.19-1.19a2 2 0 0 1 2.11-.45c.84.31 1.72.52 2.62.64A2 2 0 0 1 22 16.92z"></path></svg><span>1800 173 171</span></a></div>
 </div>
 <div id="mob-overlay"></div><script src="/mobile-menu.js?v=10"></script>
-<script>
-// Navbar scroll effect
-window.addEventListener('scroll', function() {
-  var nb = document.getElementById('navbar');
-  if (nb) nb.classList.toggle('scrolled', window.scrollY > 50);
-});
-
-// Intl Tel Input — default to Australia (+61)
-var phoneInput = document.getElementById('cf-phone');
-var iti = window.intlTelInput(phoneInput, {
-  initialCountry: 'au',
-  separateDialCode: true,
-  preferredCountries: ['au', 'nz', 'gb', 'us', 'ca', 'sg', 'hk', 'ae', 'in'],
-  utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23/build/js/utils.js'
-});
-
-// OTP state
-var cfOtpVerified = false;
-
-async function cfSendOTP() {
-  var phone = iti.getNumber();
-  if (!phone || !iti.isValidNumber()) {
-    SSO.toast('Please enter a valid phone number first', 'error');
-    document.getElementById('cf-phone').classList.add('error');
-    return;
-  }
-  document.getElementById('cf-phone').classList.remove('error');
-  var btn = document.getElementById('cf-send-otp-btn');
-  btn.disabled = true;
-  btn.textContent = 'Sending...';
-  var rcToken = '';
-  try { rcToken = await grecaptcha.enterprise.execute('6Le_ac8sAAAAAD1xxGQjFphEWTkpp_xbtWa2kFop', {action:'send_otp'}); } catch(e) {}
-  var data = await SSO.api('/api/send-otp', { phone: phone, recaptchaToken: rcToken });
-  btn.disabled = false;
-  if (data.success) {
-    btn.textContent = 'Resend';
-    document.getElementById('cf-otp-code-group').style.display = 'block';
-    SSO.toast('Verification code sent to ' + phone);
-  } else {
-    btn.textContent = 'Send Code';
-    SSO.toast(data.error || 'Failed to send code. Please try again.', 'error');
-  }
-}
-
-async function cfVerifyOTP() {
-  var phone = iti.getNumber();
-  var code  = document.getElementById('cf-otp-input').value.trim();
-  if (!code || code.length !== 6) {
-    SSO.toast('Please enter the 6-digit code', 'error');
-    return;
-  }
-  var data = await SSO.api('/api/verify-otp', { phone: phone, code: code });
-  if (data.success) {
-    cfOtpVerified = true;
-    document.getElementById('cf-otp-code-group').style.display = 'none';
-    document.getElementById('cf-send-otp-btn').style.display = 'none';
-    var badge = document.getElementById('cf-otp-verified');
-    badge.style.display = 'flex';
-    SSO.toast('Phone number verified!');
-  } else {
-    SSO.toast(data.error || 'Incorrect code. Please try again.', 'error');
-  }
-}
-
-// Enquiry type → show contextual link banner
-var enquirySelect = document.getElementById('enquiry-type');
-var banners = {
-  'receipt':        document.getElementById('banner-receipt'),
-  'fare-payment':   document.getElementById('banner-fare'),
-  'modify-booking': document.getElementById('banner-modify'),
-  'lost-property':  document.getElementById('banner-lost-property')
-};
-
-enquirySelect.addEventListener('change', function() {
-  Object.values(banners).forEach(function(b) { b.classList.remove('visible'); });
-  var val = this.value;
-  if (val && banners[val]) banners[val].classList.add('visible');
-});
-
-// Form submission
-document.getElementById('contact-submit').addEventListener('click', async function() {
-  // Gather values
-  var enquiryType = document.getElementById('enquiry-type').value;
-  var firstName   = document.getElementById('cf-first').value.trim();
-  var lastName    = document.getElementById('cf-last').value.trim();
-  var phone       = iti.getNumber(); // full international number e.g. +61412345678
-  var email       = document.getElementById('cf-email').value.trim();
-  var message     = document.getElementById('cf-message').value.trim();
-
-  // Clear previous errors
-  ['cf-first','cf-last','cf-phone','cf-email','cf-message'].forEach(function(id) {
-    document.getElementById(id).classList.remove('error');
-    var wrap = document.getElementById('phone-wrap');
-    if (wrap) wrap.classList.remove('error');
-  });
-  document.getElementById('enquiry-type').style.borderColor = '';
-
-  // Validate
-  var errors = false;
-  if (!enquiryType) {
-    document.getElementById('enquiry-type').style.borderColor = '#dc2626';
-    errors = true;
-  }
-  if (!firstName) { document.getElementById('cf-first').classList.add('error'); errors = true; }
-  if (!lastName)  { document.getElementById('cf-last').classList.add('error');  errors = true; }
-  if (!phone || !iti.isValidNumber()) {
-    document.getElementById('cf-phone').classList.add('error'); errors = true;
-  }
-  if (!cfOtpVerified) {
-    SSO.toast('Please verify your mobile number before submitting.', 'error');
-    errors = true;
-  }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    document.getElementById('cf-email').classList.add('error'); errors = true;
-  }
-  if (!message)   { document.getElementById('cf-message').classList.add('error'); errors = true; }
-
-  if (errors) {
-    SSO.toast('Please fill in all required fields.', 'error');
-    return;
-  }
-
-  // Show loading
-  var btn = document.getElementById('contact-submit');
-  btn.disabled = true;
-  document.getElementById('cf-btn-text').style.display = 'none';
-  document.getElementById('cf-btn-loading').style.display = 'flex';
-
-  // Submit
-  try {
-    var result = await SSO.api('/api/contact', {
-      firstName: firstName,
-      lastName:  lastName,
-      name:      firstName + ' ' + lastName,
-      phone:     phone,
-      email:     email,
-      emailAddr: email,
-      subject:   enquiryType,
-      enquiryType: enquiryType,
-      message:   message
-    });
-
-    if (result && result.success) {
-      // Hide all cards, show success
-      document.querySelectorAll('.contact-card').forEach(function(c) { c.style.display = 'none'; });
-      document.querySelector('.contact-info-strip').style.display = 'none';
-      var successEl = document.getElementById('contact-success');
-      successEl.style.display = 'block';
-      // GA4 conversion event
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'contact_form_submit', {
-          'event_category': 'contact',
-          'event_label': enquiryType,
-          'value': 1
-        });
-      }
-    } else {
-      SSO.toast('Something went wrong. Please call 1800 173 171.', 'error');
-      btn.disabled = false;
-      document.getElementById('cf-btn-text').style.display = '';
-      document.getElementById('cf-btn-loading').style.display = 'none';
-    }
-  } catch(e) {
-    SSO.toast('Network error. Please call 1800 173 171.', 'error');
-    btn.disabled = false;
-    document.getElementById('cf-btn-text').style.display = '';
-    document.getElementById('cf-btn-loading').style.display = 'none';
-  }
-});
-</script>
 <!-- Mobile menu -->
 <!-- Click Fraud
 </body>

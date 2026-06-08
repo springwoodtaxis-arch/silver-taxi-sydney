@@ -122,13 +122,6 @@ function loadContent(slug) {
 const HEAD_START = (title, desc, canonical, extraHead='') => `<!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-M3ZZ9C2W');</script>
-<!-- End Google Tag Manager -->
 <meta charset="utf-8"/>
 <title>${title}</title>
 <meta name="description" content="${desc}"/>
@@ -149,24 +142,6 @@ ${extraHead}
 <link href="/images/logo.png" rel="icon" type="image/png"/>
 <link href="/style.css?v=5" rel="stylesheet"/>
 <link rel="stylesheet" href="/mobile-menu.css?v=5">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18080291908"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'AW-18080291908');
-gtag('config', 'G-7E4QMH007T');
-</script>
-<script>
-function trackPhoneCall(source) {
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'conversion', {'send_to':'AW-18080291908/CuGTCLeh65kcEMS4ra1D','value':1.0,'currency':'AUD'});
-    gtag('event', 'phone_call', {'event_category':'contact','event_label':source||'website_call','value':1});
-  }
-  return true;
-}
-</script>
 <style>
 /* Location page specific styles */
 .loc-routes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:24px}
@@ -225,11 +200,14 @@ function trackPhoneCall(source) {
 .loc-internal-links a:hover{background:var(--blue,#144a8f);border-color:var(--blue,#144a8f);color:#fff}
 @media(max-width:820px){.loc-service-grid{grid-template-columns:1fr}}
 </style>
+<script>
+function trackPhoneCall(source) {
+  return true;
+}
+</script>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M3ZZ9C2W" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->`;
+`;
 
 const TOP_BAR = `<div class="top-bar">
 <div class="top-bar-inner">

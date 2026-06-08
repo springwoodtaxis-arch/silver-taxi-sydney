@@ -2,13 +2,6 @@
 
 <html lang="en">
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-M3ZZ9C2W');</script>
-<!-- End Google Tag Manager -->
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <title>Booking Confirmed – Silver Service Taxi Sydney</title>
@@ -160,89 +153,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       .ty-title { font-size: 1.65rem; }
     }
   </style>
-<!-- ═══ Google Tags: GTM + GA4 + Google Ads ═══ -->
-<!-- Google tag (gtag.js) — AW-18080291908 as primary for Google Ads verification -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-18080291908"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-18080291908');
-    gtag('config', 'G-7E4QMH007T');
-  </script>
-<!-- Google Ads Conversion on Page Load + Call Tracking -->
-<script>
-    // Push booking ref from URL to dataLayer for GTM
-    (function() {
-      var urlParams = new URLSearchParams(window.location.search);
-      var bookingRef = urlParams.get('ref') || '';
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        'event': 'thank_you_page_view',
-        'booking_ref': bookingRef,
-        'page_type': 'booking_confirmation'
-      });
-    })();
-
-    // Fire threat-protection conversion signal (fallback if book.html signal was missed)
-    (function(){
-      var urlParams = new URLSearchParams(window.location.search);
-      var ref = urlParams.get('ref') || '';
-      try { fetch('/api/threat/conversion', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ ref: ref, source: 'thank-you' }) }); } catch(e){}
-    })();
-
-    // Fire booking conversion immediately when thank-you page loads
-    window.addEventListener('load', function() {
-      if (typeof gtag !== 'undefined') {
-        // Primary Google Ads booking conversion
-        gtag('event', 'conversion', {
-          'send_to': 'AW-18080291908/CuGTCLeh65kcEMS4ra1D',
-          'value': 1.0,
-          'currency': 'AUD'
-        });
-        // GA4 booking confirmed event
-        gtag('event', 'booking_confirmed', {
-          'event_category': 'booking',
-          'event_label': 'online_booking',
-          'value': 1
-        });
-        // GA4 generate lead event
-        gtag('event', 'generate_lead', {
-          'currency': 'AUD',
-          'value': 1.0
-        });
-      }
-    });
-    function trackPhoneCall(source) {
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'conversion', {
-          'send_to': 'AW-18080291908/CuGTCLeh65kcEMS4ra1D',
-          'value': 1.0,
-          'currency': 'AUD'
-        });
-        gtag('event', 'ads_conversion_phone_call_lead', {
-          'send_to': 'AW-18080291908',
-          'value': 1.0,
-          'currency': 'AUD',
-          'event_label': source || 'website_call'
-        });
-        gtag('event', 'phone_call', {
-          'event_category': 'contact',
-          'event_label': source || 'website_call',
-          'value': 1
-        });
-      }
-      return true;
-    }
-  </script>
-<!-- End Google Tags -->
 <link href="/mega-menu.css?v=10" rel="stylesheet"/>
 <link href="/mobile-menu.css?v=11" rel="stylesheet"/>
+<script>
+function trackPhoneCall(source) {
+  return true;
+}
+</script>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-M3ZZ9C2W" style="display:none;visibility:hidden" width="0"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 <!-- TOP BAR -->
 <div class="top-bar">
 <div class="top-bar-inner">
