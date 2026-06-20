@@ -3982,3 +3982,27 @@ app.post('/api/verify-location', async (req, res) => {
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
+
+// -------------------- Deploy V2 (Token-based, fixes git remote) --------------------
+app.post('/api/deploy-v2', (req, res) => {
+  const token = req.headers['x-deploy-token'] || req.query.token || '';
+  const secret = process.env.WEBHOOK_SECRET || 'springwood-deploy-2026';
+  if (token !== secret) { return res.status(401).send('Unauthorized'); }
+  const { exec } = require('child_process');
+  const deployPath = '/home/u848559930/domains/silvertaxisydneyservice.com/nodejs';
+  const deployCmd = [
+    'export PATH=/opt/alt/alt-nodejs20/root/bin:/usr/bin:$PATH',
+    `cd ${deployPath}`,
+    'git remote set-url origin https://github.com/springwoodtaxis-arch/silver-taxi-sydney.git',
+    'git fetch origin master 2>&1',
+    'git reset --hard origin/master 2>&1',
+    'npm install --production 2>&1 | tail -3',
+    'touch tmp/restart.txt 2>/dev/null || true',
+    'echo DEPLOY_DONE'
+  ].join(' && ');
+  res.status(200).send('Deploying v2...');
+  exec(deployCmd, { timeout: 180000 }, (err, stdout, stderr) => {
+    if (err) { console.error('[Deploy-V2] Error:', err.message, stderr); return; }
+    console.log('[Deploy-V2] Done:', stdout.trim());
+  });
+});
