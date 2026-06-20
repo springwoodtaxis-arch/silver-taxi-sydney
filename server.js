@@ -156,7 +156,7 @@ const E = (k, fb = '') => {
 const CFG = {
   PORT:           process.env.PORT || E('PORT', '3000'),
   TWILIO_SID:     E('TWILIO_ACCOUNT_SID',  'AC65b51fa00bc719c38cad12b5f69b79b0'),
-  TWILIO_TOKEN:   E('TWILIO_AUTH_TOKEN',   'TWILIO_AUTH_TOKEN_SET_VIA_ENV'),
+  TWILIO_TOKEN:   E('TWILIO_AUTH_TOKEN'),
   TWILIO_FROM:    E('TWILIO_FROM_NUMBER',  '+19592144266'),
   SMTP_HOST:      E('SMTP_HOST',           'smtp.hostinger.com'),
   SMTP_PORT:      E('SMTP_PORT',           '465'),
@@ -165,7 +165,7 @@ const CFG = {
   ADMIN_EMAIL:    E('ADMIN_EMAIL',         'info@silvertaxisydneyservice.com'),
   ADMIN_PHONE:    E('ADMIN_PHONE',         '+61420439848'),
   ADMIN_PASSWORD: E('ADMIN_PASSWORD',      'Au6GE4Jo2;'),
-  STRIPE_SECRET:  E('STRIPE_SECRET_KEY',   'STRIPE_SECRET_KEY_SET_VIA_ENV'),
+  STRIPE_SECRET:  E('STRIPE_SECRET_KEY'),
   STRIPE_PK:      E('STRIPE_PK',           'pk_live_51T89nY0OeJ3KrNPPFOCXkxyXMOKrrmEKjlj5B8VWHTcC7BW9Cv1kO828v21EIugUGuMPMUhjMAjpz0aQfdPJ6hik00JMAOayCy'),
   TELEGRAM_TOKEN: E('TELEGRAM_BOT_TOKEN',  '8679067781:AAEH436Zpx4hmeHh04WGcbqlLc12R17wCEI'),
   TELEGRAM_CHAT:  E('TELEGRAM_CHAT_ID',    '-1003441151525'), // Added -100 prefix

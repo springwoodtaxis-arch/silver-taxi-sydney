@@ -52,7 +52,7 @@ In Hostinger hPanel, navigate to **Environment Variables** and set:
 ```
 # Twilio Configuration
 TWILIO_ACCOUNT_SID=AC65b51fa00bc719c38cad12b5f69b79b0
-TWILIO_AUTH_TOKEN=TWILIO_AUTH_TOKEN_SET_VIA_ENV
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
 TWILIO_FROM_NUMBER=+19592144266
 
 # SMTP Configuration (Hostinger)
@@ -67,7 +67,7 @@ ADMIN_PHONE=+61420439848
 ADMIN_PASSWORD=Au6GE4Jo2;
 
 # Stripe Configuration
-STRIPE_SECRET_KEY=STRIPE_SECRET_KEY_SET_VIA_ENV
+STRIPE_SECRET_KEY=your_stripe_secret_key_here
 STRIPE_PK=pk_live_51T89nY0OeJ3KrNPPFOCXkxyXMOKrrmEKjlj5B8VWHTcC7BW9Cv1kO828v21EIugUGuMPMUhjMAjpz0aQfdPJ6hik00JMAOayCy
 
 # Google Maps API

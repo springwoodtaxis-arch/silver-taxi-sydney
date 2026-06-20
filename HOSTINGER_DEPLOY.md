@@ -35,7 +35,7 @@ Go to [hpanel.hostinger.com](https://hpanel.hostinger.com) and log in.
 | `ADMIN_EMAIL` | `info@silvertaxisydneyservice.com` |
 | `ADMIN_PHONE` | `+61420439848` |
 | `ADMIN_PASSWORD` | `Au6GE4Jo2;` |
-| `STRIPE_SECRET_KEY` | `STRIPE_SECRET_KEY_SET_VIA_ENV` |
+| `STRIPE_SECRET_KEY` | `your_stripe_secret_key_here` |
 | `STRIPE_PK` | `pk_live_51T89nY0OeJ3KrNPPFOCXkxyXMOKrrmEKjlj5B8VWHTcC7BW9Cv1kO828v21EIugUGuMPMUhjMAjpz0aQfdPJ6hik00JMAOayCy` |
 | `MAPS_API_KEY` | `AIzaSyBrZTJSjvZP0YcvuAqLeSR0A5Y9OjyPxuM` |
 | `TELEGRAM_BOT_TOKEN` | `8679067781:AAEH436Zpx4hmeHh04WGcbqlLc12R17wCEI` |

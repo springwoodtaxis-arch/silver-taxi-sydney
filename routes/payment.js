@@ -9,13 +9,13 @@ try { QRCode = require('qrcode'); } catch(e) { console.warn('[QR] qrcode package
 const TOKEN_SECRET = process.env.JWT_SECRET || process.env.STRIPE_SECRET_KEY || 'ss-driver-pay-secret-2026';
 
 // ── Stripe ──
-const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY || 'STRIPE_SECRET_KEY_SET_VIA_ENV';
+const STRIPE_SECRET = process.env.STRIPE_SECRET_KEY;
 let stripe = null;
 try { stripe = require('stripe')(STRIPE_SECRET); } catch(e) {}
 
 // ── Twilio ──
 const TWILIO_SID   = process.env.TWILIO_ACCOUNT_SID  || 'AC65b51fa00bc719c38cad12b5f69b79b0';
-const TWILIO_TOKEN = process.env.TWILIO_AUTH_TOKEN    || 'TWILIO_AUTH_TOKEN_SET_VIA_ENV';
+const TWILIO_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_FROM  = process.env.TWILIO_FROM_NUMBER   || '+19592144266';
 let twilio = null;
 try { twilio = require('twilio')(TWILIO_SID, TWILIO_TOKEN); } catch(e) {}
