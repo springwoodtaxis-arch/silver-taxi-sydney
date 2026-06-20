@@ -2568,7 +2568,9 @@ app.get('/sitemap', (req, res) => {
 });
 
 // -------------------- SEO Dashboard Routes --------------------
-
+app.get('/api/seo/check-url', async (req, res) => {
+  const url = req.query.url;
+  if (!url) return res.status(400).json({ error: 'url required' });
   try {
     const response = await fetch(url, { headers: { 'User-Agent': 'SSO-SEO-Bot/1.0' }, signal: AbortSignal.timeout(8000) });
     const html = await response.text();
