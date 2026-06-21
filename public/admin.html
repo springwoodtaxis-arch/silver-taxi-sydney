@@ -1723,15 +1723,39 @@ document.getElementById('admin-booking-form').addEventListener('submit', async (
         btn.textContent = 'Create Booking';
         return;
       }
-      const { token, error } = await adminStripe.createToken(adminCardElement);
-      if (error) {
-        document.getElementById('admin-stripe-error').textContent = error.message;
-        document.getElementById('admin-stripe-error').style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Create Booking';
-        return;
-      }
-      finalData.stripeToken = token.id;
+      // Get PaymentIntent from server
+      const piResp = await fetch('/api/payment/intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          vehicle: finalData.vehicle,
+          km: finalData.km || 10,
+          tolls: finalData.tolls || 0,
+          returnTrip: false,
+          airportFee: finalData.airportFee || 0,
+          airportPickup: finalData.airportPickup || false,
+          pickup: finalData.pickup || '',
+          dropoff: finalData.dropoff || '',
+          date: finalData.date || '',
+          time: finalData.time || '',
+        })
+      });
+      const piData = await piResp.json();
+      if (!piData.clientSecret) throw new Error(piData.error || 'Could not create payment intent');
+      const { error: piError, paymentIntent } = await adminStripe.confirmCardPayment(piData.clientSecret, {
+        payment_method: { card: adminCardElement, billing_details: { name: finalData.name || 'Customer' } }
+      });
+      if (piError) throw new Error(piError.message);
+      finalData.stripePI = paymentIntent.id;
+      // Extract card details
+      try {
+        const ch = paymentIntent.charges && paymentIntent.charges.data && paymentIntent.charges.data[0];
+        const pmd = (ch && ch.payment_method_details) || paymentIntent.payment_method_details;
+        if (pmd && pmd.card) {
+          finalData.cardBrand = (pmd.card.brand || '').toUpperCase();
+          finalData.cardLast4 = pmd.card.last4 || '';
+        }
+      } catch(ce) { /* card details unavailable */ }
     }
     const res = await fetch('/api/admin/bookings', {
       method:'POST',

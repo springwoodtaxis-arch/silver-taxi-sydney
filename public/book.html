@@ -1042,7 +1042,7 @@ function trackPhoneCall(source) {
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Your Details
       </div>
-      <div class="step-sub">Step 3 of 5 — Phone verification required for SMS confirmation</div>
+      <div class="step-sub">Step 3 of 5 — Your details for booking confirmation for SMS confirmation</div>
 
       <div class="f-grid2">
         <div class="f-group">
@@ -1062,7 +1062,7 @@ function trackPhoneCall(source) {
           <div class="f-group" style="margin:0;flex:1">
             <input class="f-ctrl" id="pax-phone" type="tel" placeholder="+61 4XX XXX XXX or 04XX XXX XXX"/>
           </div>
-          <button class="otp-btn otp-btn-send" id="send-otp-btn" onclick="sendOTP()">Send Code</button>
+          
         </div>
         <div class="f-hint">Australian mobile required. A 6-digit SMS code will be sent.</div>
       </div>
@@ -1298,7 +1298,7 @@ const state = {
   name: '', email: '', phone: '', notes: '',
   payment: '',
   fare: null,
-  otpVerified: false,
+  otpVerified: true,  // OTP disabled
   stripePI: null,
   airportPickup: false,
   km: 0,
@@ -1440,7 +1440,7 @@ function validateStep(step) {
     const phone = document.getElementById('pax-phone').value.trim();
     if (!name) { toast('Please enter your full name', 'error'); return false; }
     if (!phone) { toast('Please enter your mobile number', 'error'); return false; }
-    if (!state.otpVerified) { toast('Please verify your phone number via SMS', 'error'); return false; }
+    // OTP check disabled
     state.name = name;
     state.email = document.getElementById('pax-email').value.trim();
     state.phone = formatPhone(phone);
@@ -2001,9 +2001,18 @@ async function confirmBooking() {
     }
     try {
       const piData = await api('/api/payment/intent', {
-        amount: Math.round((fare.total || 0) * 100),
+        vehicle: state.vehicleKey || state.vehicle || 'sedan',
+        km: fare.km || state.km || 0,
+        tolls: fare.tolls || 0,
+        returnTrip: state.returnTrip || false,
+        airportFee: fare.airportFee || 0,
+        airportPickup: state.airportPickup || false,
+        pickup: state.pickup,
+        dropoff: state.dropoff,
+        date: state.date,
+        time: state.time,
         currency: 'aud',
-        description: `Silver Service taxi: ${state.pickup} → ${state.dropoff}`,
+        description: `Silver Taxi Sydney: ${state.pickup} → ${state.dropoff}`,
       });
       if (piData.clientSecret) {
         const { error, paymentIntent } = await stripe.confirmCardPayment(piData.clientSecret, {
@@ -2016,6 +2025,15 @@ async function confirmBooking() {
           return;
         }
         state.stripePI = paymentIntent.id;
+        // Extract card details for receipt display
+        try {
+          const ch = paymentIntent.charges && paymentIntent.charges.data && paymentIntent.charges.data[0];
+          const pmd = (ch && ch.payment_method_details) || paymentIntent.payment_method_details;
+          if (pmd && pmd.card) {
+            state.cardBrand = (pmd.card.brand || '').toUpperCase();
+            state.cardLast4 = pmd.card.last4 || '';
+          }
+        } catch(ce) { /* card details unavailable */ }
       }
     } catch(e) {
       console.error('Stripe error:', e);
@@ -2032,6 +2050,7 @@ async function confirmBooking() {
     flight: state.flight, notes: state.notes,
     name: state.name, email: state.email, phone: state.phone,
     payment: state.payment, stripePI: state.stripePI,
+    cardBrand: state.cardBrand || '', cardLast4: state.cardLast4 || '',
     km: fare.km || state.km, tolls: fare.tolls || 0,
     airportFee: fare.airportFee || 0,
     airportPickup: state.airportPickup || false,

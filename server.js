@@ -915,9 +915,9 @@ app.post('/api/create-payment-intent', async (req, res) => {
 });
 
 app.post('/api/payment/intent', async (req, res) => {
-  const { vehicle, km, tolls, returnTrip, description, pickup = '', dropoff = '', date = '', time = '' } = req.body;
+  const { vehicle, km, tolls, returnTrip, description, pickup = '', dropoff = '', date = '', time = '', airportFee = 0, airportPickup = false } = req.body;
   // Always calculate as card payment since this endpoint is for online payment
-  const fare = calcFare(vehicle || 'sedan', +km || 0, +tolls || 0, returnTrip || false, 0, 0, 0, true);
+  const fare = calcFare(vehicle || 'sedan', +km || 0, +tolls || 0, returnTrip || false, airportPickup ? 6.10 : +(airportFee||0), 0, 0, true);
   // fare.total already includes 5% service fee — charge exactly that
   const amountCents = Math.round(fare.total * 100);
   if (!SVC.stripe) {
@@ -1882,25 +1882,11 @@ app.post('/api/admin/bookings', async (req, res) => {
       date = dt.toLocaleDateString('en-CA', { timeZone: 'Australia/Sydney' });
       time = dt.toLocaleTimeString('en-GB', { timeZone: 'Australia/Sydney', hour: '2-digit', minute: '2-digit', hour12: false });
     }
-    let fareAmt = parseFloat(d.estimatedFare) || 0;
+    let fareAmt = parseFloat(d.estimatedFare) || parseFloat(d.fare) || 0;
     let stripeChargeId = null;
-    if (d.payment === 'Card (Stripe)' && d.stripeToken && SVC.stripe) {
-      const cardFeeCents = Math.round(fareAmt * 100 * 0.05);
-      const amountCents = Math.round(fareAmt * 100) + cardFeeCents;
-      try {
-        const puSuburb3 = (pickup || '').split(',')[0].trim();
-        const doSuburb3 = (dropoff || '').split(',')[0].trim();
-        const charge = await SVC.stripe.charges.create({
-          amount: amountCents, currency: 'aud', source: d.stripeToken,
-          description: `Silver Taxi Sydney — ${puSuburb3} → ${doSuburb3} | ${date} at ${time}`,
-          metadata: { bookingRef: ref, pickup, dropoff, date, time }
-        });
-        stripeChargeId = charge.id;
-        console.log('[STRIPE] Admin charge:', charge.id, '| $' + (amountCents/100).toFixed(2));
-      } catch(stripeErr) {
-        console.error('[STRIPE] Charge failed:', stripeErr.message);
-        return res.status(400).json({ error: 'Card payment failed: ' + stripeErr.message });
-      }
+    if (d.payment === 'Card (Stripe)' && d.stripePI && SVC.stripe) {
+      console.log('[STRIPE] Admin booking with confirmed PaymentIntent:', d.stripePI);
+      stripeChargeId = d.stripePI;
     }
     const fareObj = {
       sub: fareAmt,
@@ -1915,7 +1901,7 @@ app.post('/api/admin/bookings', async (req, res) => {
       vehicleKey: d.vehicle || 'sedan',
       pickup, dropoff,
       pickupAddress: pickup, dropoffAddress: dropoff,
-      date, time, pickupDateTime: d.pickupDateTime || dt.toISOString(),
+      date, time, pickupDateTime: d.pickupDateTime || new Date().toISOString(),
       passengers: d.passengers || 1,
       returnTrip: false,
       flight: d.flightNumber || '', flightNumber: d.flightNumber || '',
@@ -1929,6 +1915,10 @@ app.post('/api/admin/bookings', async (req, res) => {
       fare: `$${fareAmt.toFixed(2)}`,
       status: d.status || 'confirmed',
       stripeChargeId: stripeChargeId || null,
+      stripePI: d.stripePI || stripeChargeId || null,
+      cardBrand: d.cardBrand || '',
+      cardLast4: d.cardLast4 || '',
+      paymentStatus: (d.stripePI || stripeChargeId) ? 'paid' : 'pending',
       created: new Date().toISOString(),
       createdAt: new Date().toISOString(),
     };
@@ -1985,7 +1975,7 @@ app.post('/api/admin/bookings', async (req, res) => {
 
     // Receipt email to customer (if email provided)
     if (b.email) {
-      await email(b.email, `Booking Confirmation #${b.ref} – Silver Taxi Sydney Service`, receiptHtml(b, fareObj), adminIcsAttach);
+      await email(b.email, `Booking Confirmation #${b.ref} – Silver Taxi Sydney Service`, (b.stripePI ? receiptHtml(b, fareObj) : bookingConfirmHtml(b, fareObj)), adminIcsAttach);
     }
 
     // Notification email to owner
@@ -3585,12 +3575,17 @@ app.get('/api/flight-info', async (req, res) => {
 app.get('*',                       page('index.html'));
 
 // -------------------- Email Templates --------------------
-function receiptHtml(b, fare) {
-  const now = new Date().toLocaleString('en-AU', {
-    timeZone:'Australia/Sydney', day:'2-digit', month:'2-digit',
-    year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true
-  });
-  // Format booking date/time nicely for confirmation message
+function bookingConfirmHtml(b, fare, brand = {}) {
+  if (!brand || !brand.name) brand = {
+    name: 'Silver Taxi Sydney',
+    tagline: 'Reliable Sydney Taxi Service',
+    website: 'https://silvertaxisydneyservice.com',
+    colorPrimary: '#A9A9A9',
+    colorSecondary: '#696969',
+    accentColor: '#00008B',
+    phone: '1800 173 171',
+    email: 'info@silvertaxisydneyservice.com',
+  };
   const bookingDtFmt = (() => {
     try {
       const [y,mo,d] = (b.date||'').split('-').map(Number);
@@ -3604,218 +3599,259 @@ function receiptHtml(b, fare) {
       return `${days[dt.getDay()]} ${d} ${months[mo-1]} ${y} at ${h12}${minStr} ${ampm}`;
     } catch(e) { return `${b.date} at ${b.time}`; }
   })();
-  const govtLevy = fare.govtLevy || 1.32;
-  const gst = +(fare.total / 11).toFixed(2);
-  const af = +(fare.airportFee || 0);
-  const serviceFee = fare.serviceFee || fare.cardFee || 0;
-  const subtotalFare = fare.subtotal || +(fare.total - serviceFee).toFixed(2);
-  const totalCharged = fare.total;
+  const primary = brand.colorPrimary || '#0f1f3d';
+  const secondary = brand.colorSecondary || '#144a8f';
+  const accent = brand.accentColor || '#d4a63c';
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f0f4f8;font-family:Arial,sans-serif;">
+<div style="max-width:560px;margin:24px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15);">
+  <div style="background:linear-gradient(135deg,${primary} 0%,${secondary} 100%);padding:20px 24px;text-align:center;">
+    <p style="color:#fff;font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.2em;margin:0 0 4px;">${brand.name || 'Silver Service Online'}</p>
+    <p style="color:rgba(255,255,255,.6);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 12px;">${brand.tagline || 'Premium Sydney Taxi Service'}</p>
+    <span style="display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;">BOOKING CONFIRMED</span>
+  </div>
+  <div style="padding:20px 24px;">
+    <p style="margin:0 0 16px;font-size:14px;color:#374151;">Dear <strong>${b.name || 'Valued Customer'}</strong>,</p>
+    <p style="margin:0 0 16px;font-size:13px;color:#374151;line-height:1.6;">Your booking has been confirmed. Please find your booking details below.</p>
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-size:13px;border-collapse:collapse;">
+      <tr><td style="padding:6px 0;color:#9ca3af;text-transform:uppercase;font-size:11px;letter-spacing:.06em;width:40%;">Booking Ref</td><td style="padding:6px 0;font-weight:700;color:${secondary};font-size:16px;">#${b.ref}</td></tr>
+      <tr><td style="padding:6px 0;color:#9ca3af;text-transform:uppercase;font-size:11px;letter-spacing:.06em;">Date &amp; Time</td><td style="padding:6px 0;font-weight:600;color:#374151;">${bookingDtFmt}</td></tr>
+      <tr><td style="padding:6px 0;color:#9ca3af;text-transform:uppercase;font-size:11px;letter-spacing:.06em;">Pick Up</td><td style="padding:6px 0;color:#374151;">${b.pickup || ''}</td></tr>
+      <tr><td style="padding:6px 0;color:#9ca3af;text-transform:uppercase;font-size:11px;letter-spacing:.06em;">Drop Off</td><td style="padding:6px 0;color:#374151;">${b.dropoff || ''}</td></tr>
+      <tr><td style="padding:6px 0;color:#9ca3af;text-transform:uppercase;font-size:11px;letter-spacing:.06em;">Vehicle</td><td style="padding:6px 0;color:#374151;">${b.vehicle || ''}</td></tr>
+      <tr><td style="padding:6px 0;color:#9ca3af;text-transform:uppercase;font-size:11px;letter-spacing:.06em;">Fare</td><td style="padding:6px 0;font-weight:700;color:#374151;">${b.fare || ('$' + fare.total.toFixed(2))} AUD</td></tr>
+      <tr><td style="padding:6px 0;color:#9ca3af;text-transform:uppercase;font-size:11px;letter-spacing:.06em;">Payment</td><td style="padding:6px 0;color:#374151;">${b.payment || 'Cash / EFTPOS'}</td></tr>
+      ${b.flight ? `<tr><td style="padding:6px 0;color:#9ca3af;text-transform:uppercase;font-size:11px;letter-spacing:.06em;">Flight</td><td style="padding:6px 0;color:#374151;">${b.flight}</td></tr>` : ''}
+    </table>
+    <div style="margin:20px 0;padding:14px 16px;background:#f0fdf4;border:1px solid #16a34a;border-radius:6px;">
+      <p style="margin:0;font-size:12px;color:#166534;line-height:1.5;">Your driver will meet you at the pickup location. For amendments or queries, please call <a href="tel:1800173171" style="color:#166534;font-weight:700;">1800 173 171</a> or email <a href="mailto:${brand.email || 'info@silverserviceonline.com.au'}" style="color:#166534;">${brand.email || 'info@silverserviceonline.com.au'}</a>.</p>
+    </div>
+  </div>
+  <div style="background:${primary};padding:16px 24px;text-align:center;">
+    <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.7);">${brand.name || 'Silver Service Online'} &bull; <a href="tel:${brand.phone || '1800173171'}" style="color:${accent};text-decoration:none;font-weight:700;">${brand.phone || '1800 173 171'}</a> &bull; ABN 56 742 485 518</p>
+  </div>
+</div>
+</body></html>`;
+}
+
+function receiptHtml(b, fare, brand = {}) {
+  // Default brand for this site
+  if (!brand || !brand.name) brand = {
+    name: 'Silver Taxi Sydney',
+    tagline: 'Reliable Sydney Taxi Service',
+    website: 'https://silvertaxisydneyservice.com',
+    colorPrimary: '#A9A9A9',
+    colorSecondary: '#696969',
+    accentColor: '#00008B',
+    phone: '1800 173 171',
+    email: 'info@silvertaxisydneyservice.com',
+  };
+  const now = new Date().toLocaleString('en-AU', {
+    timeZone:'Australia/Sydney', day:'2-digit', month:'2-digit',
+    year:'numeric', hour:'2-digit', minute:'2-digit', hour12:true
+  });
+  const bookingDtFmt = (() => {
+    try {
+      const [y,mo,d] = (b.date||'').split('-').map(Number);
+      const [hh,mm] = (b.time||'00:00').split(':').map(Number);
+      const dt = new Date(y, mo-1, d, hh, mm);
+      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const ampm = hh >= 12 ? 'pm' : 'am';
+      const h12 = hh % 12 || 12;
+      const minStr = mm > 0 ? `:${String(mm).padStart(2,'0')}` : '';
+      return `${days[dt.getDay()]} ${d} ${months[mo-1]} ${y} at ${h12}${minStr} ${ampm}`;
+    } catch(e) { return `${b.date} at ${b.time}`; }
+  })();
+
+  const primary    = brand.colorPrimary    || '#0f1f3d';
+  const secondary  = brand.colorSecondary  || '#144a8f';
+  const accent     = brand.accentColor     || '#d4a63c';
+  const brandName  = brand.name            || 'Silver Service Online';
+  const brandPhone = brand.phone           || '1800 173 171';
+  const brandEmail = brand.email           || 'info@silverserviceonline.com.au';
+  const brandWeb   = brand.website         || 'https://silverserviceonline.com.au';
+
+  const govtLevy   = +(fare.govtLevy  || 1.32).toFixed(2);
+  const tolls      = +(fare.tolls     || 0).toFixed(2);
+  const af         = +(fare.airportFee|| 0).toFixed(2);
+  const bookingFee = +(fare.bookingFee|| 2.50).toFixed(2);
+  const serviceFee = +(fare.serviceFee|| fare.cardFee || 0).toFixed(2);
+  const svcGst     = serviceFee > 0 ? +(serviceFee / 11).toFixed(2) : 0;
+  const fareIncGst = +(fare.sub || 0).toFixed(2);
+  const totalCharged = +fare.total.toFixed(2);
+  const totalGst   = +(totalCharged / 11).toFixed(2);
+
+  // Other inc GST = govt levy + tolls + airport fee + booking fee (non-fare charges)
+  const otherIncGst = +(govtLevy + tolls + af + bookingFee
+    + (fare.returnTolls||0)).toFixed(2);
+
+  // Payment label matching TaxiPay style
+  const payLabel = (() => {
+    const p = (b.payment || '').toLowerCase();
+    if (p.includes('card') || p.includes('stripe')) return 'CARD CHARGED';
+    if (p.includes('cabcharge')) return 'CABCHARGE';
+    if (p.includes('eftpos')) return 'EFTPOS';
+    return 'CASH';
+  })();
+
+  const puSuburb = shortAddr(b.pickup)  || 'As Directed';
+  const doSuburb = shortAddr(b.dropoff) || 'As Directed';
+
+  // Return trip extras
+  const returnFareLine = fare.returnSub > 0
+    ? `<tr><td class="lbl">RETURN FARE (10% OFF)</td><td class="val">$${fare.returnSub.toFixed(2)}</td></tr>` : '';
+  const returnTollsLine = fare.returnTolls > 0
+    ? `<tr><td class="lbl">RETURN TOLLS</td><td class="val">$${fare.returnTolls.toFixed(2)}</td></tr>` : '';
+
+  // Dashed separator row
+  const dash = `<tr><td colspan="2" class="sep">------------------------</td></tr>`;
+
   return `<!DOCTYPE html><html><head><meta charset="UTF-8">
 <style>
-  body{margin:0;padding:0;background:#f0f4f8;font-family:'Courier New',Courier,monospace;}
-  .wrap{max-width:480px;margin:24px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.15);}
-  .hd{background:linear-gradient(135deg,#0f1f3d 0%,#144a8f 100%);padding:28px 24px;text-align:center;}
-  .hd-logo{color:#fff;font-size:20px;font-weight:900;text-transform:uppercase;letter-spacing:.2em;margin:0 0 4px;font-family:Arial,sans-serif;}
-  .hd-tagline{color:rgba(255,255,255,.6);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 14px;font-family:Arial,sans-serif;}
-  .hd-badge{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-family:Arial,sans-serif;}
-  .ref-block{border-bottom:2px dashed #d1d5db;padding:16px 24px;text-align:center;background:#f8faff;}
-  .ref-lbl{font-size:9px;color:#9ca3af;text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px;font-family:Arial,sans-serif;}
-  .ref-num{font-size:28px;font-weight:900;color:#144a8f;letter-spacing:.08em;}
-  .ref-date{font-size:10px;color:#9ca3af;margin-top:4px;font-family:Arial,sans-serif;}
-  /* Receipt body - monospace ticket style */
-  .ticket{padding:20px 24px;}
-  .dashes{border:none;border-top:1px dashed #9ca3af;margin:10px 0;}
-  .receipt-row{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;letter-spacing:.04em;}
-  .receipt-row .lbl{color:#374151;font-weight:700;text-transform:uppercase;}
-  .receipt-row .val{color:#111827;font-weight:700;text-align:right;}
-  .receipt-row.total-row .lbl{font-size:15px;color:#0f1f3d;}
-  .receipt-row.total-row .val{font-size:15px;color:#0f1f3d;}
-  .receipt-row.grand .lbl,.receipt-row.grand .val{font-size:17px;font-weight:900;color:#144a8f;}
-  .receipt-row.gst-row .lbl,.receipt-row.gst-row .val{font-size:10px;color:#9ca3af;font-weight:400;}
-  .addr-block{padding:10px 0;}
-  .addr-line{font-size:12px;color:#374151;padding:2px 0;}
-  .addr-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#9ca3af;margin-bottom:2px;font-family:Arial,sans-serif;}
-  .info-section{background:#f8faff;padding:12px 24px;border-top:1px dashed #d1d5db;font-family:Arial,sans-serif;}
-  .info-row{display:flex;justify-content:space-between;padding:3px 0;font-size:11px;}
-  .info-row .k{color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;}
-  .info-row .v{color:#374151;font-weight:600;text-align:right;}
-  .footer{background:#f9fafb;padding:16px 24px;text-align:center;font-size:10px;color:#9ca3af;line-height:2;border-top:1px solid #e5e7eb;font-family:Arial,sans-serif;}
-  .footer strong{color:#374151;}
-  .payment-badge{display:inline-block;background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;font-family:Arial,sans-serif;}
+  @page{size:A4;margin:20mm 30mm;}
+  @media print{body{background:#fff!important;padding:0;}html,body{width:210mm;}}
+  *{box-sizing:border-box;}
+  body{margin:0;padding:24px 0;background:#f5f5f5;font-family:'Courier New',Courier,monospace;font-size:13px;color:#111;}
+  .outer{max-width:480px;margin:0 auto;background:#fff;padding:32px 40px;border:1px solid #ddd;}
+
+  /* Header */
+  .logo-block{text-align:center;margin-bottom:20px;}
+  .logo-brand{font-family:Arial,Helvetica,sans-serif;font-size:26px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:${primary};}
+  .logo-sub{font-family:Arial,Helvetica,sans-serif;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:${secondary};margin-top:2px;}
+  .thankyou{text-align:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#555;margin-bottom:6px;}
+  .invoice-title{text-align:center;font-size:14px;font-weight:700;letter-spacing:.35em;text-transform:uppercase;margin-bottom:16px;}
+
+  /* Meta table */
+  .meta-table{width:100%;border-collapse:collapse;margin-bottom:4px;}
+  .meta-table td{padding:1px 0;font-size:12px;vertical-align:top;}
+  .meta-table td.k{width:45%;text-transform:uppercase;letter-spacing:.04em;color:#333;}
+  .meta-table td.v{text-align:right;font-weight:700;color:#111;}
+
+  /* Separator */
+  .sep-line{border:none;border-top:1px dashed #999;margin:8px 0;}
+
+  /* Fare table */
+  .fare-table{width:100%;border-collapse:collapse;}
+  .fare-table td{padding:2px 0;font-size:13px;vertical-align:top;}
+  .fare-table td.lbl{text-transform:uppercase;letter-spacing:.03em;color:#222;}
+  .fare-table td.val{text-align:right;font-weight:700;color:#111;white-space:nowrap;}
+  .fare-table tr.total-row td{font-size:15px;font-weight:900;padding-top:4px;}
+  .fare-table tr.gst-note td{font-size:10px;color:#777;padding-bottom:4px;}
+  .fare-table tr.svc-gst td{font-size:11px;color:#555;}
+
+  /* Payment section */
+  .pay-table{width:100%;border-collapse:collapse;margin-top:4px;}
+  .pay-table td{padding:1px 0;font-size:12px;}
+  .pay-table td.k{text-transform:uppercase;letter-spacing:.04em;color:#333;}
+  .pay-table td.v{text-align:right;font-weight:700;}
+
+  /* Purchase total */
+  .purchase-row{margin:8px 0 4px;font-size:14px;font-weight:900;letter-spacing:.04em;}
+  .purchase-row span.amt{float:right;}
+
+  /* Approved */
+  .approved{text-align:center;font-size:13px;font-weight:900;letter-spacing:.12em;margin:10px 0 4px;}
+  .customer-copy{text-align:center;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin:4px 0 16px;}
+
+  /* Footer */
+  .footer-sep{border:none;border-top:2px solid ${primary};margin:12px 0 10px;}
+  .footer-block{text-align:center;font-family:Arial,Helvetica,sans-serif;}
+  .footer-name{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:${primary};}
+  .footer-contact{font-size:11px;color:#555;margin-top:3px;line-height:1.7;}
+  .footer-contact a{color:${secondary};text-decoration:none;font-weight:700;}
+  .footer-abn{font-size:10px;color:#888;margin-top:4px;}
+  .footer-levy{font-size:10px;color:#666;margin-top:3px;font-style:italic;}
 </style>
 </head><body>
+<div class="outer">
 
-<!-- Booking Confirmation Message -->
-<div style="max-width:480px;margin:24px auto 0;background:#f0fdf4;border:1px solid #16a34a;border-radius:8px 8px 0 0;padding:16px 20px;font-family:Arial,sans-serif;">
-  <p style="margin:0;font-size:13px;color:#166534;line-height:1.5;"><strong>#${b.ref}</strong> — Your Sydney taxi booking confirmed for <strong>${bookingDtFmt}</strong>. Fare: <strong>${b.fare || '$'+fare.total.toFixed(2)} AUD</strong>. Amendments: <a href="tel:1800173171" style="color:#166534;font-weight:700;">1800 173 171</a></p>
-</div>
-
-<div class="wrap" style="border-radius:0 0 8px 8px;margin-top:0;">
-  <div class="hd">
-    <p class="hd-logo">Silver Taxi Sydney Service</p>
-    <p class="hd-tagline">Premium Sydney Taxi Service</p>
-        <span class="hd-badge"> TAX INVOICE</span>
+  <!-- Logo / Brand Header -->
+  <div class="logo-block">
+    <div class="logo-brand">${brandName}</div>
+    <div class="logo-sub">${brand.tagline || 'Premium Sydney Taxi Service'}</div>
   </div>
 
-  <div class="ref-block">
-    <div class="ref-lbl">Booking Reference</div>
-    <div class="ref-num">#${b.ref}</div>
-    <div class="ref-date">Issued: ${now} AEST</div>
-  </div>
+  <div class="thankyou">THANK YOU FOR USING ${brandName.toUpperCase()}</div>
+  <div class="invoice-title">T A X &nbsp; I N V O I C E</div>
 
-  <div class="ticket">
-    <hr class="dashes"/>
-    <div class="receipt-row">
-      <span class="lbl">PICK UP:</span>
-      <span class="val">${shortAddr(b.pickup)}</span>
-    </div>
-    <div class="receipt-row">
-      <span class="lbl">DEST:</span>
-      <span class="val">${shortAddr(b.dropoff)}</span>
-    </div>
-    <hr class="dashes"/>
-    <div class="receipt-row">
-      <span class="lbl">FARE</span>
-      <span class="val">$${fare.sub.toFixed(2)}</span>
-    </div>
-    <div class="receipt-row">
-      <span class="lbl">GOVT. LEVY</span>
-      <span class="val">$${govtLevy.toFixed(2)}</span>
-    </div>
-    ${fare.tolls > 0 ? `
-    <div class="receipt-row">
-      <span class="lbl">TOLLS</span>
-      <span class="val">$${fare.tolls.toFixed(2)}</span>
-    </div>` : ''}
-    ${fare.returnSub ? `
-    <div class="receipt-row">
-      <span class="lbl">RETURN FARE (10% OFF)</span>
-      <span class="val">$${fare.returnSub.toFixed(2)}</span>
-    </div>` : ''}
-    ${fare.returnTolls > 0 ? `
-    <div class="receipt-row">
-      <span class="lbl">RETURN TOLLS</span>
-      <span class="val">$${fare.returnTolls.toFixed(2)}</span>
-    </div>` : ''}
-    ${af > 0 ? `
-    <div class="receipt-row">
-      <span class="lbl">AIRPORT FEE</span>
-      <span class="val">$${af.toFixed(2)}</span>
-    </div>` : ''}
-    <div class="receipt-row">
-      <span class="lbl">BOOKING FEE</span>
-      <span class="val">$${(fare.bookingFee || 2.50).toFixed(2)}</span>
-    </div>
-    <hr class="dashes"/>
-    <div class="receipt-row total-row">
-      <span class="lbl">TOTAL FARE</span>
-      <span class="val">$${subtotalFare.toFixed(2)}</span>
-    </div>
+  <!-- Invoice Meta -->
+  <table class="meta-table">
+    <tr><td class="k">INV #</td><td class="v">${b.ref}</td></tr>
+    <tr><td class="k">ABN</td><td class="v">56 742 485 518</td></tr>
+    <tr><td class="k">PICK UP</td><td class="v">${puSuburb}</td></tr>
+    <tr><td class="k">DROP OFF</td><td class="v">${doSuburb}</td></tr>
+    <tr><td class="k">DATE/TIME</td><td class="v">${now}</td></tr>
+    <tr><td class="k">PASSENGER</td><td class="v">${b.name || ''}</td></tr>
+    <tr><td class="k">VEHICLE</td><td class="v">${b.vehicle || ''}</td></tr>
+    <tr><td class="k">DISTANCE</td><td class="v">${(fare.km||0).toFixed(1)} km</td></tr>
+    ${b.flight ? `<tr><td class="k">FLIGHT</td><td class="v">${b.flight}</td></tr>` : ''}
+  </table>
+
+  <hr class="sep-line"/>
+
+  <!-- Fare Breakdown -->
+  <table class="fare-table">
+    <tr><td class="lbl">FARE INC GST</td><td class="val">$${fareIncGst.toFixed(2)}</td></tr>
+    ${govtLevy > 0 ? `<tr><td class="lbl">GOVT LEVY INC GST</td><td class="val">$${govtLevy.toFixed(2)}</td></tr>` : ''}
+    ${tolls > 0 ? `<tr><td class="lbl">TOLLS</td><td class="val">$${tolls.toFixed(2)}</td></tr>` : ''}
+    ${af > 0 ? `<tr><td class="lbl">AIRPORT PICKUP FEE</td><td class="val">$${af.toFixed(2)}</td></tr>` : ''}
+    ${returnFareLine}
+    ${returnTollsLine}
+    <tr><td class="lbl">OTHER INC GST (BOOKING FEE)</td><td class="val">$${bookingFee.toFixed(2)}</td></tr>
     ${serviceFee > 0 ? `
-    <div class="receipt-row">
-      <span class="lbl">SERVICE FEE</span>
-      <span class="val">$${serviceFee.toFixed(2)}</span>
-    </div>` : ''}
-    <hr class="dashes"/>
-    <div class="receipt-row grand">
-      <span class="lbl">TOTAL (AUD)</span>
-      <span class="val">$${totalCharged.toFixed(2)}</span>
+    <tr><td class="lbl">SERVICE FEE</td><td class="val">$${serviceFee.toFixed(2)}</td></tr>
+    <tr class="svc-gst"><td class="lbl">&nbsp;&nbsp;SERVICE FEE GST</td><td class="val">$${svcGst.toFixed(2)}</td></tr>` : ''}
+  </table>
+
+  <hr class="sep-line"/>
+
+  <table class="fare-table">
+    <tr class="total-row">
+      <td class="lbl">TOTAL</td>
+      <td class="val">$${totalCharged.toFixed(2)}</td>
+    </tr>
+    <tr class="gst-note">
+      <td class="lbl">GST INCLUDED IN TOTAL</td>
+      <td class="val">$${totalGst.toFixed(2)}</td>
+    </tr>
+  </table>
+
+  <hr class="sep-line"/>
+
+  <!-- Payment Details -->
+  <table class="pay-table">
+    <tr><td class="k">BOOKING REF</td><td class="v">${b.ref}</td></tr>
+    <tr><td class="k">DATE/TIME</td><td class="v">${now}</td></tr>
+    <tr><td class="k">PAYMENT</td><td class="v">${(() => { if (b.cardBrand && b.cardLast4) return b.cardBrand + ' \u2022\u2022\u2022\u2022 ' + b.cardLast4; if (b.cardLast4) return 'Card \u2022\u2022\u2022\u2022 ' + b.cardLast4; return b.payment || 'Cash'; })()}</td></tr>
+    ${b.email ? `<tr><td class="k">EMAIL</td><td class="v">${b.email}</td></tr>` : ''}
+    ${b.phone ? `<tr><td class="k">MOBILE</td><td class="v">${b.phone}</td></tr>` : ''}
+    ${b.returnTrip ? `<tr><td class="k">RETURN</td><td class="v">${b.returnDate||''} ${b.returnTime||''}</td></tr>` : ''}
+  </table>
+
+  <hr class="sep-line"/>
+
+  <!-- Purchase Total -->
+  <div class="purchase-row">PURCHASE <span class="amt">AUD $${totalCharged.toFixed(2)}</span></div>
+
+  <div class="approved">APPROVED</div>
+  <div class="customer-copy">CUSTOMER COPY</div>
+
+  <!-- Footer -->
+  <hr class="footer-sep"/>
+  <div class="footer-block">
+    <div class="footer-name">${brandName}</div>
+    <div class="footer-contact">
+      <a href="tel:${brandPhone.replace(/\s/g,'')}">${brandPhone}</a>
+      &nbsp;&bull;&nbsp;
+      <a href="mailto:${brandEmail}">${brandEmail}</a>
+      &nbsp;&bull;&nbsp;
+      <a href="${brandWeb}">${brandWeb.replace('https://','')}</a>
     </div>
-    <div class="receipt-row" style="font-size:.78rem;color:#6b7280;">
-      <span class="lbl">*INC. GST</span>
-      <span class="val">$${gst.toFixed(2)}</span>
-    </div>
-    <div class="receipt-row" style="font-size:.72rem;color:#9ca3af;">
-      <span class="lbl">GST = 1/11 of total fare (all fares are GST inclusive)</span>
-      <span class="val"></span>
-    </div>
-    <hr class="dashes"/>
-    <div style="text-align:center;padding:6px 0;">
-      <span class="payment-badge">${b.payment || 'Cash / EFTPOS'}</span>
-    </div>
-    <hr class="dashes"/>
+    <div class="footer-abn">ABN 56 742 485 518</div>
+    <div class="footer-levy">$${govtLevy.toFixed(2)} GOVT LEVY INCLUDED IN FARE &bull; Please retain for your records</div>
   </div>
 
-  <div class="info-section">
-    <div class="info-row"><span class="k">Passenger</span><span class="v">${b.name || ''}</span></div>
-    <div class="info-row"><span class="k">Mobile</span><span class="v">${b.phone || ''}</span></div>
-    ${b.email ? `<div class="info-row"><span class="k">Email</span><span class="v">${b.email}</span></div>` : ''}
-    <div class="info-row"><span class="k">Vehicle</span><span class="v">${b.vehicle || ''}</span></div>
-    <div class="info-row"><span class="k">Date &amp; Time</span><span class="v">${b.date || ''} ${b.time || ''}</span></div>
-    <div class="info-row"><span class="k">Distance</span><span class="v">${fare.km.toFixed(1)} km</span></div>
-    ${b.flight ? `<div class="info-row"><span class="k">Flight</span><span class="v">${b.flight}</span></div>` : ''}
-    ${b.returnTrip ? `<div class="info-row"><span class="k">Return</span><span class="v">${b.returnDate || ''} ${b.returnTime || ''}</span></div>` : ''}
-  </div>
-
-</div>
-
-<!-- Pay Online CTA -->
-<div style="margin:0 auto; max-width:480px; padding:20px 24px; background:#eff6ff; border-top:1px solid #e5e7eb; text-align:center; font-family:Arial,sans-serif;">
-  <p style="margin:0 0 12px; font-size:13px; color:#1e40af; font-weight:600;">Prefer to pay online? It's quick, safe &amp; you'll get an instant receipt.</p>
-  <a href="https://silvertaxisydneyservice.com/manage" style="display:inline-block; padding:12px 28px; background:linear-gradient(135deg,#144a8f,#0f1f3d); color:#ffffff; border-radius:6px; text-decoration:none; font-weight:700; font-size:14px;">PAY ONLINE</a>
-</div>
-
-<!-- Premium Footer/Signature -->
-<div style="margin:0 auto; max-width:480px; overflow:hidden;">
-  <!-- Quick Action Links with SVG Icons -->
-  <div style="background:#ffffff; padding:24px 24px 20px; border-top:1px solid #e5e7eb;">
-    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-family:Arial,sans-serif;">
-      <tr>
-        <td width="33%" style="text-align:center; padding:8px 4px; vertical-align:top;">
-          <a href="https://silvertaxisydneyservice.com/book" style="text-decoration:none; display:block;">
-            <div style="width:44px; height:44px; margin:0 auto 8px; background:linear-gradient(135deg,#0f1f3d,#144a8f); border-radius:50%; text-align:center; line-height:44px;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg></div>
-            <div style="font-size:11px; font-weight:700; color:#0f1f3d; text-transform:uppercase; letter-spacing:.04em;">Book Online</div>
-            <div style="font-size:10px; color:#6b7280; margin-top:2px;">Quick &amp; easy</div>
-          </a>
-        </td>
-        <td width="33%" style="text-align:center; padding:8px 4px; vertical-align:top;">
-          <a href="https://silvertaxisydneyservice.com/contact" style="text-decoration:none; display:block;">
-            <div style="width:44px; height:44px; margin:0 auto 8px; background:linear-gradient(135deg,#0f1f3d,#144a8f); border-radius:50%; text-align:center; line-height:44px;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-            <div style="font-size:11px; font-weight:700; color:#0f1f3d; text-transform:uppercase; letter-spacing:.04em;">Contact Us</div>
-            <div style="font-size:10px; color:#6b7280; margin-top:2px;">We're here to help</div>
-          </a>
-        </td>
-        <td width="33%" style="text-align:center; padding:8px 4px; vertical-align:top;">
-          <a href="https://silvertaxisydneyservice.com/manage" style="text-decoration:none; display:block;">
-            <div style="width:44px; height:44px; margin:0 auto 8px; background:linear-gradient(135deg,#0f1f3d,#144a8f); border-radius:50%; text-align:center; line-height:44px;"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
-            <div style="font-size:11px; font-weight:700; color:#0f1f3d; text-transform:uppercase; letter-spacing:.04em;">Manage Booking</div>
-            <div style="font-size:10px; color:#6b7280; margin-top:2px;">Modify or cancel</div>
-          </a>
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  <!-- Brand Signature Block -->
-  <div style="background:#0f1f3d; padding:28px 28px 24px; border-radius:0 0 8px 8px;">
-    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="font-family:Georgia,'Times New Roman',serif;">
-      <tr>
-        <td>
-          <div style="font-size:28px; font-weight:700; letter-spacing:2px; color:#ffffff; line-height:1.1;">SILVER SERVICE</div>
-          <div style="font-size:14px; font-weight:700; letter-spacing:4px; color:#d4a63c; margin-top:4px;">TAXI SYDNEY</div>
-          <div style="margin:16px 0 14px; border-top:1px solid rgba(255,255,255,0.15);"></div>
-          <table cellpadding="0" cellspacing="0" border="0" style="font-family:Arial,sans-serif; font-size:12px; line-height:2.2; color:#d0d4dc;">
-            <tr>
-              <td style="padding-right:8px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d4a63c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></td>
-              <td><a href="https://silvertaxisydneyservice.com" style="color:#d4a63c; text-decoration:none; font-weight:700;">silvertaxisydneyservice.com</a></td>
-            </tr>
-            <tr>
-              <td style="padding-right:8px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></td>
-              <td><a href="tel:1800173171" style="color:#ffffff; text-decoration:none;">1800 173 171</a></td>
-            </tr>
-            <tr>
-              <td style="padding-right:8px;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></td>
-              <td><a href="mailto:info@silvertaxisydneyservice.com" style="color:#ffffff; text-decoration:none;">info@silvertaxisydneyservice.com</a></td>
-            </tr>
-          </table>
-          <div style="margin-top:16px; font-size:10px; color:rgba(255,255,255,0.5); line-height:1.6; font-family:Arial,sans-serif;">Premium Airport Transfers &bull; Executive Corporate Travel &bull; Luxury Chauffeur Service &bull; Fixed Price Rides &bull; 24/7 Australia Wide Service</div>
-          <div style="margin-top:12px; font-size:9px; color:rgba(255,255,255,0.35); font-family:Arial,sans-serif;">Please retain this receipt for your records. This is a tax invoice.</div>
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
-
+</div><!-- /outer -->
 </body></html>`;
 }
 
