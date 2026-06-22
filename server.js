@@ -1793,6 +1793,40 @@ app.post('/api/admin/sms-retry', async (req, res) => {
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
+
+// SMSGlobal live outbox (delivery report from SMSGlobal API)
+app.get('/api/admin/smsglobal-outbox', async (req, res) => {
+  const token = req.headers['x-admin-token'] || req.query.token;
+  if (token !== CFG.ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const crypto = require('crypto');
+    const https = require('https');
+    const limit = parseInt(req.query.limit) || 50;
+    const offset = parseInt(req.query.offset) || 0;
+    const sgKey = CFG.SMSGLOBAL_REST_KEY || '31736f205d7b28e3204e7ace6833f82e';
+    const sgSecret = CFG.SMSGLOBAL_REST_SECRET || 'dc043fe439f35fdf31075aaae7e87579';
+    const host = 'api.smsglobal.com';
+    const port = 443;
+    const method = 'GET';
+    const uri = `/v2/sms/?limit=${limit}&offset=${offset}`;
+    const ts = Math.floor(Date.now() / 1000).toString();
+    const nonce = crypto.randomBytes(8).toString('hex');
+    const hashStr = [ts, nonce, method, uri, host, port, ''].join('
+') + '
+';
+    const mac = crypto.createHmac('sha256', sgSecret).update(hashStr).digest('base64');
+    const auth = `MAC id="${sgKey}", ts="${ts}", nonce="${nonce}", mac="${mac}"`;
+    const data = await new Promise((resolve, reject) => {
+      const options = { hostname: host, port, path: uri, method, headers: { Authorization: auth, Accept: 'application/json' } };
+      const r = https.request(options, resp => {
+        let d = ''; resp.on('data', c => d += c); resp.on('end', () => resolve(d));
+      });
+      r.on('error', reject); r.end();
+    });
+    const parsed = JSON.parse(data);
+    res.json({ messages: parsed.messages || [], total: parsed.total || 0 });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
 // Booking stats for reports
 app.get('/api/admin/booking-stats', (req, res) => {
   const token = req.headers['x-admin-token'] || req.query.token;
