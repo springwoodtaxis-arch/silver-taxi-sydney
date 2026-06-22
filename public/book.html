@@ -2082,6 +2082,15 @@ async function confirmBooking() {
       document.getElementById('conf-total').innerHTML = '<strong>$' + (f.total || 0).toFixed(2) + ' AUD</strong>';
       goStep(5);
       toast('Booking confirmed! Reference: #' + result.ref);
+      // Google Ads conversion — fires immediately on successful booking
+      if (typeof gtag === 'function') {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-18257977497',
+          'value': (result.fare && result.fare.total) ? parseFloat(result.fare.total) : 1.0,
+          'currency': 'AUD',
+          'transaction_id': result.ref || ''
+        });
+      }
       setTimeout(() => {
         window.location.href = 'https://silvertaxisydneyservice.com/thank-you?ref=' + encodeURIComponent(result.ref);
       }, 5000);

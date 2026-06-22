@@ -171,8 +171,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   gtag('js', new Date());
   gtag('config', 'AW-18257977497');
 </script>
+<!-- Google Ads Conversion Tracking — fires on every confirmed booking -->
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('event', 'conversion', {
+    'send_to': 'AW-18257977497',
+    'value': 1.0,
+    'currency': 'AUD',
+    'transaction_id': (new URLSearchParams(window.location.search).get('ref') || '')
+  });
+</script>
 <script>
 function trackPhoneCall(source) {
+  if (typeof gtag === 'function') {
+    gtag('event', 'conversion', {
+      'send_to': 'AW-18257977497',
+      'value': 1.0,
+      'currency': 'AUD'
+    });
+  }
   return true;
 }
 </script>
