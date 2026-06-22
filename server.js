@@ -256,7 +256,9 @@ const DB = {
     return stored.endsWith(query.slice(-8)) ? b : null;
   },
 
-  all() { return [...this.bookings.values()].sort((a,b) => b.created > a.created ? 1 : -1); }
+  all() { return [...this.bookings.values()].sort((a,b) => b.created > a.created ? 1 : -1); },
+  smsLog: [],
+  logSms(entry) { this.smsLog.unshift({ ...entry, ts: new Date().toISOString() }); if (this.smsLog.length > 500) this.smsLog.pop(); }
 };
 
 async function connectDB() {
@@ -309,13 +311,23 @@ async function verifyRecaptcha(token) {
 // -------------------- Helpers --------------------
 async function sms(to, body) {
   if (!to) return;
+  const entry = { to, body: body.substring(0, 160), status: 'sent', error: null };
   try {
     await smsglobal.sendSms(to, body, {
       user: CFG.SMSGLOBAL_USER,
       pass: CFG.SMSGLOBAL_PASS,
       from: CFG.SMSGLOBAL_FROM,
     });
-  } catch(e) { console.error('[SMS] Error to', to, ':', e.message); }
+    console.log('[SMS] Sent to', to);
+    DB.logSms(entry);
+  } catch(e) {
+    console.error('[SMS] Error to', to, ':', e.message);
+    entry.status = 'failed';
+    entry.error = e.message;
+    DB.logSms(entry);
+    // Alert Telegram on SMS failure
+    tg(`\u26a0\ufe0f <b>SMS FAILED</b>\nTo: ${to}\nError: ${e.message}\nMsg: ${body.substring(0,100)}`).catch(()=>{});
+  }
 }
 
 async function email(to, subject, html, attachments = []) {
@@ -324,7 +336,7 @@ async function email(to, subject, html, attachments = []) {
     return;
   }
   const mailOpts = {
-    from: `"Silver Taxi Sydney Service" <${CFG.SMTP_USER}>`,
+    from: `"Silver Service Online" <${CFG.SMTP_USER}>`,
     to, subject, html
   };
   if (attachments.length > 0) mailOpts.attachments = attachments;
@@ -344,7 +356,7 @@ async function email(to, subject, html, attachments = []) {
           auth: { user: CFG.SMTP_USER, pass: CFG.SMTP_PASS },
           tls: { rejectUnauthorized: false }, connectionTimeout: 8000,
         });
-        const altOpts = { from: `"Silver Taxi Sydney Service" <${CFG.SMTP_USER}>`, to, subject, html };
+        const altOpts = { from: `"Silver Service Online" <${CFG.SMTP_USER}>`, to, subject, html };
         if (attachments.length > 0) altOpts.attachments = attachments;
         const info2 = await Promise.race([
           alt.sendMail(altOpts),
@@ -352,7 +364,14 @@ async function email(to, subject, html, attachments = []) {
         ]);
         console.log('[EMAIL]  Sent via 587 to', to, '| ID:', info2.messageId);
         SVC.mailer = alt;
-      } catch(e2) { console.error('[EMAIL]  Port 587 also failed:', e2.message); }
+      } catch(e2) {
+        console.error('[EMAIL]  Port 587 also failed:', e2.message);
+        // Alert Telegram on email failure
+        tg(`\u26a0\ufe0f <b>EMAIL FAILED</b>\nTo: ${to}\nSubject: ${subject}\nError: ${e2.message}`).catch(()=>{});
+      }
+    } else {
+      // Alert Telegram on non-connection email failure
+      tg(`\u26a0\ufe0f <b>EMAIL FAILED</b>\nTo: ${to}\nSubject: ${subject}\nError: ${e.message}`).catch(()=>{});
     }
   }
 }
@@ -1755,6 +1774,47 @@ app.get('/api/admin/verify-token', (req, res) => {
 });
 
 // Admin: all bookings
+// SMS log endpoint
+app.get('/api/admin/sms-log', (req, res) => {
+  const token = req.headers['x-admin-token'] || req.query.token;
+  if (token !== CFG.ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
+  res.json({ log: DB.smsLog });
+});
+
+// Retry failed SMS
+app.post('/api/admin/sms-retry', async (req, res) => {
+  const token = req.headers['x-admin-token'] || req.body.token;
+  if (token !== CFG.ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
+  const { to, body } = req.body;
+  if (!to || !body) return res.status(400).json({ error: 'Missing to/body' });
+  try {
+    await sms(to, body);
+    res.json({ success: true });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Booking stats for reports
+app.get('/api/admin/booking-stats', (req, res) => {
+  const token = req.headers['x-admin-token'] || req.query.token;
+  if (token !== CFG.ADMIN_TOKEN) return res.status(401).json({ error: 'Unauthorized' });
+  const all = DB.all();
+  const byDate = {};
+  all.forEach(b => {
+    const d = (b.date || '').substring(0, 7); // YYYY-MM
+    if (!byDate[d]) byDate[d] = { count: 0, revenue: 0 };
+    byDate[d].count++;
+    const fare = parseFloat((b.fare || '$0').replace(/[^0-9.]/g, '')) || 0;
+    byDate[d].revenue += fare;
+  });
+  const byVehicle = {};
+  all.forEach(b => { byVehicle[b.vehicle || 'Unknown'] = (byVehicle[b.vehicle || 'Unknown'] || 0) + 1; });
+  const byStatus = {};
+  all.forEach(b => { byStatus[b.status || 'pending'] = (byStatus[b.status || 'pending'] || 0) + 1; });
+  const byPayment = {};
+  all.forEach(b => { byPayment[b.payment || 'unknown'] = (byPayment[b.payment || 'unknown'] || 0) + 1; });
+  res.json({ byDate, byVehicle, byStatus, byPayment, total: all.length });
+});
+
 app.get('/api/admin/bookings', (req, res) => {
   const all = DB.all();
   res.json({

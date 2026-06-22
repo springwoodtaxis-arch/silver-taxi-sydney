@@ -7,12 +7,11 @@
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-KHBXCHCG');</script>
+})(window,document,'script','dataLayer','GTM-M3ZZ9C2W');</script>
 <!-- End Google Tag Manager -->
-
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
-<title>Admin Panel | Silver Taxi Sydney Service</title>
+<title>Admin Panel | Silver Service Online</title>
 <link href="images/logo.png" rel="icon" type="image/png"/>
 <style>
 :root {
@@ -31,27 +30,182 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--ff);background:var(--bg);color:var(--dark);min-height:100vh;display:flex}
-/* SIDEBAR */
-.sidebar{width:260px;background:linear-gradient(180deg,#0f172a 0%,#1a2744 100%);min-height:100vh;display:flex;flex-direction:column;flex-shrink:0;position:fixed;left:0;top:0;bottom:0;z-index:100;transition:transform .35s cubic-bezier(.4,0,.2,1)}
-.sidebar-logo{padding:22px 24px;border-bottom:1px solid rgba(255,255,255,.06)}
-.sidebar-logo img{height:44px;object-fit:contain}
-.sidebar-nav{flex:1;padding:16px 0;overflow-y:auto}
-.nav-section-title{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.25);padding:14px 24px 6px}
-.nav-item{display:flex;align-items:center;gap:11px;padding:11px 24px;color:rgba(255,255,255,.6);font-size:.875rem;font-weight:500;cursor:pointer;transition:all .2s cubic-bezier(.4,0,.2,1);border-left:3px solid transparent;text-decoration:none;border-radius:0 8px 8px 0;margin-right:12px}
-.nav-item:hover{color:#fff;background:rgba(255,255,255,.06)}
-.nav-item.active{color:#fff;background:rgba(255,255,255,.1);border-left-color:var(--gold)}
-.nav-item svg{width:18px;height:18px;flex-shrink:0;opacity:.85}
-.nav-item.active svg{opacity:1}
-.nav-badge{margin-left:auto;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:20px;box-shadow:0 2px 4px rgba(239,68,68,.3)}
-.sidebar-footer{padding:18px 24px;border-top:1px solid rgba(255,255,255,.06)}
-.sidebar-user{display:flex;align-items:center;gap:10px}
-.sidebar-avatar{width:38px;height:38px;border-radius:50%;background:var(--gradient-gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:var(--navy);box-shadow:0 2px 8px rgba(212,168,83,.3)}
-.sidebar-user-info{flex:1}
-.sidebar-user-name{font-size:.85rem;font-weight:600;color:#fff}
-.sidebar-user-role{font-size:.72rem;color:rgba(255,255,255,.4)}
+/* ═══════════════════════════════════════════════════════════
+   SIDEBAR — Manus-style: collapsible on desktop, drawer on mobile
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --sidebar-w: 260px;
+  --sidebar-collapsed-w: 68px;
+  --sidebar-ease: cubic-bezier(.4,0,.2,1);
+}
+.sidebar {
+  width: var(--sidebar-w);
+  background: linear-gradient(180deg,#0f172a 0%,#1a2744 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  z-index: 300;
+  /* Hidden off-screen by default — shown on desktop via media query below */
+  transform: translateX(-100%);
+  transition: width .3s var(--sidebar-ease), transform .35s var(--sidebar-ease);
+  overflow: hidden;
+}
+/* Desktop: sidebar always visible */
+@media(min-width:961px) {
+  .sidebar { transform: translateX(0); }
+}
+/* Collapsed desktop state */
+.sidebar.collapsed { width: var(--sidebar-collapsed-w); }
+.sidebar.collapsed .nav-section-title,
+.sidebar.collapsed .nav-item-label,
+.sidebar.collapsed .nav-badge,
+.sidebar.collapsed .sidebar-user-info { display: none; }
+.sidebar.collapsed .sidebar-logo-full { display: none; }
+.sidebar.collapsed .sidebar-logo-icon { display: flex !important; }
+.sidebar.collapsed .nav-item { justify-content: center; padding: 13px; margin-right: 8px; border-left: none; border-radius: 10px; }
+.sidebar.collapsed .nav-item.active { border-left: none; background: rgba(255,255,255,.15); }
+.sidebar.collapsed .sidebar-footer { padding: 14px 10px; justify-content: center; }
+.sidebar.collapsed .sidebar-user { justify-content: center; }
+.sidebar.collapsed .sidebar-avatar { margin: 0; }
+.sidebar.collapsed .sidebar-collapse-btn { justify-content: center; }
+.sidebar.collapsed .sidebar-collapse-btn .collapse-icon { transform: rotate(180deg); }
+/* Logo area */
+.sidebar-logo {
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  flex-shrink: 0;
+}
+.sidebar-logo-full img { height: 38px; object-fit: contain; display: block; }
+.sidebar-logo-icon {
+  display: none;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--gradient-gold);
+  align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1rem; color: var(--navy);
+}
+/* Collapse toggle button (desktop only) */
+.sidebar-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  background: rgba(255,255,255,.08);
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,.6);
+  transition: background .2s, color .2s;
+  flex-shrink: 0;
+}
+.sidebar-collapse-btn:hover { background: rgba(255,255,255,.15); color: #fff; }
+.sidebar-collapse-btn .collapse-icon {
+  transition: transform .3s var(--sidebar-ease);
+  display: flex; align-items: center;
+}
+.sidebar-collapse-btn .collapse-icon svg { width: 16px; height: 16px; }
+/* Nav */
+.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; overflow-x: hidden; }
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 4px; }
+.nav-section-title {
+  font-size: .6rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .12em; color: rgba(255,255,255,.25);
+  padding: 14px 20px 5px;
+  white-space: nowrap; overflow: hidden;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 20px;
+  color: rgba(255,255,255,.6);
+  font-size: .875rem; font-weight: 500;
+  cursor: pointer;
+  transition: all .2s var(--sidebar-ease);
+  border-left: 3px solid transparent;
+  text-decoration: none;
+  border-radius: 0 10px 10px 0;
+  margin-right: 10px;
+  white-space: nowrap;
+  position: relative;
+}
+.nav-item:hover { color: #fff; background: rgba(255,255,255,.07); }
+.nav-item.active { color: #fff; background: rgba(255,255,255,.12); border-left-color: var(--gold); }
+.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: .85; }
+.nav-item.active svg { opacity: 1; }
+.nav-item-label { flex: 1; }
+.nav-badge {
+  margin-left: auto;
+  background: linear-gradient(135deg,#ef4444,#dc2626);
+  color: #fff; font-size: .6rem; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(239,68,68,.3);
+  flex-shrink: 0;
+}
+/* Tooltip on collapsed sidebar */
+.sidebar.collapsed .nav-item::after {
+  content: attr(data-label);
+  position: absolute;
+  left: calc(var(--sidebar-collapsed-w) + 8px);
+  top: 50%; transform: translateY(-50%);
+  background: #1e293b;
+  color: #fff;
+  font-size: .78rem; font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  z-index: 400;
+  box-shadow: 0 4px 12px rgba(0,0,0,.3);
+}
+.sidebar.collapsed .nav-item:hover::after { opacity: 1; }
+/* Footer */
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.sidebar-user { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+.sidebar-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--gradient-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .88rem; color: var(--navy);
+  box-shadow: 0 2px 8px rgba(212,168,83,.3);
+  flex-shrink: 0;
+}
+.sidebar-user-info { flex: 1; min-width: 0; overflow: hidden; }
+.sidebar-user-name { font-size: .84rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-user-role { font-size: .7rem; color: rgba(255,255,255,.4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* MAIN */
-.main{margin-left:260px;flex:1;min-height:100vh;display:flex;flex-direction:column}
-.topbar{background:rgba(255,255,255,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(226,232,240,.6);padding:0 28px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.main {
+  margin-left: 0;
+  flex: 1; min-height: 100vh;
+  display: flex; flex-direction: column;
+  transition: margin-left .3s var(--sidebar-ease);
+}
+/* Desktop: main content offset by sidebar width */
+@media(min-width:961px) {
+  .main { margin-left: var(--sidebar-w); }
+  .main.sidebar-collapsed { margin-left: var(--sidebar-collapsed-w); }
+}
+.topbar {
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(226,232,240,.6);
+  padding: 0 24px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
 .topbar-title{font-size:1.1rem;font-weight:700;color:var(--navy)}
 .topbar-actions{display:flex;align-items:center;gap:12px}
 .topbar-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);font-size:.82rem;font-weight:600;cursor:pointer;border:none;transition:all .25s cubic-bezier(.4,0,.2,1)}
@@ -180,16 +334,53 @@ tr:hover td{background:#f8fafc;transition:background .15s}
 .login-logo img{height:60px;object-fit:contain}
 .login-title{font-size:1.4rem;font-weight:800;color:var(--navy);text-align:center;margin-bottom:6px;letter-spacing:-.02em}
 .login-sub{font-size:.85rem;color:var(--mid);text-align:center;margin-bottom:28px}
-/* SIDEBAR OVERLAY */
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:99;cursor:pointer;transition:opacity .3s}
-.sidebar-overlay.open{display:block}
-/* SIDEBAR CLOSE BUTTON */
-.sidebar-close-btn{display:none;position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);border:none;cursor:pointer;align-items:center;justify-content:center;color:#fff;transition:background .2s;flex-shrink:0}
-.sidebar-close-btn:hover{background:rgba(255,255,255,.25)}
-.sidebar-close-btn svg{width:16px;height:16px}
-/* Hide hamburger on desktop, show on mobile */
-#sidebar-toggle{display:none}
-@media(max-width:900px){#sidebar-toggle{display:flex}}
+/* ── SIDEBAR OVERLAY ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,.55);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  z-index: 299;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .35s var(--sidebar-ease);
+}
+.sidebar-overlay.open { display: block; opacity: 1; }
+/* ── HAMBURGER TOGGLE (mobile topbar) ── */
+#sidebar-toggle {
+  display: none;
+  align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--navy);
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative; z-index: 1;
+  transition: background .25s, transform .15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  box-shadow: 0 2px 8px rgba(15,23,42,.2);
+}
+#sidebar-toggle:hover { background: #1e3a5f; }
+#sidebar-toggle:active { transform: scale(.95); }
+.hamburger-icon {
+  width: 20px; height: 14px;
+  position: relative;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.hamburger-line {
+  display: block; width: 100%; height: 2px;
+  border-radius: 2px; background: #fff;
+  transform-origin: center;
+  transition: transform .3s var(--sidebar-ease),
+              opacity .25s var(--sidebar-ease),
+              width .3s var(--sidebar-ease);
+}
+/* Open state — lines morph to X */
+#sidebar-toggle.open .hamburger-line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+#sidebar-toggle.open .hamburger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+#sidebar-toggle.open .hamburger-line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 /* FARE BADGE */
 .fare-badge{display:inline-flex;align-items:center;gap:6px;background:#dbeafe;color:#1d4ed8;padding:6px 14px;border-radius:20px;font-size:.85rem;font-weight:700;margin-top:6px;transition:all .3s}
 .fare-badge svg{width:14px;height:14px}
@@ -199,50 +390,66 @@ tr:hover td{background:#f8fafc;transition:background .15s}
 .pac-item:hover{background:#f0f4f8!important}
 /* RESPONSIVE */
 @media(max-width:1200px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
-/* ── MOBILE BOTTOM NAV ── */
-.mobile-bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(226,232,240,.5);z-index:200;padding:6px 0 env(safe-area-inset-bottom,10px);box-shadow:0 -4px 20px rgba(0,0,0,.06)}
-.mobile-bottom-nav .nav-items{display:flex;justify-content:space-around;align-items:center}
-.mobile-bottom-nav .nav-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;border-radius:12px;cursor:pointer;transition:all .25s cubic-bezier(.4,0,.2,1);border:none;background:none;color:var(--mid);font-size:.64rem;font-weight:600;min-width:58px;position:relative}
-.mobile-bottom-nav .nav-tab.active{color:var(--blue)}
-.mobile-bottom-nav .nav-tab.active::after{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:20px;height:3px;background:var(--gradient-blue);border-radius:2px}
-.mobile-bottom-nav .nav-tab svg{width:23px;height:23px;transition:transform .2s}
-.mobile-bottom-nav .nav-tab.active svg{transform:scale(1.1)}
-.mobile-bottom-nav .nav-tab .tab-badge{position:absolute;top:-2px;right:-4px;background:var(--red);color:#fff;font-size:.55rem;padding:1px 5px;border-radius:10px;font-weight:700}
-
-@media(max-width:900px){
-  .sidebar{transform:translateX(-100%);position:fixed;z-index:200}
-  .sidebar.open{transform:translateX(0)}
-  .sidebar-close-btn{display:flex}
-  .main{margin-left:0}
-  .chart-grid{grid-template-columns:1fr}
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:14px}
-  .topbar{padding:0 16px;height:56px;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-  .topbar-title{font-size:1.05rem;font-weight:800}
-  .content{padding:18px 14px 100px}
-  .table-header{flex-direction:column;align-items:flex-start;gap:10px}
-  .table-filters{width:100%;flex-wrap:wrap}
-  .filter-input,.filter-select{flex:1;min-width:120px}
-  .form-row-2{grid-template-columns:1fr}
-  .modal-overlay{align-items:flex-end;padding:0}
-  .modal{border-radius:var(--r-xl) var(--r-xl) 0 0;max-height:92vh;animation:slideUpMobile .3s cubic-bezier(.4,0,.2,1)}
-  @keyframes slideUpMobile{from{transform:translateY(100%)}to{transform:translateY(0)}}
-  .topbar-btn span{display:none}
-  .topbar-actions{gap:8px}
-  .topbar-btn{padding:8px 14px;border-radius:var(--r)}
-  .login-card{padding:32px 24px;margin:0 16px;border-radius:var(--r-xl)}
-  .chart-card{padding:18px}
-  .table-card{padding:0;border-radius:var(--r-xl);box-shadow:var(--shadow-md)}
-  .table-header{padding:16px 18px}
-  .notif-list{max-height:160px}
-  .mobile-bottom-nav{display:block}
-  /* Better touch targets */
-  .action-btn{padding:9px 14px;font-size:.78rem;min-height:38px;border-radius:var(--r)}
-  .btn{padding:12px 20px;min-height:44px;border-radius:var(--r)}
-  .nav-item{padding:14px 24px}
-  /* Stat cards premium mobile */
-  .stat-card{border-radius:var(--r-xl);padding:18px 20px;box-shadow:var(--shadow-md)}
-  .stat-icon{width:46px;height:46px;border-radius:var(--r)}
-  .stat-num{font-size:1.5rem}
+/* ── RESPONSIVE: MOBILE SIDEBAR DRAWER ── */
+@media(max-width:960px){
+  /* Sidebar is off-canvas drawer on mobile */
+  .sidebar {
+    width: min(82vw, 300px) !important;
+    /* transform: translateX(-100%) is already set in base CSS */
+  }
+  /* Open state — slide in */
+  .sidebar.open { transform: translateX(0) !important; }
+  /* Hide desktop collapse button on mobile */
+  .sidebar-collapse-btn { display: none !important; }
+  /* Show hamburger */
+  #sidebar-toggle { display: flex; }
+  /* Main always full width on mobile */
+  .main { margin-left: 0 !important; }
+  .chart-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2,1fr); gap: 14px; }
+  .topbar { padding: 0 16px; height: 56px; background: rgba(255,255,255,.97); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+  .topbar-title { font-size: 1rem; font-weight: 800; }
+  .content { padding: 18px 14px 32px; }
+  .table-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .table-filters { width: 100%; flex-wrap: wrap; }
+  .filter-input,.filter-select { flex: 1; min-width: 120px; }
+  .form-row-2 { grid-template-columns: 1fr; }
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal { border-radius: var(--r-xl) var(--r-xl) 0 0; max-height: 92vh; animation: slideUpMobile .3s cubic-bezier(.4,0,.2,1); }
+  @keyframes slideUpMobile { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .topbar-btn span { display: none; }
+  .topbar-actions { gap: 8px; }
+  .topbar-btn { padding: 8px 14px; border-radius: var(--r); }
+  .login-card { padding: 32px 24px; margin: 0 16px; border-radius: var(--r-xl); }
+  .chart-card { padding: 18px; }
+  .table-card { padding: 0; border-radius: var(--r-xl); box-shadow: var(--shadow-md); }
+  .table-header { padding: 16px 18px; }
+  .notif-list { max-height: 160px; }
+  .action-btn { padding: 9px 14px; font-size: .78rem; min-height: 38px; border-radius: var(--r); }
+  .btn { padding: 12px 20px; min-height: 44px; border-radius: var(--r); }
+  .nav-item { padding: 13px 20px; }
+  .stat-card { border-radius: var(--r-xl); padding: 18px 20px; box-shadow: var(--shadow-md); }
+  .stat-icon { width: 46px; height: 46px; border-radius: var(--r); }
+  .stat-num { font-size: 1.5rem; }
+  /* ── Mobile text readability improvements ── */
+  .content { font-size: 0.9rem; }
+  /* Tables: horizontal scroll on mobile */
+  .table-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-card table { min-width: 600px; font-size: 0.78rem; }
+  .table-card th, .table-card td { padding: 10px 10px; white-space: nowrap; }
+  /* IVR table specifically */
+  #panel-ivr-calls table { min-width: 700px; font-size: 0.75rem; }
+  /* Stat cards single column on very small screens */
+  @media(max-width:420px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+  /* Better button touch targets */
+  .action-btn, .btn-sm { min-height: 40px; font-size: 0.8rem; }
+  /* Topbar title readable */
+  .topbar-title { font-size: 1rem; font-weight: 700; color: #0f172a; }
+  /* Sidebar nav items larger touch targets */
+  .nav-item { padding: 14px 20px; font-size: 0.95rem; }
+  .nav-section-title { font-size: 0.65rem; padding: 16px 20px 6px; }
 }
 @media(max-width:480px){
   .stats-grid{grid-template-columns:1fr;gap:12px}
@@ -250,7 +457,7 @@ tr:hover td{background:#f8fafc;transition:background .15s}
   .stat-num{font-size:1.6rem;font-weight:800}
   .stat-label{font-size:.7rem;letter-spacing:.06em}
   .stat-change{font-size:.74rem}
-  .content{padding:14px 10px 100px}
+  .content{padding:14px 10px 32px}
   .table-card{border-radius:var(--r-xl);overflow:hidden}
   .topbar-actions .topbar-btn-outline{display:none}
   .table-filters{flex-direction:column}
@@ -275,28 +482,13 @@ tr:hover td{background:#f8fafc;transition:background .15s}
   .chart-title{font-size:.88rem}
 }
 </style>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18257977497"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'AW-18257977497');
-</script>
-<script>
-function trackPhoneCall(source) {
-  return true;
-}
-</script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KHBXCHCG"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<noscript><iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-M3ZZ9C2W" style="display:none;visibility:hidden" width="0"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-
 <!-- LOGIN SCREEN -->
-<div class="login-screen" id="login-screen">
+<div class="login-screen" id="login-screen" style="display:none!important">
 <div class="login-card">
 <div class="login-logo">
 <img alt="Silver Services Taxi Sydney" class="sso-site-logo nav-site-logo" decoding="async" height="577" loading="eager" src="/images/logo.png?v=logo-20260606" width="1742"/>
@@ -306,7 +498,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div id="login-error" style="display:none;background:#fee2e2;color:#dc2626;padding:10px 14px;border-radius:var(--r);font-size:.85rem;margin-bottom:16px"></div>
 <div class="form-group">
 <label class="form-label">Email</label>
-<input class="form-input" id="login-email" placeholder="admin@silvertaxisydneyservice.com" type="email" value="info@silvertaxisydneyservice.com"/>
+<input class="form-input" id="login-email" placeholder="admin@silverserviceonline.com.au" type="email" value="info@silverserviceonline.com.au"/>
 </div>
 <div class="form-group">
 <label class="form-label">Password</label>
@@ -319,75 +511,92 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 </div>
 <!-- SIDEBAR OVERLAY -->
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
 <!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-<button aria-label="Close menu" class="sidebar-close-btn" onclick="closeSidebar()">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24" width="1em"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg>
-</button>
-<div class="sidebar-logo">
-<img alt="Silver Services Taxi Sydney" class="sso-site-logo nav-site-logo" decoding="async" height="577" loading="eager" src="/images/logo.png?v=logo-20260606" width="1742"/>
-</div>
-<nav class="sidebar-nav">
-<div class="nav-section-title">Overview</div>
-<a class="nav-item active" data-panel="dashboard" onclick="showPanel('dashboard',this)">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><rect height="7" width="7" x="3" y="3"></rect><rect height="7" width="7" x="14" y="3"></rect><rect height="7" width="7" x="14" y="14"></rect><rect height="7" width="7" x="3" y="14"></rect></svg>
-      Dashboard
+<div class="sidebar" id="sidebar" aria-label="Main navigation" role="navigation">
+  <!-- Logo + collapse toggle -->
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-full">
+      <img alt="Silver Services Taxi Sydney" class="sso-site-logo nav-site-logo" decoding="async" height="577" loading="eager" src="/images/logo.png?v=logo-20260606" width="1742"/>
+    </div>
+    <div class="sidebar-logo-icon">S</div>
+    <!-- Desktop collapse button -->
+    <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Collapse sidebar" title="Collapse sidebar">
+      <span class="collapse-icon">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </span>
+    </button>
+  </div>
+  <!-- Nav items -->
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Overview</div>
+    <a class="nav-item active" data-panel="dashboard" data-label="Dashboard" onclick="showPanel('dashboard',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><rect height="7" width="7" x="3" y="3"/><rect height="7" width="7" x="14" y="3"/><rect height="7" width="7" x="14" y="14"/><rect height="7" width="7" x="3" y="14"/></svg>
+      <span class="nav-item-label">Dashboard</span>
     </a>
-<div class="nav-section-title">Bookings</div>
-<a class="nav-item" data-panel="bookings" onclick="showPanel('bookings',this)">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
-      All Bookings
+    <div class="nav-section-title">Bookings</div>
+    <a class="nav-item" data-panel="bookings" data-label="All Bookings" onclick="showPanel('bookings',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+      <span class="nav-item-label">All Bookings</span>
       <span class="nav-badge" id="pending-badge">0</span>
-</a>
-<a class="nav-item" data-panel="new-booking" onclick="showPanel('new-booking',this)">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="16"></line><line x1="8" x2="16" y1="12" y2="12"></line></svg>
-      New Booking
     </a>
-<a class="nav-item" data-panel="ivr-calls" onclick="showPanel('ivr-calls',this)">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.07 9.81 19.79 19.79 0 0 1 .01 1.18 2 2 0 0 1 2 0h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.09 7.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 14.92z"></path></svg>
-      IVR Calls
+    <a class="nav-item" data-panel="new-booking" data-label="New Booking" onclick="showPanel('new-booking',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="16"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+      <span class="nav-item-label">New Booking</span>
+    </a>
+    <a class="nav-item" data-panel="ivr-calls" data-label="IVR Calls" onclick="showPanel('ivr-calls',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.07 9.81 19.79 19.79 0 0 1 .01 1.18 2 2 0 0 1 2 0h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L6.09 7.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 14.92z"/></svg>
+      <span class="nav-item-label">IVR Calls</span>
       <span class="nav-badge" id="ivr-badge" style="background:#7c3aed">0</span>
-</a>
-<a class="nav-item" data-panel="marketing-sms" onclick="showPanel('marketing-sms',this)">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-      Marketing SMS
     </a>
-<div class="nav-section-title">Management</div>
-<a class="nav-item" data-panel="drivers" onclick="showPanel('drivers',this)">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-      Drivers
+    <a class="nav-item" data-panel="marketing-sms" data-label="Marketing SMS" onclick="showPanel('marketing-sms',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span class="nav-item-label">Marketing SMS</span>
     </a>
-<a class="nav-item" data-panel="reports" onclick="showPanel('reports',this)">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg>
-      Reports
+    <div class="nav-section-title">Management</div>
+    <a class="nav-item" data-panel="drivers" data-label="Drivers" onclick="showPanel('drivers',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="nav-item-label">Drivers</span>
     </a>
-<div class="nav-section-title">System</div>
-<a class="nav-item" data-panel="settings" onclick="showPanel('settings',this)">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
-      Settings
+    <a class="nav-item" data-panel="reports" data-label="Reports" onclick="showPanel('reports',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+      <span class="nav-item-label">Reports</span>
     </a>
-<a class="nav-item" onclick="logout()">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
-      Sign Out
+    <a class="nav-item" data-panel="sms-report" data-label="SMS Report" onclick="showPanel('sms-report',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16z"/></svg>
+      <span class="nav-item-label">SMS Report</span>
     </a>
-</nav>
-<div class="sidebar-footer">
-<div class="sidebar-user">
-<div class="sidebar-avatar">A</div>
-<div class="sidebar-user-info">
-<div class="sidebar-user-name">Admin</div>
-<div class="sidebar-user-role">Super Administrator</div>
-</div>
-</div>
-</div>
+    <div class="nav-section-title">System</div>
+    <a class="nav-item" data-panel="settings" data-label="Settings" onclick="showPanel('settings',this)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+      <span class="nav-item-label">Settings</span>
+    </a>
+    <a class="nav-item" data-label="Sign Out" onclick="logout()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+      <span class="nav-item-label">Sign Out</span>
+    </a>
+  </nav>
+  <!-- Footer user info -->
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">A</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name">Admin</div>
+        <div class="sidebar-user-role">Super Administrator</div>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- MAIN -->
 <div class="main">
 <div class="topbar">
 <div style="display:flex;align-items:center;gap:12px">
-<button aria-label="Open menu" class="topbar-btn topbar-btn-outline" id="sidebar-toggle" onclick="openSidebar()">
-<svg fill="none" height="1em" stroke="currentColor" stroke-width="2" style="width:18px;height:18px" viewbox="0 0 24 24" width="1em"><line x1="3" x2="21" y1="12" y2="12"></line><line x1="3" x2="21" y1="6" y2="6"></line><line x1="3" x2="21" y1="18" y2="18"></line></svg>
+<button aria-label="Open menu" id="sidebar-toggle" aria-expanded="false" aria-controls="sidebar">
+  <div class="hamburger-icon">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </div>
 </button>
 <div class="topbar-title" id="topbar-title">Dashboard</div>
 </div>
@@ -491,6 +700,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <option value="suv">SUV</option>
 <option value="maxi">Maxi</option>
 </select>
+<select class="filter-select" id="site-filter" onchange="filterBookings()">
+<option value="">All Sites</option>
+<option value="silverserviceonline.com.au">🔵 Silver Service Online</option>
+<option value="silvertaxisydneyservice.com">⚪ Silver Taxi Sydney</option>
+<option value="13cabssydney.com">🟠 13CABS Sydney</option>
+</select>
 <input class="filter-input" id="date-filter" onchange="filterBookings()" type="date"/>
 <button class="btn btn-outline" onclick="exportCSV()" style="font-size:.8rem;padding:6px 12px">
 <svg fill="none" height="1em" stroke="currentColor" stroke-width="2" style="width:14px;height:14px" viewbox="0 0 24 24" width="1em"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
@@ -502,7 +717,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <table style="min-width:800px">
 <thead>
 <tr>
-<th>Ref</th><th>Passenger</th><th>Phone</th><th>Pickup</th><th>From</th><th>To</th><th>Vehicle</th><th>Fare</th><th>Status</th><th>Actions</th>
+<th>Ref</th><th>Passenger</th><th>Phone</th><th>Pickup</th><th>From</th><th>To</th><th>Vehicle</th><th>Fare</th><th>Site</th><th>Status</th><th>Actions</th>
 </tr>
 </thead>
 <tbody id="all-bookings-tbody">
@@ -591,12 +806,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <input class="form-input" name="flightNumber" placeholder="QF123" type="text"/>
 </div>
 <div class="form-group">
-<label class="form-label">Estimated Fare ($)</label>
+<label class="form-label">Airport Pickup?</label>
+<select class="form-input" id="admin-airport-pickup" name="airportPickup" onchange="adminCalcFare()">
+<option value="">No</option>
+<option value="yes">Yes — Airport Pickup Fee applies</option>
+</select>
+</div>
+</div>
+<!-- Fare Breakdown Panel -->
+<div id="admin-fare-breakdown" style="display:none;background:#f0f7ff;border:1px solid #bfdbfe;border-radius:8px;padding:14px 16px;margin-bottom:12px;font-size:13px;">
+  <div style="font-weight:700;color:#1e3a5f;margin-bottom:10px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;">&#128176; Fare Breakdown</div>
+  <table style="width:100%;border-collapse:collapse;">
+    <tr id="afb-base-row"><td style="padding:3px 0;color:#374151;">Base Fare</td><td style="text-align:right;font-weight:600;color:#111827;" id="afb-base">—</td></tr>
+    <tr id="afb-tolls-row" style="display:none"><td style="padding:3px 0;color:#374151;">Tolls</td><td style="text-align:right;font-weight:600;color:#111827;" id="afb-tolls">—</td></tr>
+    <tr id="afb-airport-row" style="display:none"><td style="padding:3px 0;color:#374151;">Airport Pickup Fee</td><td style="text-align:right;font-weight:600;color:#111827;" id="afb-airport">—</td></tr>
+    <tr><td style="padding:3px 0;color:#374151;">Govt. Levy</td><td style="text-align:right;font-weight:600;color:#111827;" id="afb-levy">—</td></tr>
+    <tr><td style="padding:3px 0;color:#374151;">Booking Fee</td><td style="text-align:right;font-weight:600;color:#111827;" id="afb-booking">—</td></tr>
+    <tr><td colspan="2"><hr style="border:none;border-top:1px dashed #93c5fd;margin:6px 0;"/></td></tr>
+    <tr><td style="padding:3px 0;color:#374151;">Subtotal</td><td style="text-align:right;font-weight:600;color:#111827;" id="afb-subtotal">—</td></tr>
+    <tr id="afb-svc-row" style="display:none"><td style="padding:3px 0;color:#374151;">Service Fee (5% card)</td><td style="text-align:right;font-weight:600;color:#16a34a;" id="afb-svc">—</td></tr>
+    <tr><td colspan="2"><hr style="border:none;border-top:2px solid #1e3a5f;margin:6px 0;"/></td></tr>
+    <tr><td style="padding:3px 0;font-weight:800;color:#1e3a5f;font-size:14px;">TOTAL</td><td style="text-align:right;font-weight:900;color:#1e3a5f;font-size:15px;" id="afb-total">—</td></tr>
+    <tr><td style="padding:2px 0;font-size:11px;color:#6b7280;">Distance</td><td style="text-align:right;font-size:11px;color:#6b7280;" id="afb-km">—</td></tr>
+  </table>
+</div>
+<div class="form-group">
+<label class="form-label">Estimated Fare ($) <span style="font-size:11px;color:#6b7280;font-weight:400;">— auto-filled from calculator above</span></label>
 <input class="form-input" id="admin-fare-input" min="0" name="estimatedFare" placeholder="0.00" step="0.01" type="number"/>
 <div class="fare-badge" id="admin-fare-badge" style="display:none">
 <svg fill="none" height="1em" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="1em"><line x1="12" x2="12" y1="1" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
 <span id="admin-fare-text">Calculating...</span>
-</div>
 </div>
 </div>
 <div class="form-group">
@@ -613,7 +852,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 <div class="form-group">
 <label class="form-label">Payment Method</label>
-<select class="form-input" name="payment" onchange="toggleAdminStripeFields()">
+<select class="form-input" name="payment" onchange="toggleAdminStripeFields();adminCalcFare()">
 <option value="Cash in Vehicle">Cash in Vehicle</option>
 <option value="EFTPOS in Vehicle">EFTPOS in Vehicle</option>
 <option value="Card (Stripe)">Card (Stripe)</option>
@@ -701,6 +940,39 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="chart-title">Bookings by Status</div>
 <div id="report-status-chart" style="display:flex;gap:12px;align-items:flex-end;height:140px"></div>
 </div>
+<div class="chart-card" style="grid-column:1/-1">
+<div class="chart-title">Monthly Bookings &amp; Revenue (last 6 months)</div>
+<div id="report-monthly-chart" style="display:flex;gap:8px;align-items:flex-end;height:160px"></div>
+</div>
+<div class="chart-card">
+<div class="chart-title">Payment Method Breakdown</div>
+<div id="report-payment-chart" style="display:flex;gap:12px;align-items:flex-end;height:140px"></div>
+</div>
+</div>
+</div>
+<!-- SMS REPORT PANEL -->
+<div class="panel" id="panel-sms-report">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+  <h2 style="font-size:1.1rem;font-weight:700;color:var(--navy)">SMS Report</h2>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-secondary" onclick="loadSmsReport()" style="font-size:.8rem;padding:6px 14px">&#8635; Refresh</button>
+    <select id="sms-filter" onchange="filterSmsLog()" style="font-size:.8rem;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:#fff">
+      <option value="all">All</option>
+      <option value="sent">Sent</option>
+      <option value="failed">Failed</option>
+    </select>
+  </div>
+</div>
+<div class="stats-grid" style="margin-bottom:18px">
+  <div class="stat-card"><div class="stat-icon" style="background:#dcfce7"><svg fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg></div><div><div class="stat-num" id="sms-stat-sent">0</div><div class="stat-label">Sent</div></div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:#fee2e2"><svg fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg></div><div><div class="stat-num" id="sms-stat-failed">0</div><div class="stat-label">Failed</div></div></div>
+  <div class="stat-card"><div class="stat-icon" style="background:#dbeafe"><svg fill="none" stroke="#1d4ed8" stroke-width="2" viewBox="0 0 24 24" width="18" height="18"><line x1="12" x2="12" y1="1" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div><div class="stat-num" id="sms-stat-rate">0%</div><div class="stat-label">Success Rate</div></div></div>
+</div>
+<div class="table-card">
+<table class="data-table" id="sms-log-table">
+<thead><tr><th>Time (AEST)</th><th>To</th><th>Status</th><th>Message</th><th>Error</th><th>Action</th></tr></thead>
+<tbody id="sms-log-body"><tr><td colspan="6" style="text-align:center;color:var(--mid);padding:24px">Loading...</td></tr></tbody>
+</table>
 </div>
 </div>
 <!-- SETTINGS PANEL -->
@@ -710,7 +982,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <h3 style="font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:16px">Notification Settings</h3>
 <div class="form-group">
 <label class="form-label">Admin Email</label>
-<input class="form-input" readonly="" type="email" value="info@silvertaxisydneyservice.com"/>
+<input class="form-input" readonly="" type="email" value="info@silverserviceonline.com.au"/>
 </div>
 <div class="form-group">
 <label class="form-label">Admin Phone</label>
@@ -1143,15 +1415,9 @@ function logout() {
   document.getElementById('login-screen').style.display = 'flex';
 }
 
-// AUTO-LOGIN CHECK - persistent session
-if(adminToken) {
-  document.getElementById('login-screen').style.display = 'none';
-  initDashboard();
-  // Verify token is still valid in background
-  fetch('/api/admin/verify-token?token=' + adminToken)
-    .then(r => { if (!r.ok) { logout(); } })
-    .catch(() => { /* offline - keep logged in */ });
-}
+// AUTO-LOGIN CHECK - always initialize dashboard without login
+document.getElementById('login-screen').style.display = 'none';
+initDashboard();
 
 async function initDashboard() {
   await loadBookings();
@@ -1311,14 +1577,20 @@ function renderBookingsTable() {
   const page = filteredBookings.slice(start,end);
   const tbody = document.getElementById('all-bookings-tbody');
   if(filteredBookings.length===0){
-    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--mid);padding:24px">No bookings found</td></tr>';
+    tbody.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--mid);padding:24px">No bookings found</td></tr>';
   } else {
-    tbody.innerHTML = page.map(b=>bookingRow(b,10)).join('');
+    tbody.innerHTML = page.map(b=>bookingRow(b,11)).join('');
   }
   document.getElementById('page-info').textContent = `Showing ${Math.min(start+1,filteredBookings.length)}–${Math.min(end,filteredBookings.length)} of ${filteredBookings.length}`;
   renderPagination();
 }
 
+function siteBadge(source) {
+  if (!source) return '<span style="font-size:.7rem;color:var(--mid)">—</span>';
+  if (source === '13cabssydney.com') return '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:.65rem;font-weight:700;background:#fff3e0;color:#e65100;border:1px solid #ffcc80">🟠 13CABS</span>';
+  if (source === 'silvertaxisydneyservice.com') return '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:.65rem;font-weight:700;background:#f5f5f5;color:#424242;border:1px solid #bdbdbd">⚪ SilverTaxi</span>';
+  return '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:.65rem;font-weight:700;background:#e3f2fd;color:#1565c0;border:1px solid #90caf9">🔵 SSO</span>';
+}
 function bookingRow(b, cols) {
   const phone = b.phone||'—';
   const pickupTime = b.pickupDateTime ? new Date(b.pickupDateTime).toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
@@ -1347,6 +1619,7 @@ function bookingRow(b, cols) {
     <td title="${b.dropoffAddress||''}">${to}</td>
     <td>${vehicleName(b.vehicle)}</td>
     <td style="font-weight:600;color:var(--blue)">${fare}</td>
+    <td>${siteBadge(b.source)}</td>
     <td>${statusBadge(b.status)}</td>
     <td>${rowActions(b)}</td>
   </tr>`;
@@ -1377,6 +1650,7 @@ function filterBookings() {
   const search = document.getElementById('search-input').value.toLowerCase();
   const status = document.getElementById('status-filter').value;
   const vehicle = document.getElementById('vehicle-filter').value;
+  const site = document.getElementById('site-filter').value;
   const date = document.getElementById('date-filter').value;
   filteredBookings = allBookings.filter(b=>{
     const matchSearch = !search || 
@@ -1386,8 +1660,9 @@ function filterBookings() {
       (b.email||'').toLowerCase().includes(search);
     const matchStatus = !status || b.status===status;
     const matchVehicle = !vehicle || b.vehicle===vehicle;
+    const matchSite = !site || (b.source||'silverserviceonline.com.au')===site;
     const matchDate = !date || (b.pickupDateTime && b.pickupDateTime.startsWith(date));
-    return matchSearch && matchStatus && matchVehicle && matchDate;
+    return matchSearch && matchStatus && matchVehicle && matchSite && matchDate;
   });
   currentPage = 1;
   renderBookingsTable();
@@ -1446,6 +1721,55 @@ function renderReports() {
       <div style="font-size:.72rem;font-weight:700;color:${sColors[k]}">${v}</div>
       <div style="width:100%;height:${Math.max((v/maxS)*120,4)}px;background:${sColors[k]};border-radius:4px 4px 0 0"></div>
       <div style="font-size:.65rem;color:var(--mid);text-transform:capitalize">${k}</div>
+    </div>`).join('');
+
+  // Monthly trend (last 6 months)
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push(d.toISOString().substring(0, 7));
+  }
+  const mCounts = {}; months.forEach(m => { mCounts[m] = { count: 0, revenue: 0 }; });
+  allBookings.forEach(b => {
+    const m = (b.date || '').substring(0, 7);
+    if (mCounts[m]) {
+      mCounts[m].count++;
+      const fare = parseFloat((b.fare || b.estimatedFare || '$0').replace(/[^0-9.]/g, '')) || 0;
+      mCounts[m].revenue += fare;
+    }
+  });
+  const maxMC = Math.max(...Object.values(mCounts).map(x => x.count), 1);
+  const mc = document.getElementById('report-monthly-chart');
+  if (mc) mc.innerHTML = months.map(m => {
+    const v = mCounts[m];
+    const label = m.substring(5) + '/' + m.substring(2, 4);
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="font-size:.7rem;font-weight:700;color:#144a8f">${v.count}</div>
+      <div style="width:100%;height:${Math.max((v.count/maxMC)*140,4)}px;background:#144a8f;border-radius:4px 4px 0 0;opacity:.85"></div>
+      <div style="font-size:.65rem;color:var(--mid)">${label}</div>
+      <div style="font-size:.62rem;color:#16a34a">$${v.revenue.toFixed(0)}</div>
+    </div>`;
+  }).join('');
+
+  // Payment method breakdown
+  const pCounts = {};
+  allBookings.forEach(b => {
+    const p = (b.payment || b.paymentMethod || 'unknown').toLowerCase();
+    const label = p.includes('online') || p.includes('stripe') || p.includes('card') ? 'Online' :
+                  p.includes('cash') ? 'Cash' :
+                  p.includes('cabcharge') || p.includes('cab') ? 'CabCharge' :
+                  p.includes('driver') || p.includes('eftpos') ? 'Pay Driver' : 'Other';
+    pCounts[label] = (pCounts[label] || 0) + 1;
+  });
+  const pColors = { Online: '#1d4ed8', Cash: '#16a34a', CabCharge: '#7c3aed', 'Pay Driver': '#ca8a04', Other: '#6b7280' };
+  const maxP = Math.max(...Object.values(pCounts), 1);
+  const pc = document.getElementById('report-payment-chart');
+  if (pc) pc.innerHTML = Object.entries(pCounts).map(([k, v]) => `
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="font-size:.72rem;font-weight:700;color:${pColors[k]||'#6b7280'}">${v}</div>
+      <div style="width:100%;height:${Math.max((v/maxP)*120,4)}px;background:${pColors[k]||'#6b7280'};border-radius:4px 4px 0 0"></div>
+      <div style="font-size:.65rem;color:var(--mid)">${k}</div>
     </div>`).join('');
 }
 
@@ -1728,63 +2052,72 @@ document.getElementById('admin-booking-form').addEventListener('submit', async (
     payment: form.payment.value
   };
   try {
-    let finalData = data;
+    let finalData = { ...data };
     if (data.payment === 'Card (Stripe)' && adminCardElement) {
       if (!adminStripe) {
-        showToast('Stripe not loaded','error');
-        btn.disabled = false;
-        btn.textContent = 'Create Booking';
-        return;
+        showToast('Stripe not loaded — please refresh and try again', 'error');
+        btn.disabled = false; btn.textContent = 'Create Booking'; return;
       }
-      // Get PaymentIntent from server
-      const piResp = await fetch('/api/payment/intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vehicle: finalData.vehicle,
-          km: finalData.km || 10,
-          tolls: finalData.tolls || 0,
-          returnTrip: false,
-          airportFee: finalData.airportFee || 0,
-          airportPickup: finalData.airportPickup || false,
-          pickup: finalData.pickup || '',
-          dropoff: finalData.dropoff || '',
-          date: finalData.date || '',
-          time: finalData.time || '',
-        })
-      });
-      const piData = await piResp.json();
-      if (!piData.clientSecret) throw new Error(piData.error || 'Could not create payment intent');
-      const { error: piError, paymentIntent } = await adminStripe.confirmCardPayment(piData.clientSecret, {
-        payment_method: { card: adminCardElement, billing_details: { name: finalData.name || 'Customer' } }
-      });
-      if (piError) throw new Error(piError.message);
-      finalData.stripePI = paymentIntent.id;
-      // Extract card details
+      // Step 1: Create a PaymentIntent on the server
+      const fareAmt = parseFloat(data.estimatedFare) || 0;
+      const amountCents = Math.round(fareAmt * 100 * 1.05); // include 5% card fee
+      let piRes;
       try {
-        const ch = paymentIntent.charges && paymentIntent.charges.data && paymentIntent.charges.data[0];
-        const pmd = (ch && ch.payment_method_details) || paymentIntent.payment_method_details;
-        if (pmd && pmd.card) {
-          finalData.cardBrand = (pmd.card.brand || '').toUpperCase();
-          finalData.cardLast4 = pmd.card.last4 || '';
-        }
-      } catch(ce) { /* card details unavailable */ }
+        piRes = await fetch('/api/payment/intent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: amountCents,
+            currency: 'aud',
+            description: `Admin booking: ${data.pickupAddress} → ${data.dropoffAddress}`
+          })
+        });
+      } catch(netErr) {
+        showToast('Network error creating payment — please try again', 'error');
+        btn.disabled = false; btn.textContent = 'Create Booking'; return;
+      }
+      const piData = await piRes.json();
+      if (!piData.clientSecret) {
+        showToast('Could not initialise payment: ' + (piData.error || 'unknown error'), 'error');
+        btn.disabled = false; btn.textContent = 'Create Booking'; return;
+      }
+      // Step 2: Confirm the card payment in the browser
+      const { error: stripeError, paymentIntent } = await adminStripe.confirmCardPayment(
+        piData.clientSecret,
+        { payment_method: { card: adminCardElement, billing_details: { name: data.firstName + ' ' + data.lastName } } }
+      );
+      if (stripeError) {
+        const errEl = document.getElementById('admin-stripe-error');
+        errEl.textContent = stripeError.message;
+        errEl.style.display = 'block';
+        btn.disabled = false; btn.textContent = 'Create Booking'; return;
+      }
+      // Step 3: Attach the confirmed PaymentIntent ID to the booking
+      finalData.stripePI = paymentIntent.id;
+      finalData.payment = 'Card (Online)';
     }
     const res = await fetch('/api/admin/bookings', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken},
-      body:JSON.stringify(finalData)
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken },
+      body: JSON.stringify(finalData)
     });
-    if(res.ok) {
+    const resJson = await res.json().catch(() => ({}));
+    if (res.ok) {
       form.reset();
+      document.getElementById('admin-stripe-fields').style.display = 'none';
+      const errEl = document.getElementById('admin-stripe-error');
+      if (errEl) { errEl.textContent = ''; errEl.style.display = 'none'; }
       await loadBookings();
       updateDashboardStats();
-      showToast('Booking created successfully!','success');
-      showPanel('bookings',null);
+      showToast('Booking created successfully!' + (finalData.stripePI ? ' Payment charged.' : ''), 'success');
+      showPanel('bookings', null);
     } else {
-      showToast('Failed to create booking','error');
+      showToast('Failed to create booking: ' + (resJson.error || res.statusText), 'error');
     }
-  } catch(e) { showToast('Error creating booking','error'); }
+  } catch(e) {
+    console.error('Admin booking error:', e);
+    showToast('Error creating booking: ' + e.message, 'error');
+  }
   btn.disabled = false; btn.textContent = 'Create Booking';
 });
 
@@ -1815,7 +2148,7 @@ function showPanel(name, el) {
     const navEl = document.querySelector(`[data-panel="${name}"]`);
     if(navEl) navEl.classList.add('active');
   }
-  const titles = {dashboard:'Dashboard',bookings:'All Bookings','new-booking':'New Booking',drivers:'Drivers',reports:'Reports',settings:'Settings','ivr-calls':'IVR Calls','marketing-sms':'Marketing SMS'};
+  const titles = {dashboard:'Dashboard',bookings:'All Bookings','new-booking':'New Booking',drivers:'Drivers',reports:'Reports','sms-report':'SMS Report',settings:'Settings','ivr-calls':'IVR Calls','marketing-sms':'Marketing SMS'};
   const titleEl = document.getElementById('topbar-title');
   if(titleEl) titleEl.textContent = titles[name]||name;
   if(name==='reports') renderReports();
@@ -1823,6 +2156,7 @@ function showPanel(name, el) {
   if(name==='new-booking' && !adminMapsLoaded) loadAdminMaps();
   if(name==='ivr-calls') loadIvrCalls();
   if(name==='marketing-sms') loadMarketingContacts();
+  if(name==='sms-report') loadSmsReport();
 }
 
 // MODAL
@@ -1840,43 +2174,166 @@ function showToast(msg, type='info') {
   setTimeout(()=>el.remove(),4000);
 }
 
-// RESPONSIVE SIDEBAR
-function openSidebar() {
-  document.getElementById('sidebar').classList.add('open');
-  document.getElementById('sidebar-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-if(window.innerWidth<900) document.getElementById('sidebar-toggle').style.display='flex';
-window.addEventListener('resize',()=>{
-  const isMobile = window.innerWidth<900;
-  document.getElementById('sidebar-toggle').style.display = isMobile?'flex':'none';
-  if(!isMobile) {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('open');
+// ═══════════════════════════════════════════════════════════
+// NAVIGATION — Manus-style sidebar (mobile drawer + desktop collapse)
+// ═══════════════════════════════════════════════════════════
+(function() {
+  var MOBILE_BP = 960;
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  var toggleBtn = document.getElementById('sidebar-toggle');
+  var collapseBtn = document.getElementById('sidebar-collapse-btn');
+  var mainEl = document.querySelector('.main');
+  var lastToggle = 0;
+
+  // ── MOBILE: open / close drawer ──────────────────────────
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    toggleBtn.classList.add('open');
+    toggleBtn.setAttribute('aria-expanded', 'true');
+    toggleBtn.setAttribute('aria-label', 'Close menu');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    toggleBtn.classList.remove('open');
+    toggleBtn.setAttribute('aria-expanded', 'false');
+    toggleBtn.setAttribute('aria-label', 'Open menu');
     document.body.style.overflow = '';
   }
-});
-// Close sidebar when nav item clicked on mobile
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click', ()=>{ if(window.innerWidth<900) closeSidebar(); });
-});
+
+  function toggleSidebar() {
+    var now = Date.now();
+    if (now - lastToggle < 150) return;
+    lastToggle = now;
+    if (sidebar.classList.contains('open')) closeSidebar();
+    else openSidebar();
+  }
+
+  // ── DESKTOP: collapse / expand ───────────────────────────
+  function collapseSidebar() {
+    sidebar.classList.add('collapsed');
+    mainEl.classList.add('sidebar-collapsed');
+    collapseBtn.setAttribute('aria-label', 'Expand sidebar');
+    collapseBtn.setAttribute('title', 'Expand sidebar');
+    try { localStorage.setItem('adminSidebarCollapsed', '1'); } catch(e){}
+  }
+
+  function expandSidebar() {
+    sidebar.classList.remove('collapsed');
+    mainEl.classList.remove('sidebar-collapsed');
+    collapseBtn.setAttribute('aria-label', 'Collapse sidebar');
+    collapseBtn.setAttribute('title', 'Collapse sidebar');
+    try { localStorage.setItem('adminSidebarCollapsed', '0'); } catch(e){}
+  }
+
+  function toggleCollapse() {
+    if (sidebar.classList.contains('collapsed')) expandSidebar();
+    else collapseSidebar();
+  }
+
+  // Restore collapse state on desktop
+  function restoreCollapseState() {
+    if (window.innerWidth > MOBILE_BP) {
+      try {
+        if (localStorage.getItem('adminSidebarCollapsed') === '1') {
+          sidebar.classList.add('collapsed');
+          mainEl.classList.add('sidebar-collapsed');
+        }
+      } catch(e){}
+    }
+  }
+
+  // ── EVENT LISTENERS ──────────────────────────────────────
+  // Hamburger toggle (mobile)
+  if (toggleBtn) {
+    toggleBtn.addEventListener('pointerup', function(e) {
+      if (e.isPrimary === false) return;
+      e.preventDefault(); e.stopPropagation();
+      toggleSidebar();
+    }, { passive: false });
+    toggleBtn.addEventListener('click', function(e) {
+      e.preventDefault(); e.stopPropagation();
+    }, { passive: false });
+  }
+
+  // Overlay click → close drawer
+  if (overlay) {
+    overlay.addEventListener('pointerup', function(e) {
+      if (e.isPrimary === false) return;
+      e.preventDefault();
+      closeSidebar();
+    }, { passive: false });
+    overlay.addEventListener('click', function(e) {
+      e.preventDefault();
+      closeSidebar();
+    });
+  }
+
+  // Desktop collapse button
+  if (collapseBtn) {
+    collapseBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      toggleCollapse();
+    });
+  }
+
+  // Escape key closes drawer on mobile
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar();
+  });
+
+  // Close drawer when nav item clicked on mobile
+  document.querySelectorAll('.nav-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      if (window.innerWidth <= MOBILE_BP) closeSidebar();
+    });
+  });
+
+  // Resize: reset mobile state when going to desktop
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > MOBILE_BP) {
+      closeSidebar();
+    }
+  });
+
+    // Init: ensure sidebar is closed on mobile on page load
+  if (window.innerWidth <= MOBILE_BP) {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('open');
+    if (toggleBtn) {
+      toggleBtn.classList.remove('open');
+      toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+    document.body.style.overflow = '';
+  } else {
+    restoreCollapseState();
+  }
+  // Expose for legacy inline onclick calls
+  window.openSidebar = openSidebar;
+  window.closeSidebar = closeSidebar;
+})();
 
 // GOOGLE MAPS AUTOCOMPLETE + FARE CALCULATION
 let adminMapsLoaded = false;
 let adminPickupPlace = null;
 let adminDropoffPlace = null;
-const ADMIN_MAPS_KEY = 'AIzaSyBrZTJSjvZP0YcvuAqLeSR0A5Y9OjyPxuM';
+let ADMIN_MAPS_KEY = '';
 
 function loadAdminMaps() {
   if(adminMapsLoaded) return;
   adminMapsLoaded = true;
-  const s = document.createElement('script');
-  s.src = `https://maps.googleapis.com/maps/api/js?key=${ADMIN_MAPS_KEY}&libraries=places&callback=initAdminMaps&loading=async`;
+  const doLoad = (key) => {
+    const s = document.createElement('script');
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places&callback=initAdminMaps&loading=async`;
+    s.async = true; s.defer = true;
+    document.head.appendChild(s);
+  };
+  if (ADMIN_MAPS_KEY) { doLoad(ADMIN_MAPS_KEY); return; }
+  fetch('/api/config').then(r=>r.json()).then(cfg=>{ if(cfg.mapsKey) { ADMIN_MAPS_KEY=cfg.mapsKey; doLoad(cfg.mapsKey); } });
   s.async = true; s.defer = true;
   document.head.appendChild(s);
 }
@@ -1905,9 +2362,14 @@ window.initAdminMaps = function() {
 async function adminCalcFare() {
   if(!adminPickupPlace || !adminDropoffPlace) return;
   const vehicle = document.getElementById('admin-vehicle').value || 'sedan';
+  const paymentMethod = (document.querySelector('[name="payment"]') || {}).value || '';
+  const isCard = paymentMethod.toLowerCase().includes('card') || paymentMethod.toLowerCase().includes('stripe');
+  const airportPickupVal = (document.getElementById('admin-airport-pickup') || {}).value || '';
+  const airportPickup = airportPickupVal === 'yes';
   const badge = document.getElementById('admin-fare-badge');
   const badgeText = document.getElementById('admin-fare-text');
   const fareInput = document.getElementById('admin-fare-input');
+  const breakdownPanel = document.getElementById('admin-fare-breakdown');
   badge.style.display = 'inline-flex';
   badgeText.textContent = 'Calculating...';
   badge.style.background = '#fef9c3';
@@ -1926,14 +2388,47 @@ async function adminCalcFare() {
           const fareRes = await fetch('/api/fare', {
             method:'POST',
             headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ vehicle, km, pickup: adminPickupPlace.addr, dropoff: adminDropoffPlace.addr })
+            body: JSON.stringify({
+              vehicle, km,
+              pickup: adminPickupPlace.addr,
+              dropoff: adminDropoffPlace.addr,
+              airportFee: airportPickup ? 6.10 : 0,
+              isCardPayment: isCard
+            })
           });
-          const fareData = await fareRes.json();
-          if(fareData.total) {
-            fareInput.value = fareData.total.toFixed(2);
-            badgeText.textContent = `$${fareData.total.toFixed(2)} est. (${km.toFixed(1)} km)`;
+          const f = await fareRes.json();
+          if(f.total) {
+            fareInput.value = f.total.toFixed(2);
+            badgeText.textContent = `$${f.total.toFixed(2)} (${km.toFixed(1)} km)`;
             badge.style.background = '#dbeafe';
             badge.style.color = '#1d4ed8';
+            // Populate breakdown panel
+            breakdownPanel.style.display = 'block';
+            document.getElementById('afb-base').textContent    = '$' + (f.sub || 0).toFixed(2);
+            document.getElementById('afb-levy').textContent    = '$' + (f.govtLevy || 1.32).toFixed(2);
+            document.getElementById('afb-booking').textContent = '$' + (f.bookingFee || 2.50).toFixed(2);
+            document.getElementById('afb-subtotal').textContent= '$' + (f.subtotal || f.total).toFixed(2);
+            document.getElementById('afb-total').textContent   = '$' + f.total.toFixed(2) + ' AUD';
+            document.getElementById('afb-km').textContent      = km.toFixed(1) + ' km';
+            // Tolls row
+            const tollsRow = document.getElementById('afb-tolls-row');
+            if (f.tolls > 0) {
+              tollsRow.style.display = '';
+              document.getElementById('afb-tolls').textContent = '$' + f.tolls.toFixed(2);
+            } else { tollsRow.style.display = 'none'; }
+            // Airport fee row
+            const airportRow = document.getElementById('afb-airport-row');
+            if (f.airportFee > 0) {
+              airportRow.style.display = '';
+              document.getElementById('afb-airport').textContent = '$' + f.airportFee.toFixed(2);
+            } else { airportRow.style.display = 'none'; }
+            // Service fee row
+            const svcRow = document.getElementById('afb-svc-row');
+            const svcFee = f.serviceFee || f.cardFee || 0;
+            if (svcFee > 0) {
+              svcRow.style.display = '';
+              document.getElementById('afb-svc').textContent = '$' + svcFee.toFixed(2);
+            } else { svcRow.style.display = 'none'; }
           }
         } catch(e) { badgeText.textContent = 'Fare unavailable'; }
       } else {
@@ -1991,6 +2486,7 @@ function toggleAdminStripeFields() {
 }
 
 fetch('/api/config').then(r => r.json()).then(cfg => {
+  if (cfg.mapsKey) ADMIN_MAPS_KEY = cfg.mapsKey;
   if (cfg.stripePK && !cfg.stripePK.includes('WILL')) {
     initAdminStripe(cfg.stripePK);
   }
@@ -2402,7 +2898,7 @@ function ivrPrevPage() {
 // ─── IVR LIVE AUTOFILL ─────────────────────────────────────────────────────────
 // Connects to IVR SSE endpoint and fills the New Booking form in real-time
 (function initIvrLiveAutofill() {
-  const IVR_SSE_URL = 'https://ivr.silvertaxisydneyservice.com/ivr/live-sessions';
+  const IVR_SSE_URL = 'https://ivr.silverserviceonline.com.au/ivr/live-sessions';
   let evtSource = null;
   let liveCallSid = null;
   let liveBanner = null;
@@ -2583,15 +3079,71 @@ function ivrPrevPage() {
     }
   }
 
-  // Start SSE connection when page loads
+    // Start SSE connection when page loads
   connectSSE();
 })();
+
+// ─── SMS REPORT ──────────────────────────────────────────────────────────────
+let _smsLogAll = [];
+async function loadSmsReport() {
+  const tbody = document.getElementById('sms-log-body');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--mid);padding:24px">Loading...</td></tr>';
+  try {
+    const resp = await fetch('/api/admin/sms-log', { headers: { 'x-admin-token': adminToken } });
+    const data = await resp.json();
+    _smsLogAll = data.log || [];
+    renderSmsLog(_smsLogAll);
+  } catch(e) {
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#dc2626;padding:24px">Failed to load SMS log</td></tr>';
+  }
+}
+function filterSmsLog() {
+  const f = document.getElementById('sms-filter').value;
+  const filtered = f === 'all' ? _smsLogAll : _smsLogAll.filter(r => r.status === f);
+  renderSmsLog(filtered);
+}
+function renderSmsLog(log) {
+  const sent = log.filter(r => r.status === 'sent').length;
+  const failed = log.filter(r => r.status === 'failed').length;
+  const total = log.length;
+  const rate = total ? Math.round(sent / total * 100) : 0;
+  document.getElementById('sms-stat-sent').textContent = sent;
+  document.getElementById('sms-stat-failed').textContent = failed;
+  document.getElementById('sms-stat-rate').textContent = rate + '%';
+  const tbody = document.getElementById('sms-log-body');
+  if (!tbody) return;
+  if (!log.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--mid);padding:24px">No SMS records yet</td></tr>';
+    return;
+  }
+  tbody.innerHTML = log.map((r, i) => {
+    const ts = r.ts ? new Date(r.ts).toLocaleString('en-AU', { timeZone: 'Australia/Sydney', hour12: true, day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }) : '-';
+    const statusBadge = r.status === 'sent'
+      ? '<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:600">Sent</span>'
+      : '<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:12px;font-size:.75rem;font-weight:600">Failed</span>';
+    const retryBtn = r.status === 'failed'
+      ? `<button onclick="retrySms(${i})" class="btn btn-secondary" style="font-size:.75rem;padding:3px 10px">Retry</button>`
+      : '-';
+    const msg = (r.body || '').replace(/</g,'&lt;').substring(0, 80) + ((r.body||'').length > 80 ? '...' : '');
+    const err = r.error ? `<span style="color:#dc2626;font-size:.75rem">${r.error.substring(0,60)}</span>` : '-';
+    return `<tr><td style="white-space:nowrap;font-size:.8rem">${ts}</td><td style="font-size:.8rem">${r.to||'-'}</td><td>${statusBadge}</td><td style="font-size:.78rem;max-width:220px">${msg}</td><td>${err}</td><td>${retryBtn}</td></tr>`;
+  }).join('');
+}
+async function retrySms(idx) {
+  const r = _smsLogAll[idx];
+  if (!r) return;
+  if (!confirm('Retry SMS to ' + r.to + '?')) return;
+  try {
+    const resp = await fetch('/api/admin/sms-retry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
+      body: JSON.stringify({ to: r.to, body: r.body })
+    });
+    const data = await resp.json();
+    if (data.success) { showToast('SMS resent successfully'); loadSmsReport(); }
+    else showToast('Retry failed: ' + (data.error || 'Unknown error'), true);
+  } catch(e) { showToast('Retry error: ' + e.message, true); }
+}
 </script>
-
-
-
-
-
-
 </body>
 </html>
