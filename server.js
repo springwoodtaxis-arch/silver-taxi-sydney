@@ -161,7 +161,7 @@ const CFG = {
   SMTP_HOST:      E('SMTP_HOST',           'smtp.hostinger.com'),
   SMTP_PORT:      E('SMTP_PORT',           '465'),
   SMTP_USER:      E('SMTP_USER',           'info@silvertaxisydneyservice.com'),
-  SMTP_PASS:      E('SMTP_PASS',           'Au6GE4Jo2;'),
+  SMTP_PASS:      E('SMTP_PASS',           'a3e4-qhmr-yepi-aoxf'),
   ADMIN_EMAIL:    E('ADMIN_EMAIL',         'info@silvertaxisydneyservice.com'),
   ADMIN_PHONE:    E('ADMIN_PHONE',         '+61420439848'),
   ADMIN_PASSWORD: E('ADMIN_PASSWORD',      'Au6GE4Jo2;'),
