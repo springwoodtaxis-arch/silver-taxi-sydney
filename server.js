@@ -155,9 +155,9 @@ const E = (k, fb = '') => {
 
 const CFG = {
   PORT:           process.env.PORT || E('PORT', '3000'),
-  TWILIO_SID:     E('TWILIO_ACCOUNT_SID',  'AC65b51fa00bc719c38cad12b5f69b79b0'),
-  TWILIO_TOKEN:   E('TWILIO_AUTH_TOKEN'),
-  TWILIO_FROM:    E('TWILIO_FROM_NUMBER',  '+19592144266'),
+  SMSGLOBAL_USER: E('SMSGLOBAL_USER', 'g7wp3zgk'),
+  SMSGLOBAL_PASS: E('SMSGLOBAL_PASS', 'QzkxLtXm'),
+  SMSGLOBAL_FROM: E('SMSGLOBAL_FROM', '61447100306'),
   SMTP_HOST:      E('SMTP_HOST',           'smtp.hostinger.com'),
   SMTP_PORT:      E('SMTP_PORT',           '465'),
   SMTP_USER:      E('SMTP_USER',           'info@silvertaxisydneyservice.com'),
@@ -174,17 +174,14 @@ const CFG = {
 };
 
 // -------------------- Services --------------------
-let SVC = { twilio: null, mailer: null, stripe: null };
+let SVC = { mailer: null, stripe: null };
 
-// Twilio
-if (CFG.TWILIO_SID && CFG.TWILIO_TOKEN &&
-    !CFG.TWILIO_TOKEN.includes('WILL') && !CFG.TWILIO_TOKEN.includes('PROVIDE')) {
-  try {
-    SVC.twilio = require('twilio')(CFG.TWILIO_SID, CFG.TWILIO_TOKEN);
-    console.log('[TWILIO]  Loaded. From:', CFG.TWILIO_FROM);
-  } catch(e) { console.error('[TWILIO] Load failed:', e.message); }
+// SMSGlobal
+const smsglobal = require('./smsglobal');
+if (CFG.SMSGLOBAL_USER && CFG.SMSGLOBAL_PASS) {
+  console.log('[SMSGlobal] Loaded. From:', CFG.SMSGLOBAL_FROM);
 } else {
-  console.warn('[TWILIO] WARNING: Auth token not yet set — SMS will be logged only');
+  console.warn('[SMSGlobal] WARNING: credentials not set — SMS will be logged only');
 }
 
 // Nodemailer
@@ -312,18 +309,13 @@ async function verifyRecaptcha(token) {
 // -------------------- Helpers --------------------
 async function sms(to, body) {
   if (!to) return;
-  if (!SVC.twilio) {
-    console.log('[SMS mock] To:', to, '|', body.slice(0,100));
-    return;
-  }
-  // Normalise Australian numbers to E.164
-  let normTo = to.replace(/\s/g,'');
-  if (normTo.startsWith('04')) normTo = '+61' + normTo.slice(1);
-  if (normTo.startsWith('614') && !normTo.startsWith('+')) normTo = '+' + normTo;
   try {
-    const m = await SVC.twilio.messages.create({ body, from: CFG.TWILIO_FROM, to: normTo });
-    console.log('[SMS]  Sent to', normTo, '| SID:', m.sid);
-  } catch(e) { console.error('[SMS]  Error to', normTo, ':', e.message); }
+    await smsglobal.sendSms(to, body, {
+      user: CFG.SMSGLOBAL_USER,
+      pass: CFG.SMSGLOBAL_PASS,
+      from: CFG.SMSGLOBAL_FROM,
+    });
+  } catch(e) { console.error('[SMS] Error to', to, ':', e.message); }
 }
 
 async function email(to, subject, html, attachments = []) {
@@ -813,12 +805,12 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok', time: new Date().toISOString(),
     services: {
-      twilio: SVC.twilio ? 'loaded' : 'not loaded',
+      smsglobal: CFG.SMSGLOBAL_USER ? 'loaded' : 'not loaded',
       email:  SVC.mailer ? 'loaded' : 'not loaded',
       stripe: SVC.stripe ? 'loaded' : 'not loaded',
     },
     config: {
-      twilio_from: CFG.TWILIO_FROM || 'not set',
+      smsglobal_from: CFG.SMSGLOBAL_FROM || 'not set',
       smtp_user:   CFG.SMTP_USER   || 'not set',
       admin_email: CFG.ADMIN_EMAIL || 'not set',
       admin_phone: CFG.ADMIN_PHONE || 'not set',
@@ -1028,7 +1020,7 @@ app.post('/api/booking', async (req, res) => {
         } catch(e) { return `${b.date} at ${b.time}`; }
       })();
        await sms(b.phone,
-        `#${b.ref} — Your Sydney taxi booking confirmed for ${bookingDt}. Fare: ${b.fare} AUD. Amendments: 1800 173 171`);
+        `#${b.ref} — Your Silver Service booking is confirmed for ${bookingDt}. Fare: ${b.fare} AUD. Queries: 1800 173 171`);
       // Admin SMS disabled per owner request — Telegram notification used instead
       // Generate ICS calendar file for one-click calendar add
       const icsContent = (() => {
@@ -2421,7 +2413,7 @@ app.get('/api/test/booking', (req, res) => {
     status: 'booking route alive',
     dbSize: DB.bookings.size,
     services: {
-      twilio: SVC.twilio ? 'loaded' : 'NOT LOADED',
+      smsglobal: CFG.SMSGLOBAL_USER ? 'loaded' : 'not loaded',
       email:  SVC.mailer ? 'loaded' : 'NOT LOADED',
       stripe: SVC.stripe ? 'loaded' : 'NOT LOADED'
     },
