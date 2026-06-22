@@ -3958,14 +3958,16 @@ try {
 app.post('/api/deploy', express.raw({ type: 'application/json' }), (req, res) => {
   const sig = req.headers['x-hub-signature-256'] || '';
   const secret = process.env.WEBHOOK_SECRET || 'springwood-deploy-2026';
+  // express.json() may have already parsed req.body — convert back to raw Buffer for HMAC
+  const rawBody = Buffer.isBuffer(req.body) ? req.body : Buffer.from(typeof req.body === 'string' ? req.body : JSON.stringify(req.body));
   const hmac = crypto.createHmac('sha256', secret);
-  hmac.update(req.body);
+  hmac.update(rawBody);
   const digest = 'sha256=' + hmac.digest('hex');
   let valid = false;
   try { valid = crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(sig)); } catch {}
   if (!valid) { return res.status(401).send('Unauthorized'); }
   let payload;
-  try { payload = JSON.parse(req.body.toString()); } catch { return res.status(400).send('Bad JSON'); }
+  try { payload = Buffer.isBuffer(req.body) ? JSON.parse(req.body.toString()) : (typeof req.body === 'object' ? req.body : JSON.parse(req.body)); } catch { return res.status(400).send('Bad JSON'); }
   const branch = (payload.ref || '').replace('refs/heads/', '');
   if (branch !== 'master') { return res.status(200).send('Skipped'); }
   const { exec } = require('child_process');
