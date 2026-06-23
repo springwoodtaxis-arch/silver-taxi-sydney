@@ -641,6 +641,20 @@ body {
   align-items: center; gap: 8px;
 }
 .airport-notice.visible { display: flex; }
+
+/* Apple Pay / Google Pay Payment Request Button */
+#pr-button-wrap { display: none; margin-bottom: 14px; }
+#pr-button-wrap.visible { display: block; }
+#pr-button { height: 44px; border-radius: var(--r); }
+.pr-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 12px 0; font-size: .75rem; color: #6B7280;
+}
+.pr-divider::before, .pr-divider::after {
+  content: ''; flex: 1; height: 1px; background: #E5E7EB;
+}
+#pr-unavailable { display: none; font-size: .75rem; color: #9CA3AF; margin-bottom: 10px; }
+
 /* Airport pickup — card-only payment enforcement */
 .airport-pay-notice {
   display: none; padding: 12px 14px; background: #EFF6FF;
@@ -1418,6 +1432,12 @@ function trackPhoneCall(source) {
 
       <!-- Stripe card element -->
       <div id="stripe-wrap">
+        <!-- Apple Pay / Google Pay -->
+        <div id="pr-button-wrap">
+          <div id="pr-button"></div>
+        </div>
+        <div class="pr-divider" id="pr-divider" style="display:none">or pay by card</div>
+        <div id="pr-unavailable"></div>
         <div id="stripe-card-el"></div>
         <div id="stripe-error"></div>
         <div class="f-hint" style="margin-top:8px">
@@ -1848,6 +1868,7 @@ async function fetchFare() {
     });
     if (data.total) {
       state.fare = { ...data, airportFee: data.airportFee || airportFee };
+      updatePaymentRequestAmount();
       document.getElementById('fare-total').textContent = data.total.toFixed(2);
       document.getElementById('fare-km').textContent = data.km ? data.km.toFixed(1) + ' km' : '—';
       document.getElementById('fare-tolls').textContent = data.tolls ? '$' + data.tolls.toFixed(2) : '$0.00';
@@ -2163,6 +2184,9 @@ function updateCashAmount() {
 // ── Stripe ──
 let stripe = null, cardElement = null;
 
+let paymentRequest = null;
+let prButton = null;
+
 function initStripe(pk) {
   if (!pk || pk.includes('WILL')) return;
   const script = document.createElement('script');
@@ -2180,8 +2204,132 @@ function initStripe(pk) {
     cardElement.on('change', e => {
       document.getElementById('stripe-error').textContent = e.error ? e.error.message : '';
     });
+    // ── Payment Request Button (Apple Pay / Google Pay) ──
+    const fareTotal = (state.fare && state.fare.total) ? Math.round(state.fare.total * 100) : 100;
+    paymentRequest = stripe.paymentRequest({
+      country: 'AU',
+      currency: 'aud',
+      total: { label: 'Taxi Booking', amount: fareTotal },
+      requestPayerName: true,
+      requestPayerEmail: false,
+      requestPayerPhone: false,
+    });
+    const prElements = stripe.elements();
+    prButton = prElements.create('paymentRequestButton', {
+      paymentRequest,
+      style: { paymentRequestButton: { height: '44px', borderRadius: '8px' } },
+    });
+    paymentRequest.canMakePayment().then(result => {
+      const wrap = document.getElementById('pr-button-wrap');
+      const divider = document.getElementById('pr-divider');
+      if (result) {
+        prButton.mount('#pr-button');
+        if (wrap) wrap.classList.add('visible');
+        if (divider) divider.style.display = 'flex';
+      } else {
+        const msg = document.getElementById('pr-unavailable');
+        if (msg) {
+          msg.style.display = 'block';
+          msg.textContent = 'Apple Pay / Google Pay not available on this device. Use card below.';
+        }
+      }
+    });
+    paymentRequest.on('paymentmethod', async (ev) => {
+      // Store the payment method for use in confirmBooking
+      state.prPaymentMethod = ev.paymentMethod;
+      state.prCompleteCallback = ev.complete;
+      // Trigger booking confirmation
+      await doConfirmWithPR(ev);
+    });
   };
   document.head.appendChild(script);
+}
+
+function updatePaymentRequestAmount() {
+  if (!paymentRequest || !state.fare || !state.fare.total) return;
+  try {
+    paymentRequest.update({
+      total: { label: 'Taxi Booking', amount: Math.round(state.fare.total * 100) },
+    });
+  } catch(e) { /* ignore if not yet initialised */ }
+}
+
+async function doConfirmWithPR(ev) {
+  try {
+    const fare = state.fare || {};
+    const piData = await api('/api/payment/intent', {
+      vehicle: state.vehicleKey || state.vehicle,
+      km: fare.km || state.km || 0,
+      tolls: fare.tolls || 0,
+      returnTrip: state.returnTrip || false,
+      airportFee: fare.airportFee || 0,
+      airportPickup: state.airportPickup || false,
+      pickup: state.pickup,
+      dropoff: state.dropoff,
+      date: state.date,
+      time: state.time,
+      currency: 'aud',
+      description: 'Taxi Booking: ' + (state.pickup || '') + ' → ' + (state.dropoff || ''),
+    });
+    if (!piData.clientSecret) { ev.complete('fail'); return; }
+    const { error, paymentIntent } = await stripe.confirmCardPayment(
+      piData.clientSecret,
+      { payment_method: ev.paymentMethod.id },
+      { handleActions: false }
+    );
+    if (error) { ev.complete('fail'); toast(error.message, 'error'); return; }
+    ev.complete('success');
+    if (paymentIntent.status === 'requires_action') {
+      const { error: err2 } = await stripe.confirmCardPayment(piData.clientSecret);
+      if (err2) { toast(err2.message, 'error'); return; }
+    }
+    state.stripePI = paymentIntent.id;
+    state.payment = 'Card (Stripe)';
+    try {
+      const ch = paymentIntent.charges && paymentIntent.charges.data && paymentIntent.charges.data[0];
+      const pmd = (ch && ch.payment_method_details) || paymentIntent.payment_method_details;
+      if (pmd && pmd.card) {
+        state.cardBrand = (pmd.card.brand || '').toUpperCase();
+        state.cardLast4 = pmd.card.last4 || '';
+      }
+    } catch(ce) {}
+    // Submit booking
+    const rcToken = window.grecaptcha ? await new Promise(res => window.grecaptcha.ready(() => window.grecaptcha.execute(window._rcSiteKey || '', { action: 'booking' }).then(res))) : '';
+    const bookingData = {
+      vehicle: state.vehicle, vehicleKey: state.vehicleKey,
+      pickup: state.pickup, dropoff: state.dropoff,
+      date: state.date, time: state.time,
+      passengers: state.passengers, returnTrip: state.returnTrip,
+      returnPickup: state.returnPickup || '', returnDropoff: state.returnDropoff || '',
+      returnDate: state.returnDate || '', returnTime: state.returnTime || '',
+      flight: state.flight, notes: state.notes,
+      name: state.name, email: state.email, phone: state.phone,
+      payment: 'Card (Stripe)', stripePI: state.stripePI,
+      cardBrand: state.cardBrand || '', cardLast4: state.cardLast4 || '',
+      km: fare.km || state.km, tolls: fare.tolls || 0,
+      airportFee: fare.airportFee || 0,
+      airportPickup: state.airportPickup || false,
+      recaptchaToken: rcToken,
+    };
+    const result = await api('/api/booking', bookingData);
+    if (result.success) {
+      document.getElementById('conf-ref').textContent      = '#' + result.ref;
+      document.getElementById('conf-vehicle').textContent  = state.vehicle;
+      document.getElementById('conf-pickup').textContent   = state.pickup;
+      document.getElementById('conf-dropoff').textContent  = state.dropoff;
+      document.getElementById('conf-datetime').textContent = fmtDateTime(state.date, state.time);
+      document.getElementById('conf-payment').textContent  = 'Card (Apple/Google Pay)';
+      const f = result.fare || fare;
+      document.getElementById('conf-total').innerHTML = '<strong>$' + (f.total || 0).toFixed(2) + ' AUD</strong>';
+      goStep(5);
+      toast('Booking confirmed! Reference: #' + result.ref);
+    } else {
+      toast(result.error || 'Booking failed. Please try again.', 'error');
+    }
+  } catch(e) {
+    ev.complete('fail');
+    toast('Payment failed. Please try again.', 'error');
+  }
 }
 
 // ── OTP Modal ──
