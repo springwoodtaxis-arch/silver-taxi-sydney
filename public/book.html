@@ -1076,7 +1076,7 @@ function trackPhoneCall(source) {
         <label class="f-label">Verification Code <span class="f-req">*</span></label>
         <div class="otp-row">
           <div class="f-group" style="margin:0;flex:1">
-            <input class="f-ctrl" id="otp-input" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]*" placeholder="Enter 6-digit code"/>
+            <input class="f-ctrl" id="otp-input" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]*" placeholder="Enter 6-digit code" oninput="this.value=this.value.replace(/\D/g,'');if(this.value.length===6)verifyOTP();"/>
           </div>
           <button class="otp-btn otp-btn-verify" onclick="verifyOTP()">Verify</button>
         </div>
