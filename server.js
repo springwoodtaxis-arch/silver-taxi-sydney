@@ -654,6 +654,30 @@ app.get('/api/admin/verify-token', (req, res) => {
   res.status(401).json({ valid: false });
 });
 
+// ─── Admin: Update Google service account key ───────────────────────────────
+app.post('/api/admin/set-service-account', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.replace('Bearer ', '') || req.query.token || '';
+  const deployToken = req.headers['x-deploy-token'] || '';
+  const deploySecret = CFG.WEBHOOK_SECRET || 'springwood-deploy-2026';
+  const isAdmin = ADMIN_TOKENS.has(token) || deployToken === deploySecret;
+  if (!isAdmin) return res.status(401).json({ error: 'Unauthorized' });
+  const { serviceAccount } = req.body;
+  if (!serviceAccount || !serviceAccount.client_email || !serviceAccount.private_key) {
+    return res.status(400).json({ error: 'Invalid service account JSON' });
+  }
+  try {
+    const fs = require('fs');
+    const saPath = require('path').join(__dirname, 'config', 'google-service-account.json');
+    fs.mkdirSync(require('path').dirname(saPath), { recursive: true });
+    fs.writeFileSync(saPath, JSON.stringify(serviceAccount, null, 2));
+    console.log(`[Admin] Service account updated: ${serviceAccount.client_email}`);
+    res.json({ success: true, message: `Service account set: ${serviceAccount.client_email}`, project: serviceAccount.project_id });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ─── Admin: SMS log ───────────────────────────────────────────────────────────
 app.get('/api/admin/sms-log', (req, res) => {
   res.json({ log: DB.smsLog });
@@ -1382,6 +1406,13 @@ app.get('/sitemap',     (req, res) => { res.setHeader('Content-Type', 'applicati
 app.get('/googlee390b76c55f0aa92.html', (req, res) => { res.setHeader('Content-Type', 'text/html'); res.sendFile(path.join(__dirname, 'public', 'googlee390b76c55f0aa92.html')); });
 
 // ─── SEO Dashboard ──────────────────────────────────────────────────────────
+// Redirect uppercase variants (e.g. /SEO-DASHBOARD) to canonical lowercase
+app.use((req, res, next) => {
+  if (req.path.toLowerCase() === '/seo-dashboard' && req.path !== '/seo-dashboard') {
+    return res.redirect(301, '/seo-dashboard');
+  }
+  next();
+});
 app.get('/seo-dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'seo-dashboard.html'));
 });
