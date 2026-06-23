@@ -367,6 +367,61 @@ body {
 }
 .otp-verified-badge.visible { display: flex; }
 .otp-verified-badge svg { width: 16px; height: 16px; flex-shrink: 0; }
+/* === PHONE PREFIX === */
+.phone-prefix-wrap { display: flex; }
+.phone-prefix-wrap .f-ctrl { border-radius: 0 var(--r) var(--r) 0; border-left: none; flex: 1; }
+.phone-prefix-wrap .f-ctrl:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(20,74,143,.1); }
+.phone-prefix-sel {
+  padding: 11px 10px; border: 1.5px solid var(--border); border-radius: var(--r) 0 0 var(--r);
+  background: var(--off); font-family: var(--ff-ui); font-size: .88rem;
+  color: var(--slate); cursor: pointer; white-space: nowrap; outline: none;
+  -webkit-appearance: none; appearance: none; flex-shrink: 0;
+  transition: border-color .2s;
+}
+.phone-prefix-sel:focus { border-color: var(--blue); }
+/* === OTP POPUP MODAL === */
+#otp-modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(5,15,30,.65); backdrop-filter: blur(3px);
+  align-items: center; justify-content: center; padding: 16px;
+}
+#otp-modal-overlay.active { display: flex; }
+#otp-modal {
+  background: #fff; border-radius: 14px; padding: 28px 28px 24px;
+  width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(5,15,30,.35);
+  position: relative; animation: otpSlideIn .22s ease;
+}
+@keyframes otpSlideIn { from { opacity:0; transform: translateY(18px) scale(.97); } to { opacity:1; transform: none; } }
+.otp-modal-icon {
+  width: 52px; height: 52px; background: var(--blue-bg); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
+}
+.otp-modal-icon svg { width: 26px; height: 26px; color: var(--blue); }
+#otp-modal h3 { text-align: center; font-size: 1.05rem; color: var(--slate); margin-bottom: 6px; font-family: var(--ff-head); }
+.otp-modal-sub { text-align: center; font-size: .83rem; color: var(--mid); margin-bottom: 18px; line-height: 1.5; }
+.otp-modal-sub strong { color: var(--slate); }
+#otp-modal-input {
+  width: 100%; padding: 14px; border: 1.5px solid var(--border); border-radius: var(--r);
+  font-family: var(--ff-ui); font-size: 1.4rem; color: var(--slate); text-align: center;
+  letter-spacing: .3em; outline: none; transition: border-color .2s;
+  -webkit-appearance: none; appearance: none;
+}
+#otp-modal-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(20,74,143,.1); }
+#otp-modal-input::placeholder { letter-spacing: normal; font-size: .88rem; color: #aab0bb; }
+.otp-modal-btns { display: flex; gap: 10px; margin-top: 14px; }
+.otp-modal-btns button { flex: 1; padding: 12px; border: none; border-radius: var(--r); font-family: var(--ff-ui); font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; cursor: pointer; transition: all .2s; }
+#otp-modal-send-btn { background: var(--navy); color: #fff; }
+#otp-modal-send-btn:hover { background: var(--navy-mid); }
+#otp-modal-send-btn:disabled { opacity: .5; cursor: not-allowed; }
+#otp-modal-verify-btn { background: var(--blue); color: #fff; display: none; }
+#otp-modal-verify-btn:hover { background: var(--navy); }
+#otp-modal-verify-btn:disabled { opacity: .5; cursor: not-allowed; }
+#otp-modal-close { position: absolute; top: 12px; right: 14px; background: none; border: none; cursor: pointer; color: var(--mid); font-size: 1.4rem; line-height: 1; padding: 4px 8px; border-radius: 4px; }
+#otp-modal-close:hover { background: var(--off); color: var(--slate); }
+.otp-modal-error { color: var(--red); font-size: .8rem; margin-top: 8px; text-align: center; display: none; }
+.otp-verified-inline { display: none; align-items: center; gap: 6px; color: var(--green); font-size: .82rem; font-weight: 600; margin-top: 6px; }
+.otp-verified-inline.visible { display: flex; }
+.otp-verified-inline svg { width: 15px; height: 15px; }
 
 /* ═══════════════════════════════════════════════
    PAYMENT OPTIONS
@@ -1060,31 +1115,221 @@ function trackPhoneCall(source) {
         </div>
       </div>
 
-      <!-- Phone + OTP -->
+      <!-- Phone with country prefix -->
       <div class="f-group">
         <label class="f-label">Mobile Phone <span class="f-req">*</span></label>
-        <div class="otp-row">
-          <div class="f-group" style="margin:0;flex:1">
-            <input class="f-ctrl" id="pax-phone" type="tel" placeholder="+61 4XX XXX XXX or 04XX XXX XXX"/>
-          </div>
-          
+        <div class="phone-prefix-wrap">
+          <select class="phone-prefix-sel" id="phone-prefix">
+            <option value="+61">🇦🇺 +61</option>
+            <option value="+93">🇦🇫 +93</option>
+            <option value="+355">🇦🇱 +355</option>
+            <option value="+213">🇩🇿 +213</option>
+            <option value="+376">🇦🇩 +376</option>
+            <option value="+244">🇦🇴 +244</option>
+            <option value="+1-268">🇦🇬 +1-268</option>
+            <option value="+54">🇦🇷 +54</option>
+            <option value="+374">🇦🇲 +374</option>
+            <option value="+297">🇦🇼 +297</option>
+            <option value="+43">🇦🇹 +43</option>
+            <option value="+994">🇦🇿 +994</option>
+            <option value="+1-242">🇧🇸 +1-242</option>
+            <option value="+973">🇧🇭 +973</option>
+            <option value="+880">🇧🇩 +880</option>
+            <option value="+1-246">🇧🇧 +1-246</option>
+            <option value="+375">🇧🇾 +375</option>
+            <option value="+32">🇧🇪 +32</option>
+            <option value="+501">🇧🇿 +501</option>
+            <option value="+229">🇧🇯 +229</option>
+            <option value="+975">🇧🇹 +975</option>
+            <option value="+591">🇧🇴 +591</option>
+            <option value="+387">🇧🇦 +387</option>
+            <option value="+267">🇧🇼 +267</option>
+            <option value="+55">🇧🇷 +55</option>
+            <option value="+673">🇧🇳 +673</option>
+            <option value="+359">🇧🇬 +359</option>
+            <option value="+226">🇧🇫 +226</option>
+            <option value="+257">🇧🇮 +257</option>
+            <option value="+238">🇨🇻 +238</option>
+            <option value="+855">🇰🇭 +855</option>
+            <option value="+237">🇨🇲 +237</option>
+            <option value="+1">🇨🇦 +1</option>
+            <option value="+236">🇨🇫 +236</option>
+            <option value="+235">🇹🇩 +235</option>
+            <option value="+56">🇨🇱 +56</option>
+            <option value="+86">🇨🇳 +86</option>
+            <option value="+57">🇨🇴 +57</option>
+            <option value="+269">🇰🇲 +269</option>
+            <option value="+242">🇨🇬 +242</option>
+            <option value="+243">🇨🇩 +243</option>
+            <option value="+506">🇨🇷 +506</option>
+            <option value="+385">🇭🇷 +385</option>
+            <option value="+53">🇨🇺 +53</option>
+            <option value="+357">🇨🇾 +357</option>
+            <option value="+420">🇨🇿 +420</option>
+            <option value="+45">🇩🇰 +45</option>
+            <option value="+253">🇩🇯 +253</option>
+            <option value="+1-767">🇩🇲 +1-767</option>
+            <option value="+1-809">🇩🇴 +1-809</option>
+            <option value="+593">🇪🇨 +593</option>
+            <option value="+20">🇪🇬 +20</option>
+            <option value="+503">🇸🇻 +503</option>
+            <option value="+240">🇬🇶 +240</option>
+            <option value="+291">🇪🇷 +291</option>
+            <option value="+372">🇪🇪 +372</option>
+            <option value="+268">🇸🇿 +268</option>
+            <option value="+251">🇪🇹 +251</option>
+            <option value="+679">🇫🇯 +679</option>
+            <option value="+358">🇫🇮 +358</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+241">🇬🇦 +241</option>
+            <option value="+220">🇬🇲 +220</option>
+            <option value="+995">🇬🇪 +995</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+233">🇬🇭 +233</option>
+            <option value="+30">🇬🇷 +30</option>
+            <option value="+1-473">🇬🇩 +1-473</option>
+            <option value="+502">🇬🇹 +502</option>
+            <option value="+224">🇬🇳 +224</option>
+            <option value="+245">🇬🇼 +245</option>
+            <option value="+592">🇬🇾 +592</option>
+            <option value="+509">🇭🇹 +509</option>
+            <option value="+504">🇭🇳 +504</option>
+            <option value="+852">🇭🇰 +852</option>
+            <option value="+36">🇭🇺 +36</option>
+            <option value="+354">🇮🇸 +354</option>
+            <option value="+91">🇮🇳 +91</option>
+            <option value="+62">🇮🇩 +62</option>
+            <option value="+98">🇮🇷 +98</option>
+            <option value="+964">🇮🇶 +964</option>
+            <option value="+353">🇮🇪 +353</option>
+            <option value="+972">🇮🇱 +972</option>
+            <option value="+39">🇮🇹 +39</option>
+            <option value="+1-876">🇯🇲 +1-876</option>
+            <option value="+81">🇯🇵 +81</option>
+            <option value="+962">🇯🇴 +962</option>
+            <option value="+7">🇰🇿 +7</option>
+            <option value="+254">🇰🇪 +254</option>
+            <option value="+686">🇰🇮 +686</option>
+            <option value="+383">🇽🇰 +383</option>
+            <option value="+965">🇰🇼 +965</option>
+            <option value="+996">🇰🇬 +996</option>
+            <option value="+856">🇱🇦 +856</option>
+            <option value="+371">🇱🇻 +371</option>
+            <option value="+961">🇱🇧 +961</option>
+            <option value="+266">🇱🇸 +266</option>
+            <option value="+231">🇱🇷 +231</option>
+            <option value="+218">🇱🇾 +218</option>
+            <option value="+423">🇱🇮 +423</option>
+            <option value="+370">🇱🇹 +370</option>
+            <option value="+352">🇱🇺 +352</option>
+            <option value="+853">🇲🇴 +853</option>
+            <option value="+261">🇲🇬 +261</option>
+            <option value="+265">🇲🇼 +265</option>
+            <option value="+60">🇲🇾 +60</option>
+            <option value="+960">🇲🇻 +960</option>
+            <option value="+223">🇲🇱 +223</option>
+            <option value="+356">🇲🇹 +356</option>
+            <option value="+692">🇲🇭 +692</option>
+            <option value="+222">🇲🇷 +222</option>
+            <option value="+230">🇲🇺 +230</option>
+            <option value="+52">🇲🇽 +52</option>
+            <option value="+691">🇫🇲 +691</option>
+            <option value="+373">🇲🇩 +373</option>
+            <option value="+377">🇲🇨 +377</option>
+            <option value="+976">🇲🇳 +976</option>
+            <option value="+382">🇲🇪 +382</option>
+            <option value="+212">🇲🇦 +212</option>
+            <option value="+258">🇲🇿 +258</option>
+            <option value="+95">🇲🇲 +95</option>
+            <option value="+264">🇳🇦 +264</option>
+            <option value="+674">🇳🇷 +674</option>
+            <option value="+977">🇳🇵 +977</option>
+            <option value="+31">🇳🇱 +31</option>
+            <option value="+64">🇳🇿 +64</option>
+            <option value="+505">🇳🇮 +505</option>
+            <option value="+227">🇳🇪 +227</option>
+            <option value="+234">🇳🇬 +234</option>
+            <option value="+850">🇰🇵 +850</option>
+            <option value="+389">🇲🇰 +389</option>
+            <option value="+47">🇳🇴 +47</option>
+            <option value="+968">🇴🇲 +968</option>
+            <option value="+92">🇵🇰 +92</option>
+            <option value="+680">🇵🇼 +680</option>
+            <option value="+970">🇵🇸 +970</option>
+            <option value="+507">🇵🇦 +507</option>
+            <option value="+675">🇵🇬 +675</option>
+            <option value="+595">🇵🇾 +595</option>
+            <option value="+51">🇵🇪 +51</option>
+            <option value="+63">🇵🇭 +63</option>
+            <option value="+48">🇵🇱 +48</option>
+            <option value="+351">🇵🇹 +351</option>
+            <option value="+1-787">🇵🇷 +1-787</option>
+            <option value="+974">🇶🇦 +974</option>
+            <option value="+40">🇷🇴 +40</option>
+            <option value="+7">🇷🇺 +7</option>
+            <option value="+250">🇷🇼 +250</option>
+            <option value="+1-869">🇰🇳 +1-869</option>
+            <option value="+1-758">🇱🇨 +1-758</option>
+            <option value="+1-784">🇻🇨 +1-784</option>
+            <option value="+685">🇼🇸 +685</option>
+            <option value="+378">🇸🇲 +378</option>
+            <option value="+239">🇸🇹 +239</option>
+            <option value="+966">🇸🇦 +966</option>
+            <option value="+221">🇸🇳 +221</option>
+            <option value="+381">🇷🇸 +381</option>
+            <option value="+248">🇸🇨 +248</option>
+            <option value="+232">🇸🇱 +232</option>
+            <option value="+65">🇸🇬 +65</option>
+            <option value="+421">🇸🇰 +421</option>
+            <option value="+386">🇸🇮 +386</option>
+            <option value="+677">🇸🇧 +677</option>
+            <option value="+252">🇸🇴 +252</option>
+            <option value="+27">🇿🇦 +27</option>
+            <option value="+82">🇰🇷 +82</option>
+            <option value="+211">🇸🇸 +211</option>
+            <option value="+34">🇪🇸 +34</option>
+            <option value="+94">🇱🇰 +94</option>
+            <option value="+249">🇸🇩 +249</option>
+            <option value="+597">🇸🇷 +597</option>
+            <option value="+46">🇸🇪 +46</option>
+            <option value="+41">🇨🇭 +41</option>
+            <option value="+963">🇸🇾 +963</option>
+            <option value="+886">🇹🇼 +886</option>
+            <option value="+992">🇹🇯 +992</option>
+            <option value="+255">🇹🇿 +255</option>
+            <option value="+66">🇹🇭 +66</option>
+            <option value="+670">🇹🇱 +670</option>
+            <option value="+228">🇹🇬 +228</option>
+            <option value="+676">🇹🇴 +676</option>
+            <option value="+1-868">🇹🇹 +1-868</option>
+            <option value="+216">🇹🇳 +216</option>
+            <option value="+90">🇹🇷 +90</option>
+            <option value="+993">🇹🇲 +993</option>
+            <option value="+688">🇹🇻 +688</option>
+            <option value="+256">🇺🇬 +256</option>
+            <option value="+380">🇺🇦 +380</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+598">🇺🇾 +598</option>
+            <option value="+998">🇺🇿 +998</option>
+            <option value="+678">🇻🇺 +678</option>
+            <option value="+39">🇻🇦 +39</option>
+            <option value="+58">🇻🇪 +58</option>
+            <option value="+84">🇻🇳 +84</option>
+            <option value="+967">🇾🇪 +967</option>
+            <option value="+260">🇿🇲 +260</option>
+            <option value="+263">🇿🇼 +263</option>
+          </select>
+          <input class="f-ctrl" id="pax-phone" type="tel" placeholder="4XX XXX XXX" inputmode="tel"
+            oninput="this.value=this.value.replace(/[^0-9]/g,'')"/>
         </div>
-        <div class="f-hint">Australian mobile required. A 6-digit SMS code will be sent.</div>
+        <div class="f-hint">Mobile number required. A 6-digit SMS code will be sent to verify.</div>
       </div>
 
-      <div class="f-group" id="otp-group" style="display:none">
-        <label class="f-label">Verification Code <span class="f-req">*</span></label>
-        <div class="otp-row">
-          <div class="f-group" style="margin:0;flex:1">
-            <input class="f-ctrl" id="otp-input" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]*" placeholder="Enter 6-digit code" oninput="this.value=this.value.replace(/\D/g,'');if(this.value.length===6)verifyOTP();"/>
-          </div>
-          <button class="otp-btn otp-btn-verify" onclick="verifyOTP()">Verify</button>
-        </div>
-      </div>
-
-      <div class="otp-verified-badge" id="otp-verified">
+      <div class="otp-verified-inline" id="otp-verified">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        Phone number verified successfully!
+        Phone number verified
       </div>
 
       <div class="f-group">
@@ -1303,7 +1548,8 @@ const state = {
   name: '', email: '', phone: '', notes: '',
   payment: '',
   fare: null,
-  otpVerified: true,  // OTP disabled
+  otpVerified: false,
+  bookingOtpVerified: false,
   stripePI: null,
   airportPickup: false,
   km: 0,
@@ -1342,9 +1588,12 @@ async function api(path, body) {
 
 // ── Phone formatter ──
 function formatPhone(p) {
+  const prefix = (document.getElementById('phone-prefix') || {}).value || '+61';
   p = p.replace(/\s+/g, '').replace(/-/g, '');
-  if (p.startsWith('0')) p = '+61' + p.slice(1);
-  if (!p.startsWith('+')) p = '+61' + p;
+  // Strip leading 0 if present (e.g. 0412... -> 412...)
+  if (p.startsWith('0')) p = p.slice(1);
+  // If already has a + prefix, use as-is; otherwise prepend selected prefix
+  if (!p.startsWith('+')) p = prefix + p;
   return p;
 }
 
@@ -1889,59 +2138,116 @@ function initStripe(pk) {
   document.head.appendChild(script);
 }
 
-// ── OTP ──
-async function sendOTP() {
-  const phone = document.getElementById('pax-phone').value.trim();
-  if (!phone) { toast('Please enter your mobile number first', 'error'); return; }
-  const normPhone = formatPhone(phone);
-  const btn = document.getElementById('send-otp-btn');
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
-  let rcToken = '';
-  try { rcToken = await grecaptcha.enterprise.execute(RECAPTCHA_KEY, { action: 'send_otp' }); } catch(e) {}
-  try {
-    const data = await api('/api/send-otp', { phone: normPhone, recaptchaToken: rcToken });
-    if (data.success) {
-      toast('SMS code sent to ' + normPhone);
-      document.getElementById('otp-group').style.display = 'block';
-      btn.textContent = 'Resend Code';
-      btn.disabled = false;
-      // Countdown
-      let secs = 30;
-      const interval = setInterval(() => {
-        btn.textContent = `Resend (${secs}s)`;
-        btn.disabled = true;
-        secs--;
-        if (secs < 0) { clearInterval(interval); btn.textContent = 'Resend Code'; btn.disabled = false; }
-      }, 1000);
-    } else {
-      toast(data.error || 'Failed to send SMS. Please try again.', 'error');
-      btn.disabled = false; btn.textContent = 'Send Code';
-    }
-  } catch(e) {
-    toast('Network error. Please try again.', 'error');
-    btn.disabled = false; btn.textContent = 'Send Code';
+// ── OTP Modal ──
+let otpModalSending = false;
+
+function otpModalOpen() {
+  document.getElementById('otp-modal-phone').textContent = state.phone || '';
+  document.getElementById('otp-modal-input').value = '';
+  document.getElementById('otp-modal-error').style.display = 'none';
+  document.getElementById('otp-modal-error').textContent = '';
+  document.getElementById('otp-modal-send-btn').textContent = 'Send Code';
+  document.getElementById('otp-modal-send-btn').disabled = false;
+  document.getElementById('otp-modal-send-btn').style.display = '';
+  document.getElementById('otp-modal-verify-btn').style.display = 'none';
+  document.getElementById('otp-modal-overlay').classList.add('active');
+  // Auto-send the code immediately
+  otpModalSend();
+}
+
+function otpModalClose() {
+  document.getElementById('otp-modal-overlay').classList.remove('active');
+  otpModalSending = false;
+  // Re-enable confirm button
+  const btn = document.getElementById('confirm-btn');
+  if (btn) {
+    btn.disabled = false;
+    btn.innerHTML = '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="width:16px;height:16px"><polyline points="20 6 9 17 4 12"/></svg> Confirm Booking';
   }
 }
 
-async function verifyOTP() {
-  const phone = formatPhone(document.getElementById('pax-phone').value.trim());
-  const code = document.getElementById('otp-input').value.trim();
-  if (!code || code.length < 4) { toast('Please enter the 6-digit code', 'error'); return; }
-  try {
-    const data = await api('/api/verify-otp', { phone, code });
-    if (data.success) {
-      state.otpVerified = true;
-      document.getElementById('otp-group').style.display = 'none';
-      document.getElementById('otp-verified').classList.add('visible');
-      toast('Phone verified successfully!');
-    } else {
-      toast(data.error || 'Incorrect code. Please try again.', 'error');
-    }
-  } catch(e) {
-    toast('Verification failed. Please try again.', 'error');
+function otpModalOnInput() {
+  const code = document.getElementById('otp-modal-input').value;
+  document.getElementById('otp-modal-verify-btn').style.display = 'none';
+  if (code.length === 6) {
+    // Auto-verify immediately when all 6 digits are entered
+    otpModalVerify();
   }
 }
+
+async function otpModalSend() {
+  if (otpModalSending) return;
+  otpModalSending = true;
+  const btn = document.getElementById('otp-modal-send-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  document.getElementById('otp-modal-error').style.display = 'none';
+  let rcToken = '';
+  try { rcToken = await grecaptcha.enterprise.execute(RECAPTCHA_KEY, { action: 'send_otp' }); } catch(e) {}
+  try {
+    const data = await api('/api/send-otp', { phone: state.phone, recaptchaToken: rcToken });
+    if (data.success) {
+      toast('Code sent to ' + state.phone);
+      document.getElementById('otp-modal-input').focus();
+      let secs = 30;
+      const iv = setInterval(() => {
+        btn.textContent = 'Resend (' + secs + 's)';
+        secs--;
+        if (secs < 0) { clearInterval(iv); btn.textContent = 'Resend Code'; btn.disabled = false; otpModalSending = false; }
+      }, 1000);
+    } else {
+      const errMsg = data.error || 'Failed to send code. Please try again.';
+      const errEl = document.getElementById('otp-modal-error');
+      errEl.textContent = errMsg; errEl.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Retry Send'; otpModalSending = false;
+    }
+  } catch(e) {
+    const errEl = document.getElementById('otp-modal-error');
+    errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Retry Send'; otpModalSending = false;
+  }
+}
+
+async function otpModalVerify() {
+  const code = document.getElementById('otp-modal-input').value.trim();
+  if (!code || code.length < 6) {
+    const errEl = document.getElementById('otp-modal-error');
+    errEl.textContent = 'Please enter the 6-digit code.'; errEl.style.display = 'block';
+    return;
+  }
+  const verifyBtn = document.getElementById('otp-modal-verify-btn');
+  verifyBtn.disabled = true;
+  verifyBtn.textContent = 'Verifying…';
+  try {
+    const data = await api('/api/verify-otp', { phone: state.phone, code });
+    if (data.success) {
+      state.bookingOtpVerified = true;
+      document.getElementById('otp-modal-overlay').classList.remove('active');
+      toast('Phone verified! Processing your booking…');
+      // Proceed with the actual booking submission
+      await doConfirmBooking();
+    } else {
+      const errEl = document.getElementById('otp-modal-error');
+      errEl.textContent = data.error || 'Incorrect code. Please try again.'; errEl.style.display = 'block';
+      verifyBtn.disabled = false; verifyBtn.textContent = 'Verify & Confirm';
+    }
+  } catch(e) {
+    const errEl = document.getElementById('otp-modal-error');
+    errEl.textContent = 'Verification failed. Please try again.'; errEl.style.display = 'block';
+    verifyBtn.disabled = false; verifyBtn.textContent = 'Verify & Confirm';
+  }
+}
+
+// Close modal on overlay click
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('otp-modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) otpModalClose();
+  });
+});
+
+// ── Legacy OTP (kept for compatibility) ──
+async function sendOTP() { otpModalOpen(); }
+async function verifyOTP() { otpModalVerify(); }
 
 // ── Summary ──
 function fmtDateTime(dateStr, timeStr) {
@@ -1990,6 +2296,11 @@ async function confirmBooking() {
   const p = document.querySelector('input[name="payment"]:checked');
   if (!p) { toast('Please select a payment method', 'error'); return; }
   state.payment = p.value;
+  // OTP gate — open modal to verify phone before confirming
+  if (!state.bookingOtpVerified) {
+    otpModalOpen();
+    return;
+  }
   const btn = document.getElementById('confirm-btn');
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Processing…';
@@ -2098,6 +2409,9 @@ async function confirmBooking() {
   }
 }
 
+// Alias used by otpModalVerify after OTP success
+async function doConfirmBooking() { await confirmBooking(); }
+
 // ── Google Maps Loader ──
 const MAPS_KEY = 'AIzaSyBrZTJSjvZP0YcvuAqLeSR0A5Y9OjyPxuM';
 
@@ -2135,5 +2449,25 @@ async function initBooking() {
 
 window.addEventListener('DOMContentLoaded', initBooking);
 </script>
+
+<!-- OTP MODAL OVERLAY -->
+<div id="otp-modal-overlay">
+  <div id="otp-modal" role="dialog" aria-modal="true" aria-labelledby="otp-modal-title">
+    <button id="otp-modal-close" onclick="otpModalClose()" aria-label="Close">&times;</button>
+    <div class="otp-modal-icon">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <h3 id="otp-modal-title">Verify Your Mobile</h3>
+    <p class="otp-modal-sub">A 6-digit code will be sent to<br><strong id="otp-modal-phone"></strong></p>
+    <input id="otp-modal-input" type="tel" maxlength="6" placeholder="Enter 6-digit code"
+      inputmode="numeric" autocomplete="one-time-code"
+      oninput="this.value=this.value.replace(/\D/g,'');otpModalOnInput()"/>
+    <div class="otp-modal-error" id="otp-modal-error"></div>
+    <div class="otp-modal-btns">
+      <button id="otp-modal-send-btn" onclick="otpModalSend()">Send Code</button>
+      <button id="otp-modal-verify-btn" onclick="otpModalVerify()">Verify &amp; Confirm</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
