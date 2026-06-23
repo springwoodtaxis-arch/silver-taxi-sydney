@@ -1394,8 +1394,10 @@ app.post('/api/deploy', (req, res) => {
   ].join(' && ');
   res.status(200).send('Deploying...');
   exec(deployCmd, { timeout: 180000 }, (err, stdout, stderr) => {
-    if (err) { console.error('[Deploy] Error:', err.message, stderr); return; }
-    console.log('[Deploy] Done:', stdout.trim());
+    if (err) { console.error('[Deploy] Error:', err.message, stderr); }
+    else { console.log('[Deploy] Done:', stdout.trim()); }
+    // Force Passenger to reload the new server.js by exiting cleanly
+    setTimeout(() => process.exit(0), 1000);
   });
 });
 
