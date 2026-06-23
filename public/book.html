@@ -641,6 +641,17 @@ body {
   align-items: center; gap: 8px;
 }
 .airport-notice.visible { display: flex; }
+/* Airport pickup — card-only payment enforcement */
+.airport-pay-notice {
+  display: none; padding: 12px 14px; background: #EFF6FF;
+  border: 1px solid #93C5FD; border-radius: var(--r);
+  font-size: .80rem; color: #1E40AF; margin-bottom: 14px;
+  align-items: flex-start; gap: 10px; line-height: 1.5;
+}
+.airport-pay-notice.visible { display: flex; }
+.airport-pay-notice svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+.pay-lbl.airport-hidden { display: none !important; }
+
 .airport-notice svg { width: 14px; height: 14px; flex-shrink: 0; }
 
 /* Flight info box */
@@ -1357,6 +1368,12 @@ function trackPhoneCall(source) {
       </div>
       <div class="step-sub">Step 4 of 5 — Choose how you'd like to pay</div>
 
+      <!-- Airport pickup: card-only notice -->
+      <div class="airport-pay-notice" id="airport-pay-notice">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+        <div><strong>Sydney Airport Pickup — Full Payment Required</strong><br>
+        All Sydney Airport pickups must be paid in full by card before your journey. Cash and CabCharge are not accepted for airport pickups.</div>
+      </div>
       <div class="pay-grid">
         <!-- Pay Online (Stripe) -->
         <input class="pay-radio" id="pay-online" name="payment" type="radio" value="Card (Stripe)" onchange="onPaymentChange()"/>
@@ -1704,6 +1721,12 @@ function validateStep(step) {
   if (step === 4) {
     const p = document.querySelector('input[name="payment"]:checked');
     if (!p) { toast('Please select a payment method', 'error'); return false; }
+    if (state.airportPickup && p.value !== 'Card (Stripe)') {
+      toast('Sydney Airport pickups require full card payment. Please select Pay Online.', 'error');
+      const cardRadio = document.getElementById('pay-online');
+      if (cardRadio) { cardRadio.checked = true; onPaymentChange(); }
+      return false;
+    }
     state.payment = p.value;
     return true;
   }
@@ -2075,6 +2098,29 @@ async function lookupFlight(flightNum) {
 }
 
 // ── Payment change ──
+
+// ── Airport payment enforcement ──
+function enforceAirportPayment() {
+  const isAirport = state.airportPickup;
+  const notice = document.getElementById('airport-pay-notice');
+  if (notice) notice.classList.toggle('visible', isAirport);
+  // Hide/show non-card options
+  ['pay-cabcharge', 'pay-driver', 'pay-cash'].forEach(id => {
+    const radio = document.getElementById(id);
+    const label = radio ? radio.nextElementSibling : null;
+    if (radio) radio.disabled = isAirport;
+    if (label) label.classList.toggle('airport-hidden', isAirport);
+  });
+  if (isAirport) {
+    // Force card selection
+    const cardRadio = document.getElementById('pay-online');
+    if (cardRadio && !cardRadio.checked) {
+      cardRadio.checked = true;
+      onPaymentChange();
+    }
+  }
+}
+
 function onPaymentChange() {
   const p = document.querySelector('input[name="payment"]:checked');
   if (!p) return;
