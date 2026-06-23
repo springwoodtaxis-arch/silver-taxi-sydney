@@ -1609,6 +1609,74 @@ connectDB().then(() => {
   });
 });
 
+// ─── SEO Indexing & Search Console API ──────────────────────────────────────
+const { google } = require('googleapis');
+const indexing = google.indexing('v3');
+const searchconsole = google.searchconsole('v1');
+
+async function getGoogleAuth() {
+  const auth = new google.auth.GoogleAuth({
+    keyFile: path.join(__dirname, 'config', 'google-service-account.json'),
+    scopes: [
+      'https://www.googleapis.com/auth/indexing',
+      'https://www.googleapis.com/auth/webmasters.readonly'
+    ],
+  });
+  return auth.getClient();
+}
+
+app.post('/api/seo/push-index', async (req, res) => {
+  try {
+    const { url, type } = req.body;
+    if (!url) return res.status(400).json({ error: 'URL is required' });
+    const auth = await getGoogleAuth();
+    const result = await indexing.urlNotifications.publish({
+      auth,
+      requestBody: { url, type: type || 'URL_UPDATED' }
+    });
+    res.json({ success: true, result: result.data });
+  } catch (err) {
+    console.error('[SEO INDEX] Error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/seo/search-data', async (req, res) => {
+  try {
+    const auth = await getGoogleAuth();
+    const siteUrl = 'https://silvertaxisydneyservice.com';
+    const response = await searchconsole.searchanalytics.query({
+      auth,
+      siteUrl,
+      requestBody: {
+        startDate: new Date(Date.now() - 29 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        endDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        dimensions: ['query', 'page', 'device', 'country'],
+        rowLimit: 1000
+      }
+    });
+    res.json({ success: true, data: response.data });
+  } catch (err) {
+    console.error('[SEO DATA] Error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Threat Intelligence API ─────────────────────────────────────────────────
+app.get('/api/threat/report', async (req, res) => {
+  try {
+    const report = await getThreatReport();
+    res.json({ success: true, report });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.get('/api/fraud/report', async (req, res) => {
+  try {
+    const report = await getFraudReport();
+    res.json({ success: true, report });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // ─── Process-level error guards ───────────────────────────────────────────────
 process.on('uncaughtException',  err => console.error('[UNCAUGHT EXCEPTION]',  err.message));
 process.on('unhandledRejection', err => console.error('[UNHANDLED REJECTION]', err && err.message));

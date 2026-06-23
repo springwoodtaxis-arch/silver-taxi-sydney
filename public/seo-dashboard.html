@@ -50,7 +50,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .premium-svg-icon{display:inline-flex;align-items:center;justify-content:center;width:1.05em;height:1.05em;vertical-align:-0.16em;color:currentColor;line-height:1;margin-right:.32em;flex-shrink:0}.premium-svg-icon svg{display:block;width:1em;height:1em}.premium-svg-icon--dot{margin-right:.25em}.premium-svg-icon--red{color:var(--red)}.premium-svg-icon--blue{color:var(--accent)}.premium-svg-icon--orange{color:#f97316}.premium-svg-icon--yellow{color:var(--yellow)}
 .main{margin-left:220px;padding:28px 32px;min-height:100vh}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.topbar-title{font-size:1.5rem;font-weight:800}
+.topbar-title{font-size:1.5rem;font-weight:800;background:linear-gradient(90deg,var(--text),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .topbar-right{display:flex;align-items:center;gap:12px}
 .btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:all .15s}
 .btn-primary{background:var(--accent);color:#fff}
@@ -365,7 +365,7 @@ function trackPhoneCall(source) {
 <div class="tab-content active" id="tab-overview">
 <div class="topbar">
 <div>
-<div class="topbar-title" style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" class="premium-svg-icon premium-svg-icon--chart"><svg fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M3 3v18h18 M7 16l4-4 3 3 6-8"></path></svg></span> SEO Dashboard <div class="live-indicator"><div class="dot"></div> LIVE</div></div>
+<div class="topbar-title" style="display:flex;align-items:center;gap:12px"><span aria-hidden="true" class="premium-svg-icon premium-svg-icon--chart"><svg fill="none" height="1em" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="1em"><path d="M3 3v18h18 M7 16l4-4 3 3 6-8"></path></svg></span> SEO Dashboard <div class="live-indicator" style="display:inline-flex"><div class="dot"></div> LIVE</div></div>
 <div class="text-muted" style="font-size:.83rem;margin-top:4px">silvertaxisydneyservice.com · Last updated: <span id="last-updated">Loading...</span></div>
 </div>
 <div class="topbar-right">
