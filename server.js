@@ -1381,13 +1381,17 @@ app.post('/api/deploy', (req, res) => {
   const secret = CFG.WEBHOOK_SECRET;
   if (token !== secret) return res.status(401).send('Unauthorized');
   const { exec } = require('child_process');
+  const gitPath    = '/home/u848559930/domains/silvertaxisydneyservice.com/public_html';
   const deployPath = '/home/u848559930/domains/silvertaxisydneyservice.com/nodejs';
   const deployCmd  = [
-    'export PATH=/opt/alt/alt-nodejs20/root/bin:/usr/bin:$PATH',
-    `cd ${deployPath}`,
+    'export PATH=/opt/alt/alt-nodejs22/root/usr/bin:/opt/alt/alt-nodejs20/root/bin:/usr/bin:$PATH',
+    `cd ${gitPath}`,
     'git remote set-url origin https://github.com/springwoodtaxis-arch/silver-taxi-sydney.git',
     'git fetch origin master 2>&1',
     'git reset --hard origin/master 2>&1',
+    `cp ${gitPath}/server.js ${deployPath}/server.js`,
+    `cp -r ${gitPath}/middleware/* ${deployPath}/middleware/ 2>/dev/null || true`,
+    `cd ${deployPath}`,
     'npm install --production 2>&1 | tail -3',
     'touch tmp/restart.txt 2>/dev/null || true',
     'echo DEPLOY_DONE',
