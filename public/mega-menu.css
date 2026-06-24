@@ -130,35 +130,57 @@ a.nav-book-btn:hover {
   transform: translateY(-1px);
 }
 
-/* Hamburger toggle */
+/* Hamburger toggle — premium SVG icon */
 .nav-toggle {
   display: none;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 5px;
-  width: 40px;
-  height: 40px;
-  background: none;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  background: #fff;
   border: 1.5px solid var(--nav-border);
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   padding: 0;
   margin-left: auto;
-  transition: border-color var(--nav-dur);
+  transition: background var(--nav-dur), border-color var(--nav-dur), box-shadow var(--nav-dur);
+  box-shadow: 0 2px 8px rgba(15,42,92,.08);
+  position: relative;
+  overflow: hidden;
 }
-.nav-toggle:hover { border-color: var(--nav-blue); }
-.nav-toggle span {
+.nav-toggle:hover {
+  border-color: var(--nav-blue);
+  background: #F0F3FA;
+  box-shadow: 0 4px 14px rgba(15,42,92,.14);
+}
+/* Hide legacy span bars */
+.nav-toggle span { display: none !important; }
+/* SVG icon states */
+.nav-toggle-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity .18s ease, transform .22s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
   display: block;
-  width: 20px;
-  height: 2px;
-  background: var(--nav-text);
-  border-radius: 2px;
-  transition: all var(--nav-dur) var(--nav-ease);
 }
-.nav-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.nav-toggle.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.nav-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-toggle-open {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+.nav-toggle-close {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.nav-toggle.active .nav-toggle-open {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
+.nav-toggle.active .nav-toggle-close {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    MEGA DROPDOWN — DESKTOP (white background)

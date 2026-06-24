@@ -1344,3 +1344,210 @@ body.mob-menu-open {
     z-index: 2147483300 !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WHITE THEME OVERRIDE — v14 · Authoritative final block
+   Overrides all earlier dark/navy !important rules with clean white.
+   ═══════════════════════════════════════════════════════════════════════════ */
+html body #mob-panel.sso-mobile-shop,
+html body #mob-panel {
+  background: #ffffff !important;
+  border-right: 1px solid #E5E9F0 !important;
+  box-shadow: 8px 0 40px rgba(7,27,58,.12) !important;
+  color: #1A2332 !important;
+  touch-action: pan-y !important;
+  overscroll-behavior: contain !important;
+}
+html body #mob-panel.sso-mobile-shop::before,
+html body #mob-panel::before { background: none !important; }
+html body #mob-panel.sso-mobile-shop .mob-header,
+html body #mob-panel .mob-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #E5E9F0 !important;
+  box-shadow: none !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-shop-intro {
+  background: #F4F6FA !important;
+  border: 1px solid #E5E9F0 !important;
+  box-shadow: none !important;
+  border-radius: 14px !important;
+  margin: 14px 16px 10px !important;
+  padding: 16px !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-shop-intro span { color: #0F2A5C !important; }
+html body #mob-panel.sso-mobile-shop .mob-shop-intro strong { color: #071B3A !important; font-size: 18px !important; }
+html body #mob-panel.sso-mobile-shop .mob-shop-intro p { color: #6B7A8D !important; }
+html body #mob-panel.sso-mobile-shop .mob-primary-action {
+  background: linear-gradient(135deg, #0F2A5C, #1A3A6E) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(15,42,92,.25) !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-secondary-action {
+  background: #F0F3FA !important;
+  color: #0F2A5C !important;
+  border: 1.5px solid #E5E9F0 !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-links,
+html body #mob-panel .mob-links {
+  background: #ffffff !important;
+  padding: 0 14px 14px !important;
+  scrollbar-color: rgba(15,42,92,.25) #F0F3FA !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-nav-item,
+html body #mob-panel .mob-nav-item {
+  background: #ffffff !important;
+  color: #1A2332 !important;
+  border: 1.5px solid #E5E9F0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 4px rgba(7,27,58,.06) !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-nav-item > svg:first-child {
+  background: #F0F3FA !important;
+  border: 1px solid #E5E9F0 !important;
+  color: #0F2A5C !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-nav-item:hover,
+html body #mob-panel.sso-mobile-shop .mob-nav-item:focus-visible,
+html body #mob-panel.sso-mobile-shop .mob-nav-item.open,
+html body #mob-panel .mob-nav-item:hover,
+html body #mob-panel .mob-nav-item:focus-visible,
+html body #mob-panel .mob-nav-item.open {
+  background: #F0F3FA !important;
+  border-color: rgba(15,42,92,.2) !important;
+  color: #0F2A5C !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-nav-item span,
+html body #mob-panel .mob-nav-item span { color: #1A2332 !important; }
+html body #mob-panel.sso-mobile-shop .mob-nav-item:hover span,
+html body #mob-panel.sso-mobile-shop .mob-nav-item.open span,
+html body #mob-panel .mob-nav-item:hover span,
+html body #mob-panel .mob-nav-item.open span { color: #0F2A5C !important; }
+html body #mob-panel.sso-mobile-shop .mob-chevron,
+html body #mob-panel .mob-chevron { color: #6B7A8D !important; }
+html body #mob-panel.sso-mobile-shop .mob-nav-icon,
+html body #mob-panel .mob-nav-icon {
+  background: #F0F3FA !important;
+  border: 1px solid #E5E9F0 !important;
+  color: #0F2A5C !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-submenu,
+html body #mob-panel .mob-submenu,
+html body #mob-panel.sso-mobile-shop .mob-services-panel,
+html body #mob-panel .mob-services-panel,
+html body #mob-panel.sso-mobile-shop .mob-airport-panel,
+html body #mob-panel .mob-airport-panel,
+html body #mob-panel.sso-mobile-shop .mob-areas-panel,
+html body #mob-panel .mob-areas-panel {
+  background: #F4F6FA !important;
+  border: 1px solid #E5E9F0 !important;
+  border-radius: 10px !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-submenu a,
+html body #mob-panel .mob-submenu a,
+html body #mob-panel.sso-mobile-shop .mob-service-link,
+html body #mob-panel .mob-service-link,
+html body #mob-panel.sso-mobile-shop .mob-airport-link,
+html body #mob-panel .mob-airport-link,
+html body #mob-panel.sso-mobile-shop .mob-areas-group a,
+html body #mob-panel .mob-areas-group a {
+  color: #1A2332 !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-submenu a:hover,
+html body #mob-panel .mob-submenu a:hover,
+html body #mob-panel.sso-mobile-shop .mob-service-link:hover,
+html body #mob-panel .mob-service-link:hover,
+html body #mob-panel.sso-mobile-shop .mob-airport-link:hover,
+html body #mob-panel .mob-airport-link:hover,
+html body #mob-panel.sso-mobile-shop .mob-areas-group a:hover,
+html body #mob-panel .mob-areas-group a:hover {
+  background: #E8EDF5 !important;
+  color: #0F2A5C !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-service-link-title,
+html body #mob-panel .mob-service-link-title,
+html body #mob-panel.sso-mobile-shop .mob-airport-label,
+html body #mob-panel .mob-airport-label,
+html body #mob-panel.sso-mobile-shop .mob-areas-group-label,
+html body #mob-panel .mob-areas-group-label { color: #0F2A5C !important; }
+html body #mob-panel.sso-mobile-shop .mob-service-link-desc,
+html body #mob-panel .mob-service-link-desc { color: #6B7A8D !important; }
+html body #mob-panel.sso-mobile-shop .mob-service-link-icon,
+html body #mob-panel .mob-service-link-icon {
+  background: #E8EDF5 !important;
+  color: #0F2A5C !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-airport-link-dot,
+html body #mob-panel .mob-airport-link-dot {
+  background: #0F2A5C !important;
+  box-shadow: none !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-trust-strip span,
+html body #mob-panel .mob-trust-strip span {
+  background: #F4F6FA !important;
+  border: 1px solid #E5E9F0 !important;
+  color: #6B7A8D !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-trust-strip svg,
+html body #mob-panel .mob-trust-strip svg { color: #0F2A5C !important; }
+html body #mob-panel.sso-mobile-shop .mob-footer,
+html body #mob-panel .mob-footer {
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, #ffffff 30%, #ffffff 100%) !important;
+  border-top: 1px solid #E5E9F0 !important;
+}
+html body #mob-panel.sso-mobile-shop .mob-call-btn,
+html body #mob-panel .mob-footer a.mob-call-btn {
+  background: linear-gradient(135deg, #0F2A5C, #1A3A6E) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(15,42,92,.25) !important;
+}
+html body #mob-overlay {
+  background: rgba(7,27,58,.45) !important;
+  backdrop-filter: blur(4px) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+}
+/* Premium white X close button */
+html body #mob-panel.sso-mobile-shop #mob-close-btn,
+html body #mob-panel #mob-close-btn {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 10px !important;
+  background: #F0F3FA !important;
+  border: 1.5px solid #E5E9F0 !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  cursor: pointer !important;
+  transition: background .2s, border-color .2s !important;
+  overflow: visible !important;
+}
+html body #mob-panel.sso-mobile-shop #mob-close-btn:hover,
+html body #mob-panel #mob-close-btn:hover {
+  background: #E4EAF6 !important;
+  border-color: rgba(15,42,92,.3) !important;
+}
+html body #mob-panel.sso-mobile-shop #mob-close-btn span,
+html body #mob-panel #mob-close-btn span { display: none !important; }
+html body #mob-panel.sso-mobile-shop #mob-close-btn::before,
+html body #mob-panel.sso-mobile-shop #mob-close-btn::after,
+html body #mob-panel #mob-close-btn::before,
+html body #mob-panel #mob-close-btn::after {
+  content: '' !important;
+  position: absolute !important;
+  width: 18px !important;
+  height: 2px !important;
+  background: #0F2A5C !important;
+  border-radius: 2px !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform-origin: center !important;
+}
+html body #mob-panel.sso-mobile-shop #mob-close-btn::before,
+html body #mob-panel #mob-close-btn::before {
+  transform: translate(-50%, -50%) rotate(45deg) !important;
+}
+html body #mob-panel.sso-mobile-shop #mob-close-btn::after,
+html body #mob-panel #mob-close-btn::after {
+  transform: translate(-50%, -50%) rotate(-45deg) !important;
+}
