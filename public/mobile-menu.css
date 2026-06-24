@@ -1551,3 +1551,265 @@ html body #mob-panel.sso-mobile-shop #mob-close-btn::after,
 html body #mob-panel #mob-close-btn::after {
   transform: translate(-50%, -50%) rotate(-45deg) !important;
 }
+   COMPREHENSIVE FIX v17 — Close button, nav-toggle, nav icons (SILVER TAXI)
+   Appended last so these rules override all earlier mobile-menu.css rules
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* --- Nav toggle (hamburger) button: dark icon on white navbar --- */
+html body .nav-toggle,
+html body button.nav-toggle,
+html body #nav-toggle {
+  background: #ffffff !important;
+  border: 1.5px solid #E5E5E5 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08) !important;
+}
+html body .nav-toggle span,
+html body button.nav-toggle span,
+html body #nav-toggle span {
+  background: #1A1A1A !important;
+}
+html body .nav-toggle .nav-toggle-open,
+html body .nav-toggle .nav-toggle-close,
+html body .nav-toggle svg.nav-toggle-icon,
+html body #nav-toggle .nav-toggle-open,
+html body #nav-toggle .nav-toggle-close,
+html body #nav-toggle svg.nav-toggle-icon {
+  stroke: #1A1A1A !important;
+  color: #1A1A1A !important;
+}
+html body .nav-toggle:hover,
+html body #nav-toggle:hover {
+  background: #FFF4F0 !important;
+  border-color: #0F2A5C !important;
+}
+
+/* --- Mobile panel close button: dark X on light background --- */
+html body #mob-panel #mob-close-btn,
+html body #mob-panel.sso-mobile-shop #mob-close-btn {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  border-radius: 10px !important;
+  background: #F5F5F5 !important;
+  border: 1.5px solid #E5E5E5 !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  cursor: pointer !important;
+  overflow: visible !important;
+  flex: 0 0 40px !important;
+}
+html body #mob-panel #mob-close-btn:hover,
+html body #mob-panel.sso-mobile-shop #mob-close-btn:hover {
+  background: #FFF4F0 !important;
+  border-color: #0F2A5C !important;
+}
+/* Hide span bars, use pseudo-elements for the X */
+html body #mob-panel #mob-close-btn span,
+html body #mob-panel.sso-mobile-shop #mob-close-btn span {
+  display: none !important;
+}
+html body #mob-panel #mob-close-btn::before,
+html body #mob-panel.sso-mobile-shop #mob-close-btn::before,
+html body #mob-panel #mob-close-btn::after,
+html body #mob-panel.sso-mobile-shop #mob-close-btn::after {
+  content: '' !important;
+  position: absolute !important;
+  width: 16px !important;
+  height: 2px !important;
+  background: #1A1A1A !important;
+  border-radius: 2px !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform-origin: center !important;
+}
+html body #mob-panel #mob-close-btn::before,
+html body #mob-panel.sso-mobile-shop #mob-close-btn::before {
+  transform: translate(-50%, -50%) rotate(45deg) !important;
+}
+html body #mob-panel #mob-close-btn::after,
+html body #mob-panel.sso-mobile-shop #mob-close-btn::after {
+  transform: translate(-50%, -50%) rotate(-45deg) !important;
+}
+html body #mob-panel #mob-close-btn:hover::before,
+html body #mob-panel #mob-close-btn:hover::after,
+html body #mob-panel.sso-mobile-shop #mob-close-btn:hover::before,
+html body #mob-panel.sso-mobile-shop #mob-close-btn:hover::after {
+  background: #0F2A5C !important;
+}
+
+/* --- Mobile panel: force white background --- */
+html body #mob-panel,
+html body #mob-panel.sso-mobile-shop {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #1A1A1A !important;
+  border-right: 1px solid #E5E5E5 !important;
+}
+html body #mob-panel::before,
+html body #mob-panel.sso-mobile-shop::before {
+  display: none !important;
+}
+html body #mob-panel .mob-header,
+html body #mob-panel.sso-mobile-shop .mob-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #E5E5E5 !important;
+  box-shadow: none !important;
+}
+
+/* --- Mobile nav items: dark text on white background --- */
+html body #mob-panel .mob-nav-item,
+html body #mob-panel.sso-mobile-shop .mob-nav-item {
+  background: #ffffff !important;
+  color: #1A1A1A !important;
+  border: none !important;
+  border-bottom: 1px solid #F0F0F0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html body #mob-panel .mob-nav-item:hover,
+html body #mob-panel.sso-mobile-shop .mob-nav-item:hover,
+html body #mob-panel .mob-nav-item.open,
+html body #mob-panel.sso-mobile-shop .mob-nav-item.open {
+  background: #FFF5F2 !important;
+  color: #0F2A5C !important;
+  transform: none !important;
+}
+/* Nav item SVG icons: dark grey */
+html body #mob-panel .mob-nav-item > svg:first-child,
+html body #mob-panel.sso-mobile-shop .mob-nav-item > svg:first-child {
+  color: #6B7280 !important;
+  stroke: #6B7280 !important;
+  background: #F5F5F5 !important;
+  border: 1px solid #E5E5E5 !important;
+  border-radius: 10px !important;
+  width: 38px !important;
+  height: 38px !important;
+  padding: 9px !important;
+  box-sizing: border-box !important;
+}
+html body #mob-panel .mob-nav-item:hover > svg:first-child,
+html body #mob-panel.sso-mobile-shop .mob-nav-item:hover > svg:first-child,
+html body #mob-panel .mob-nav-item.open > svg:first-child,
+html body #mob-panel.sso-mobile-shop .mob-nav-item.open > svg:first-child {
+  color: #0F2A5C !important;
+  stroke: #0F2A5C !important;
+  background: #FFF4F0 !important;
+  border-color: #FFD5C4 !important;
+}
+/* Chevron arrow: dark grey */
+html body #mob-panel .mob-chevron,
+html body #mob-panel.sso-mobile-shop .mob-chevron {
+  color: #6B7280 !important;
+  stroke: #6B7280 !important;
+}
+html body #mob-panel .mob-nav-item.open .mob-chevron,
+html body #mob-panel.sso-mobile-shop .mob-nav-item.open .mob-chevron {
+  color: #0F2A5C !important;
+  stroke: #0F2A5C !important;
+}
+/* Nav item span text */
+html body #mob-panel .mob-nav-item > span,
+html body #mob-panel.sso-mobile-shop .mob-nav-item > span {
+  color: #1A1A1A !important;
+}
+html body #mob-panel .mob-nav-item:hover > span,
+html body #mob-panel.sso-mobile-shop .mob-nav-item:hover > span,
+html body #mob-panel .mob-nav-item.open > span,
+html body #mob-panel.sso-mobile-shop .mob-nav-item.open > span {
+  color: #0F2A5C !important;
+}
+
+/* --- Mobile submenu: light grey background --- */
+html body #mob-panel .mob-submenu,
+html body #mob-panel.sso-mobile-shop .mob-submenu {
+  background: #F5F5F5 !important;
+  border: 1px solid #E5E5E5 !important;
+  border-radius: 10px !important;
+  margin: 4px 8px 8px !important;
+}
+html body #mob-panel .mob-submenu a,
+html body #mob-panel.sso-mobile-shop .mob-submenu a {
+  color: #374151 !important;
+  background: transparent !important;
+  border-radius: 8px !important;
+}
+html body #mob-panel .mob-submenu a:hover,
+html body #mob-panel.sso-mobile-shop .mob-submenu a:hover {
+  color: #0F2A5C !important;
+  background: #FFF4F0 !important;
+}
+
+/* --- Mobile shop intro: light grey --- */
+html body #mob-panel .mob-shop-intro,
+html body #mob-panel.sso-mobile-shop .mob-shop-intro {
+  background: #F5F5F5 !important;
+  border: 1px solid #E5E5E5 !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+  margin: 12px 12px 8px !important;
+}
+html body #mob-panel .mob-shop-intro span,
+html body #mob-panel.sso-mobile-shop .mob-shop-intro span {
+  color: #0F2A5C !important;
+}
+html body #mob-panel .mob-shop-intro strong,
+html body #mob-panel.sso-mobile-shop .mob-shop-intro strong {
+  color: #1A1A1A !important;
+}
+html body #mob-panel .mob-shop-intro p,
+html body #mob-panel.sso-mobile-shop .mob-shop-intro p {
+  color: #6B7280 !important;
+}
+
+/* --- Quick action buttons --- */
+html body #mob-panel .mob-primary-action,
+html body #mob-panel.sso-mobile-shop .mob-primary-action {
+  background: #0F2A5C !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(255,82,14,.3) !important;
+  border: none !important;
+}
+html body #mob-panel .mob-secondary-action,
+html body #mob-panel.sso-mobile-shop .mob-secondary-action {
+  background: #ffffff !important;
+  color: #1A1A1A !important;
+  border: 1.5px solid #E5E5E5 !important;
+  box-shadow: none !important;
+}
+
+/* --- Trust strip: light grey --- */
+html body #mob-panel .mob-trust-strip,
+html body #mob-panel.sso-mobile-shop .mob-trust-strip {
+  background: #F5F5F5 !important;
+  border-top: 1px solid #E5E5E5 !important;
+  border-bottom: 1px solid #E5E5E5 !important;
+}
+html body #mob-panel .mob-trust-strip span,
+html body #mob-panel.sso-mobile-shop .mob-trust-strip span {
+  color: #374151 !important;
+  background: #ffffff !important;
+  border: 1px solid #E5E5E5 !important;
+}
+html body #mob-panel .mob-trust-strip svg,
+html body #mob-panel.sso-mobile-shop .mob-trust-strip svg {
+  color: #0F2A5C !important;
+  stroke: #0F2A5C !important;
+}
+
+/* --- Mobile footer: light grey --- */
+html body #mob-panel .mob-footer,
+html body #mob-panel.sso-mobile-shop .mob-footer {
+  background: #F5F5F5 !important;
+  border-top: 1px solid #E5E5E5 !important;
+}
+html body #mob-panel .mob-call-btn,
+html body #mob-panel.sso-mobile-shop .mob-call-btn {
+  background: #0F2A5C !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(255,82,14,.3) !important;
+}
