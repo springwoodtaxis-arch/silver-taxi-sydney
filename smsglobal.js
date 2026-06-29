@@ -5,7 +5,7 @@
  * Credentials are read from environment variables:
  *   SMSGLOBAL_USER     (Master API Username, default: g7wp3zgk)
  *   SMSGLOBAL_PASS     (Master API Password, default: QzkxLtXm)
- *   SMSGLOBAL_FROM     (Sender number, default: 61447100306)
+ *   SMSGLOBAL_FROM     (Sender number, default: SilverTaxis)
  *
  * Drop-in replacement for the Twilio SMS helper used across all booking servers.
  */
@@ -15,7 +15,7 @@ const https = require('https');
 const DEFAULTS = {
   user: 'g7wp3zgk',
   pass: 'QzkxLtXm',
-  from: '61447100306',
+  from: 'SilverTaxis',
 };
 
 /**

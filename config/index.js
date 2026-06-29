@@ -19,7 +19,7 @@ const CFG = {
   PORT:           process.env.PORT || E('PORT', '3000'),
   SMSGLOBAL_USER: E('SMSGLOBAL_USER', 'g7wp3zgk'),
   SMSGLOBAL_PASS: E('SMSGLOBAL_PASS', 'QzkxLtXm'),
-  SMSGLOBAL_FROM: E('SMSGLOBAL_FROM', '61447100306'),
+  SMSGLOBAL_FROM: E('SMSGLOBAL_FROM', 'SilverTaxis'),
   SMTP_HOST:      E('SMTP_HOST',      'smtp.hostinger.com'),
   SMTP_PORT:      E('SMTP_PORT',      '465'),
   SMTP_USER:      E('SMTP_USER',      'info@silvertaxisydneyservice.com'),
