@@ -720,6 +720,7 @@ function trackPhoneCall(source) {
     })(window, document, "clarity", "script", "xbquni1kmw");
 </script>
 
+<script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 
@@ -2269,66 +2270,31 @@ function updateCashAmount() {
 
 // ── Stripe ──
 let stripe = null, cardElement = null;
+let cardMounted = false;
 
 let paymentRequest = null;
 let prButton = null;
 
 function initStripe(pk) {
-  if (!pk || pk.includes('WILL')) return;
-  const script = document.createElement('script');
-  script.src = 'https://js.stripe.com/v3/';
-  script.onload = () => {
-    stripe = Stripe(pk);
-    const elements = stripe.elements();
-    cardElement = elements.create('card', {
-      style: {
-        base: { fontFamily: 'Fira Sans, sans-serif', fontSize: '15px', color: '#1E2A3A' },
-        invalid: { color: '#DC2626' },
-      },
-    });
-    cardElement.mount('#stripe-card-el');
-    cardElement.on('change', e => {
-      document.getElementById('stripe-error').textContent = e.error ? e.error.message : '';
-    });
-    // ── Payment Request Button (Apple Pay / Google Pay) ──
-    const fareTotal = (state.fare && state.fare.total) ? Math.round(state.fare.total * 100) : 100;
-    paymentRequest = stripe.paymentRequest({
-      country: 'AU',
-      currency: 'aud',
-      total: { label: 'Taxi Booking', amount: fareTotal },
-      requestPayerName: true,
-      requestPayerEmail: false,
-      requestPayerPhone: false,
-    });
-    const prElements = stripe.elements();
-    prButton = prElements.create('paymentRequestButton', {
-      paymentRequest,
-      style: { paymentRequestButton: { height: '44px', borderRadius: '8px' } },
-    });
-    paymentRequest.canMakePayment().then(result => {
-      const wrap = document.getElementById('pr-button-wrap');
-      const divider = document.getElementById('pr-divider');
-      if (result) {
-        prButton.mount('#pr-button');
-        if (wrap) wrap.classList.add('visible');
-        if (divider) divider.style.display = 'flex';
-      } else {
-        const msg = document.getElementById('pr-unavailable');
-        if (msg) {
-          msg.style.display = 'block';
-          msg.textContent = 'Apple Pay / Google Pay not available on this device. Use card below.';
-        }
-      }
-    });
-    paymentRequest.on('paymentmethod', async (ev) => {
-      // Store the payment method for use in confirmBooking
-      state.prPaymentMethod = ev.paymentMethod;
-      state.prCompleteCallback = ev.complete;
-      // Trigger booking confirmation
-      await doConfirmWithPR(ev);
-    });
-  };
-  document.head.appendChild(script);
+  if (!pk) return;
+  if (typeof Stripe === 'undefined') {
+    // Stripe.js not loaded yet — retry in 100ms
+    setTimeout(function() { initStripe(pk); }, 100);
+    return;
+  }
+  stripe = Stripe(pk);
+  var elements = stripe.elements();
+  cardElement = elements.create('card', {
+    style: {
+      base: { fontFamily: 'sans-serif', fontSize: '15px', color: '#1E2A3A' },
+      invalid: { color: '#DC2626' },
+    },
+  });
+  // Do NOT mount here — mount lazily in onPaymentChange when visible
+  cardElement.on('change', function(e) {
+    var errEl = document.getElementById('stripe-error');
+    if (errEl) errEl.textContent = e.error ? e.error.message : '';
+  });
 }
 
 function updatePaymentRequestAmount() {

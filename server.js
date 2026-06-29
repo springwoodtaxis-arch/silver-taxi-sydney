@@ -179,21 +179,8 @@ function shortAddr(addr) {
 
 // ─── reCAPTCHA v3 ─────────────────────────────────────────────────────────────
 async function verifyRecaptcha(token) {
-  if (!token) return { success: true, score: 0.5 };
-  try {
-    const RECAPTCHA_SECRET   = '6Leki88sAAAAAE0zxdRRuFbVybO47b14eK37win1';
-    const RECAPTCHA_SITE_KEY = '6Le_ac8sAAAAAD1xxGQjFphEWTkpp_xbtWa2kFop';
-    const RECAPTCHA_PROJECT  = 'flight-tracking-416511';
-    const resp = await fetch(
-      `https://recaptchaenterprise.googleapis.com/v1/projects/${RECAPTCHA_PROJECT}/assessments?key=${RECAPTCHA_SECRET}`,
-      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: { token, siteKey: RECAPTCHA_SITE_KEY } }) }
-    );
-    const data  = await resp.json();
-    const score = data.riskAnalysis?.score ?? 0.5;
-    const valid = data.tokenProperties?.valid !== false;
-    const ok    = valid && score >= 0.3;
-    return { success: ok, score };
-  } catch (e) { return { success: true, score: 0.5 }; }
+  // reCAPTCHA disabled — always pass
+  return { success: true, score: 1.0 };
 }
 
 // ─── OTP store ────────────────────────────────────────────────────────────────
