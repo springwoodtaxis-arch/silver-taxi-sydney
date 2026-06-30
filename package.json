@@ -8,6 +8,7 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "@google-analytics/data": "^6.1.0",
     "compression": "^1.8.1",
     "dotenv": "^17.4.2",
     "express": "^4.18.2",

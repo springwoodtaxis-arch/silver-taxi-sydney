@@ -1278,6 +1278,79 @@ app.get('/api/seo/health', async (req, res) => {
 });
 
 // ─── Threat & fraud API routes ────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// SILVER TAXI SYDNEY SERVICE — GA4 + Credentials + Analytics + Ads
+// Service Account: google-indexing-api-service-ac@index-api-silver-taxi-sydney
+// GA4 Property: 542503663 | Key stored server-side only, NOT in GitHub
+// ─────────────────────────────────────────────────────────────────────────────
+const STS_GA4_PROPERTY = '542503663';
+const STS_SA_PATH = require('path').join(__dirname, 'config', 'google-service-account.json');
+let _stsSAHealthCache = null; let _stsSAHealthTs = 0;
+let _stsGA4Cache = null; let _stsGA4CacheTs = 0;
+let _stsAdsCache = null; let _stsAdsCacheTs = 0;
+const STS_CACHE_TTL = 30 * 60 * 1000;
+function loadSTSServiceAccount() {
+  try { const raw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON; if (raw && raw.trim()) { let txt = raw.trim(); if (!txt.startsWith('{')) { try { txt = Buffer.from(txt, 'base64').toString('utf8'); } catch(e){} } const creds = JSON.parse(txt); if (creds.private_key && creds.client_email) { if (creds.private_key.indexOf('\\n') !== -1) creds.private_key = creds.private_key.replace(/\\n/g, '\n'); return creds; } } } catch(e){}
+  try { const creds = JSON.parse(require('fs').readFileSync(STS_SA_PATH, 'utf8')); if (creds.private_key && creds.client_email) { if (creds.private_key.indexOf('\\n') !== -1) creds.private_key = creds.private_key.replace(/\\n/g, '\n'); return creds; } } catch(e){}
+  return null;
+}
+async function getSTSGA4Client() { const creds = loadSTSServiceAccount(); if (!creds) throw new Error('No service account credentials found'); const { BetaAnalyticsDataClient } = require('@google-analytics/data'); return new BetaAnalyticsDataClient({ credentials: creds }); }
+app.get('/api/seo/credentials-health', async (req, res) => {
+  try {
+    if (!req.query.refresh && _stsSAHealthCache && (Date.now() - _stsSAHealthTs) < STS_CACHE_TTL) return res.json({ success: true, ..._stsSAHealthCache });
+    const creds = loadSTSServiceAccount();
+    if (!creds) { _stsSAHealthCache = { ok: false, valid: false, reason: 'No service-account credentials found.' }; _stsSAHealthTs = Date.now(); return res.json({ success: true, ..._stsSAHealthCache }); }
+    const { google } = require('googleapis');
+    const auth = new google.auth.GoogleAuth({ credentials: creds, scopes: ['https://www.googleapis.com/auth/indexing'] });
+    const token = await auth.getAccessToken();
+    _stsSAHealthCache = token ? { ok: true, valid: true, clientEmail: creds.client_email, projectId: creds.project_id, keyId: creds.private_key_id, checkedAt: new Date().toISOString() } : { ok: false, valid: false, reason: 'Token mint failed' };
+    _stsSAHealthTs = Date.now(); res.json({ success: true, ..._stsSAHealthCache });
+  } catch(e) { res.json({ success: true, ok: false, valid: false, reason: e.message }); }
+});
+app.get('/api/analytics/overview', async (req, res) => {
+  try {
+    const forceRefresh = req.query.refresh === '1';
+    if (!forceRefresh && _stsGA4Cache && (Date.now() - _stsGA4CacheTs) < STS_CACHE_TTL) return res.json({ success: true, ..._stsGA4Cache, cached: true });
+    const client = await getSTSGA4Client(); const days = parseInt(req.query.days) || 28; const dateRange = { startDate: `${days}daysAgo`, endDate: 'today' };
+    const [overviewRes, channelRes, topPagesRes] = await Promise.all([
+      client.runReport({ property: `properties/${STS_GA4_PROPERTY}`, dateRanges: [dateRange], metrics: [{ name: 'sessions' }, { name: 'totalUsers' }, { name: 'screenPageViews' }, { name: 'bounceRate' }, { name: 'averageSessionDuration' }, { name: 'conversions' }, { name: 'newUsers' }] }),
+      client.runReport({ property: `properties/${STS_GA4_PROPERTY}`, dateRanges: [dateRange], dimensions: [{ name: 'sessionDefaultChannelGrouping' }], metrics: [{ name: 'sessions' }, { name: 'conversions' }], orderBys: [{ metric: { metricName: 'sessions' }, desc: true }], limit: 8 }),
+      client.runReport({ property: `properties/${STS_GA4_PROPERTY}`, dateRanges: [dateRange], dimensions: [{ name: 'pagePath' }, { name: 'pageTitle' }], metrics: [{ name: 'screenPageViews' }, { name: 'sessions' }, { name: 'bounceRate' }], orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }], limit: 10 }),
+    ]);
+    const ov = overviewRes[0]?.rows?.[0]?.metricValues || [];
+    const overview = { sessions: parseInt(ov[0]?.value||0), users: parseInt(ov[1]?.value||0), pageviews: parseInt(ov[2]?.value||0), bounceRate: parseFloat((parseFloat(ov[3]?.value||0)*100).toFixed(1)), avgSessionDuration: parseFloat(parseFloat(ov[4]?.value||0).toFixed(0)), conversions: parseInt(ov[5]?.value||0), newUsers: parseInt(ov[6]?.value||0) };
+    const channels = (channelRes[0]?.rows||[]).map(r => ({ channel: r.dimensionValues[0]?.value||'Unknown', sessions: parseInt(r.metricValues[0]?.value||0), conversions: parseInt(r.metricValues[1]?.value||0) }));
+    const topPages = (topPagesRes[0]?.rows||[]).map(r => ({ path: r.dimensionValues[0]?.value||'/', title: r.dimensionValues[1]?.value||'', pageviews: parseInt(r.metricValues[0]?.value||0), sessions: parseInt(r.metricValues[1]?.value||0), bounceRate: parseFloat((parseFloat(r.metricValues[2]?.value||0)*100).toFixed(1)) }));
+    const result = { overview, channels, topPages, days, generatedAt: new Date().toISOString() };
+    _stsGA4Cache = result; _stsGA4CacheTs = Date.now(); res.json({ success: true, ...result, cached: false });
+  } catch(e) { res.json({ success: false, error: e.message }); }
+});
+app.get('/api/analytics/trend', async (req, res) => {
+  try { const client = await getSTSGA4Client(); const days = parseInt(req.query.days) || 28; const [report] = await client.runReport({ property: `properties/${STS_GA4_PROPERTY}`, dateRanges: [{ startDate: `${days}daysAgo`, endDate: 'today' }], dimensions: [{ name: 'date' }], metrics: [{ name: 'sessions' }, { name: 'totalUsers' }, { name: 'conversions' }], orderBys: [{ dimension: { dimensionName: 'date' } }] }); res.json({ success: true, trend: (report?.rows||[]).map(r => ({ date: r.dimensionValues[0]?.value, sessions: parseInt(r.metricValues[0]?.value||0), users: parseInt(r.metricValues[1]?.value||0), conversions: parseInt(r.metricValues[2]?.value||0) })) }); } catch(e) { res.json({ success: false, error: e.message }); }
+});
+app.get('/api/analytics/realtime', async (req, res) => {
+  try { const client = await getSTSGA4Client(); const [report] = await client.runRealtimeReport({ property: `properties/${STS_GA4_PROPERTY}`, dimensions: [{ name: 'unifiedScreenName' }], metrics: [{ name: 'activeUsers' }], limit: 10 }); const pages = (report?.rows||[]).map(r => ({ page: r.dimensionValues[0]?.value||'/', users: parseInt(r.metricValues[0]?.value||0) })); res.json({ success: true, total: pages.reduce((s,r)=>s+r.users,0), pages }); } catch(e) { res.json({ success: false, error: e.message, total: 0, pages: [] }); }
+});
+app.get('/api/ads/overview', async (req, res) => {
+  try {
+    const forceRefresh = req.query.refresh === '1';
+    if (!forceRefresh && _stsAdsCache && (Date.now() - _stsAdsCacheTs) < STS_CACHE_TTL) return res.json({ success: true, ..._stsAdsCache, cached: true });
+    const client = await getSTSGA4Client(); const days = parseInt(req.query.days) || 28; const dateRange = { startDate: `${days}daysAgo`, endDate: 'today' };
+    const paidFilter = { filter: { fieldName: 'sessionDefaultChannelGrouping', stringFilter: { value: 'Paid Search' } } };
+    const [paidRes, campaignRes, trendRes] = await Promise.all([
+      client.runReport({ property: `properties/${STS_GA4_PROPERTY}`, dateRanges: [dateRange], dimensionFilter: paidFilter, metrics: [{ name: 'sessions' }, { name: 'totalUsers' }, { name: 'screenPageViews' }, { name: 'conversions' }, { name: 'bounceRate' }, { name: 'averageSessionDuration' }] }),
+      client.runReport({ property: `properties/${STS_GA4_PROPERTY}`, dateRanges: [dateRange], dimensions: [{ name: 'sessionCampaignName' }], dimensionFilter: paidFilter, metrics: [{ name: 'sessions' }, { name: 'conversions' }, { name: 'screenPageViews' }, { name: 'bounceRate' }], orderBys: [{ metric: { metricName: 'sessions' }, desc: true }], limit: 10 }),
+      client.runReport({ property: `properties/${STS_GA4_PROPERTY}`, dateRanges: [dateRange], dimensions: [{ name: 'date' }], dimensionFilter: paidFilter, metrics: [{ name: 'sessions' }, { name: 'conversions' }], orderBys: [{ dimension: { dimensionName: 'date' } }] }),
+    ]);
+    const pv = paidRes[0]?.rows?.[0]?.metricValues||[];
+    const paidOverview = { sessions: parseInt(pv[0]?.value||0), users: parseInt(pv[1]?.value||0), pageviews: parseInt(pv[2]?.value||0), conversions: parseInt(pv[3]?.value||0), bounceRate: parseFloat((parseFloat(pv[4]?.value||0)*100).toFixed(1)), avgDuration: parseFloat(parseFloat(pv[5]?.value||0).toFixed(0)) };
+    const campaigns = (campaignRes[0]?.rows||[]).map(r => ({ name: r.dimensionValues[0]?.value||'(not set)', sessions: parseInt(r.metricValues[0]?.value||0), conversions: parseInt(r.metricValues[1]?.value||0), pageviews: parseInt(r.metricValues[2]?.value||0), bounceRate: parseFloat((parseFloat(r.metricValues[3]?.value||0)*100).toFixed(1)) }));
+    const trend = (trendRes[0]?.rows||[]).map(r=>({ date: r.dimensionValues[0]?.value, sessions: parseInt(r.metricValues[0]?.value||0), conversions: parseInt(r.metricValues[1]?.value||0) }));
+    const result = { paidOverview, campaigns, keywords: [], trend, days, generatedAt: new Date().toISOString() };
+    _stsAdsCache = result; _stsAdsCacheTs = Date.now(); res.json({ success: true, ...result, cached: false });
+  } catch(e) { res.json({ success: false, error: e.message }); }
+});
+
 app.get('/api/threat/report',       (req, res) => { try { res.json({ success: true, data: getThreatReport() }); } catch (e) { res.status(500).json({ success: false, message: e.message }); } });
 app.post('/api/threat/block',       (req, res) => { const { fingerprint, reason } = req.body; if (!fingerprint) return res.status(400).json({ success: false, message: 'fingerprint required' }); blockFingerprint(fingerprint, reason || 'Manual block'); res.json({ success: true }); });
 app.post('/api/threat/unblock',     (req, res) => { const { fingerprint } = req.body; if (!fingerprint) return res.status(400).json({ success: false, message: 'fingerprint required' }); unblockFingerprint(fingerprint); res.json({ success: true }); });
