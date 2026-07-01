@@ -31,7 +31,7 @@ const CFG = {
   STRIPE_PK:      E('STRIPE_PK',     'pk_live_51T89nY0OeJ3KrNPPFOCXkxyXMOKrrmEKjlj5B8VWHTcC7BW9Cv1kO828v21EIugUGuMPMUhjMAjpz0aQfdPJ6hik00JMAOayCy'),
   TELEGRAM_TOKEN: E('TELEGRAM_BOT_TOKEN', '8679067781:AAEH436Zpx4hmeHh04WGcbqlLc12R17wCEI'),
   TELEGRAM_CHAT:  E('TELEGRAM_CHAT_ID',   '7009455963'),
-  MAPS_KEY:       E('MAPS_API_KEY',   'AIzaSyBrZTJSjvZP0YcvuAqLeSR0A5Y9OjyPxuM'),
+  MAPS_KEY:       E('MAPS_API_KEY',   'AIzaSyBkJjXqZJsRkFbjEsadjlZa6O87BkpMY60'),
   RESEND_API_KEY: E('RESEND_API_KEY', 're_CwTpW4rQ_9DZSrHMNSaXLMosbMVnXwfbt'),
   WEBHOOK_SECRET: E('WEBHOOK_SECRET', 'springwood-deploy-2026'),
   MONGODB_URI:    E('MONGODB_URI',    'mongodb+srv://sso-admin:SSOBookings2026!@sso-bookings.zuhw01d.mongodb.net/sso?appName=sso-bookings'),
