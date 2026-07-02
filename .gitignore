@@ -35,3 +35,6 @@ Thumbs.db
 node_modules/
 .env
 config/google-service-account.json
+data/
+*.bak*
+config/google-service-account.json

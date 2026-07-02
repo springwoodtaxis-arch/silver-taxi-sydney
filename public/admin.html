@@ -2078,14 +2078,23 @@ document.getElementById('admin-booking-form').addEventListener('submit', async (
       }
       // Step 1: Create a PaymentIntent on the server
       const fareAmt = parseFloat(data.estimatedFare) || 0;
-      const amountCents = Math.round(fareAmt * 100 * 1.05); // include 5% card fee
+      // Send totalCents as authoritative amount so server charges exactly what admin calculated
+      const totalCents = Math.round(fareAmt * 100);
       let piRes;
       try {
         piRes = await fetch('/api/payment/intent', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            amount: amountCents,
+            totalCents: totalCents,
+            vehicle: (data.vehicle || 'sedan').toLowerCase().replace(/\s+/g,'-'),
+            km: parseFloat(data.distanceKm || data.km || 0),
+            tolls: parseFloat(data.tolls || 0),
+            airportPickup: !!(data.pickupAddress || '').toLowerCase().includes('airport'),
+            pickup: data.pickupAddress || '',
+            dropoff: data.dropoffAddress || '',
+            date: data.pickupDate || '',
+            time: data.pickupTime || '',
             currency: 'aud',
             description: `Admin booking: ${data.pickupAddress} → ${data.dropoffAddress}`
           })

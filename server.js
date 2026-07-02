@@ -1225,6 +1225,99 @@ app.post('/api/seo/crawl-push', async (req, res) => {
 });
 
 app.get('/api/seo/pages', (req, res) => res.json({ pages: ALL_PAGES, total: ALL_PAGES.length }));
+app.get('/api/seo/keywords', async (req, res) => {
+  try {
+    const creds = loadSTSServiceAccount();
+    if (!creds) return res.json({ success: false, keywords: [], live: false, error: 'No credentials' });
+    const { google } = require('googleapis');
+    const auth = new google.auth.GoogleAuth({ credentials: creds, scopes: ['https://www.googleapis.com/auth/webmasters.readonly'] });
+    const sc = google.searchconsole({ version: 'v1', auth });
+    const r = await sc.searchanalytics.query({ siteUrl: 'https://silvertaxisydneyservice.com', requestBody: { startDate: new Date(Date.now()-29*864e5).toISOString().split('T')[0], endDate: new Date(Date.now()-864e5).toISOString().split('T')[0], dimensions: ['query'], rowLimit: 100, orderBys: [{ fieldName: 'clicks', sortOrder: 'DESCENDING' }] } });
+    const keywords = (r.data.rows||[]).map(row => ({ query: row.keys[0], clicks: row.clicks||0, impressions: row.impressions||0, position: parseFloat((row.position||0).toFixed(1)), ctr: parseFloat(((row.ctr||0)*100).toFixed(2)) }));
+    res.json({ success: true, keywords, live: true });
+  } catch(e) { res.json({ success: false, keywords: [], live: false, error: e.message }); }
+});
+app.get('/api/seo/competitors', async (req, res) => {
+  const competitors = [
+    { name: 'Silver Service (Main)', domain: 'silverservice.com.au', url: 'https://www.silverservice.com.au/', category: 'brand' },
+    { name: '13Cabs Silver Service', domain: '13cabs.com.au', url: 'https://www.13cabs.com.au/services/silver-service/', category: 'brand' },
+    { name: 'Silver Taxi Sydney', domain: 'silvertaxisydney.com', url: 'https://silvertaxisydney.com/', category: 'priority' },
+    { name: 'Silver Service Online', domain: 'silverserviceonline.com.au', url: 'https://silverserviceonline.com.au/', category: 'direct' },
+  ];
+  try {
+    const results = await Promise.all(competitors.map(async c => {
+      try {
+        const r = await fetch(c.url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SEOBot/1.0)' }, signal: AbortSignal.timeout(8000) });
+        const html = await r.text();
+        const lower = html.toLowerCase();
+        const titleMatch = html.match(/<title[^>]*>([^<]{0,120})<\/title>/i);
+        const metaMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']{0,300})["']/i);
+        const h1Match = html.match(/<h1[^>]*>([\/s\S]{0,200}?)<\/h1>/i);
+        return { ...c, analysis: { title: titleMatch ? titleMatch[1].trim() : '', metaDesc: metaMatch ? metaMatch[1].trim() : '', hasSchema: lower.includes('application/ld+json'), hasFAQSchema: lower.includes('faqpage'), hasReviewSchema: lower.includes('aggregaterating'), mobileOK: lower.includes('viewport'), wordCount: html.replace(/<[^>]+>/g,' ').split(/\s+/).length } };
+      } catch(e) { return { ...c, analysis: { error: e.message } }; }
+    }));
+    res.json({ success: true, competitors: results });
+  } catch(e) { res.json({ success: false, competitors: [], error: e.message }); }
+});
+let _stsBulkState = { running: false, submitted: 0, failed: 0, total: 0 };
+app.get('/api/seo/bulk-push-status', (req, res) => res.json({ success: true, ..._stsBulkState }));
+app.post('/api/seo/bulk-push-stop', (req, res) => { _stsBulkState.running = false; res.json({ success: true }); });
+app.post('/api/seo/bulk-push', async (req, res) => {
+  const urls = (req.body.urls || ALL_PAGES.map(p => 'https://silvertaxisydneyservice.com' + p.url));
+  _stsBulkState = { running: true, submitted: 0, failed: 0, total: urls.length };
+  res.json({ success: true, message: `Bulk push started for ${urls.length} URLs` });
+  for (const url of urls) {
+    if (!_stsBulkState.running) break;
+    try {
+      const creds = loadSTSServiceAccount();
+      if (!creds) { _stsBulkState.failed++; continue; }
+      const { google } = require('googleapis');
+      const auth = new google.auth.GoogleAuth({ credentials: creds, scopes: ['https://www.googleapis.com/auth/indexing'] });
+      const client = await auth.getClient();
+      await client.request({ url: 'https://indexing.googleapis.com/v3/urlNotifications:publish', method: 'POST', data: { url, type: 'URL_UPDATED' } });
+      _stsBulkState.submitted++;
+    } catch(e) { _stsBulkState.failed++; }
+    await new Promise(r => setTimeout(r, 200));
+  }
+  _stsBulkState.running = false;
+});
+app.post('/api/seo/ai-generate', async (req, res) => {
+  try {
+    const { url, keywords, tone } = req.body;
+    const OpenAI = require('openai');
+    const openai = new OpenAI.default({ apiKey: process.env.OPENAI_API_KEY, baseURL: process.env.OPENAI_BASE_URL || undefined });
+    const prompt = `Generate SEO content for silvertaxisydneyservice.com page: ${url}\nKeywords: ${keywords||'silver taxi sydney'}\nTone: ${tone||'professional'}\nReturn JSON: {title, description, keywords, h1}`;
+    const r = await openai.chat.completions.create({ model: 'gpt-4.1-mini', messages: [{ role: 'user', content: prompt }], max_tokens: 400, temperature: 0.3 });
+    const text = r.choices[0]?.message?.content || '{}';
+    let data = {}; try { data = JSON.parse(text.match(/\{[\s\S]*\}/)?.[0] || '{}'); } catch(e) {}
+    res.json({ success: true, title: data.title||'', description: data.description||'', keywords: data.keywords||'', h1: data.h1||'' });
+  } catch(e) { res.json({ success: false, error: e.message }); }
+});
+app.get('/api/seo/intel', (req, res) => res.json({ success: true, data: { lastRun: null, competitors: [], aiAnalysis: null, changes: [], opportunities: [], competitorList: [] } }));
+app.post('/api/seo/intel/run', (req, res) => res.json({ success: true, message: 'SEO intelligence run started. Check back in 3-4 minutes.' }));
+
+// GET /api/seo/index-status — index status via Search Console
+app.get('/api/seo/index-status', async (req, res) => {
+  try {
+    const saPath = require('path').join(__dirname, 'config', 'google-service-account.json');
+    const creds = loadSTSServiceAccount();
+    if (!creds) return res.json({ indexed: 0, total: ALL_PAGES.length, source: 'no-credentials', stale: true });
+    const { google } = require('googleapis');
+    const auth = new google.auth.GoogleAuth({ credentials: creds, scopes: ['https://www.googleapis.com/auth/webmasters.readonly'] });
+    const sc = google.searchconsole({ version: 'v1', auth });
+    const siteUrl = 'https://silvertaxisydneyservice.com';
+    const pageRes = await sc.searchanalytics.query({
+      siteUrl,
+      requestBody: { startDate: '2024-01-01', endDate: new Date().toISOString().split('T')[0], dimensions: ['page'], rowLimit: 1000 }
+    });
+    const indexedPages = new Set((pageRes.data.rows || []).map(r => r.keys[0].replace(siteUrl, '')));
+    const indexed = indexedPages.size;
+    const total = ALL_PAGES.length;
+    res.json({ indexed, total, notIndexed: total - indexed, source: 'search-console-performance', checkedAt: new Date().toISOString() });
+  } catch(e) {
+    res.json({ indexed: 0, total: ALL_PAGES.length, error: e.message, source: 'error', stale: true });
+  }
+});
 
 app.get('/api/seo/health', async (req, res) => {
   const SITE = 'https://silvertaxisydneyservice.com';

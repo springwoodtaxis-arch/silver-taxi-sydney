@@ -19,7 +19,7 @@ const CFG = {
   PORT:           process.env.PORT || E('PORT', '3000'),
   SMSGLOBAL_USER: E('SMSGLOBAL_USER', 'g7wp3zgk'),
   SMSGLOBAL_PASS: E('SMSGLOBAL_PASS', 'QzkxLtXm'),
-  SMSGLOBAL_FROM: E('SMSGLOBAL_FROM', 'SilverTaxis'),
+  SMSGLOBAL_FROM: E('SMSGLOBAL_FROM', '61447100306'),
   SMTP_HOST:      E('SMTP_HOST',      'smtp.hostinger.com'),
   SMTP_PORT:      E('SMTP_PORT',      '465'),
   SMTP_USER:      E('SMTP_USER',      'info@silvertaxisydneyservice.com'),
@@ -28,7 +28,7 @@ const CFG = {
   ADMIN_PHONE:    E('ADMIN_PHONE',    '+61420439848'),
   ADMIN_PASSWORD: E('ADMIN_PASSWORD', 'Au6GE4Jo2;'),
   STRIPE_SECRET:  E('STRIPE_SECRET_KEY'),
-  STRIPE_PK:      E('STRIPE_PK',     'pk_live_51T89nY0OeJ3KrNPPFOCXkxyXMOKrrmEKjlj5B8VWHTcC7BW9Cv1kO828v21EIugUGuMPMUhjMAjpz0aQfdPJ6hik00JMAOayCy'),
+  STRIPE_PK:      E('STRIPE_PK'),  // Set STRIPE_PK in .env — never hardcode keys in source
   TELEGRAM_TOKEN: E('TELEGRAM_BOT_TOKEN', '8679067781:AAEH436Zpx4hmeHh04WGcbqlLc12R17wCEI'),
   TELEGRAM_CHAT:  E('TELEGRAM_CHAT_ID',   '7009455963'),
   MAPS_KEY:       E('MAPS_API_KEY',   'AIzaSyBkJjXqZJsRkFbjEsadjlZa6O87BkpMY60'),

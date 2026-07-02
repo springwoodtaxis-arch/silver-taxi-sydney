@@ -2238,7 +2238,13 @@ function onPaymentChange() {
   document.getElementById('driver-info').style.display = p.value === 'Pay Driver Directly' ? 'block' : 'none';
   document.getElementById('cash-info').classList.toggle('visible', p.value === 'Cash in Vehicle');
   if (p.value === 'Cash in Vehicle') updateCashAmount();
-  if (p.value === 'Card (Stripe)' && state.km) fetchFare();
+  if (p.value === 'Card (Stripe)') {
+    if (state.km) fetchFare();
+    if (cardElement && !cardMounted) {
+      cardElement.mount('#stripe-card-el');
+      cardMounted = true;
+    }
+  }
 }
 
 function updateCashAmount() {
@@ -2566,6 +2572,7 @@ async function confirmBooking() {
         vehicle: state.vehicleKey || state.vehicle || 'sedan',
         km: fare.km || state.km || 0,
         tolls: fare.tolls || 0,
+        totalCents: (fare.total || 0) > 0 ? Math.round((fare.total || 0) * 100) : undefined,
         returnTrip: state.returnTrip || false,
         airportFee: fare.airportFee || 0,
         airportPickup: state.airportPickup || false,
