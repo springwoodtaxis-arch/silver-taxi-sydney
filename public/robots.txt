@@ -5,8 +5,3 @@ Sitemap: https://silvertaxisydneyservice.com/sitemap.xml
 
 # Silver Taxi Sydney Service — Premium Taxi Sydney
 # 300+ suburb pages indexed
-
-# Canonical / preferred domain: https://silvertaxisydneyservice.com
-# All pages on this domain carry a canonical tag pointing to
-# https://silvertaxisydneyservice.com — please treat this domain as authoritative.
-Host: silvertaxisydneyservice.com
